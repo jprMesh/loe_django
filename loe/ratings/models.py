@@ -3,7 +3,7 @@ from django.conf import settings
 from colorfield.fields import ColorField
 
 
-class Teams(models.Model):
+class Team(models.Model):
     LEAGUE_REGIONS = [
         ('NA', 'North America'),
         ('EU', 'Europe'),
@@ -26,10 +26,10 @@ class Teams(models.Model):
         return self.team_name
 
 
-class Matches(models.Model):
+class Match(models.Model):
     # match_id pk
-    team1 = models.ForeignKey(Teams, on_delete=models.CASCADE, related_name='+')
-    team2 = models.ForeignKey(Teams, on_delete=models.CASCADE, related_name='+')
+    team1 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='side1_match')
+    team2 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='side2_match')
     team1_score = models.IntegerField()
     team2_score = models.IntegerField()
     match_datetime = models.DateTimeField()
@@ -38,9 +38,9 @@ class Matches(models.Model):
         return f'{str(self.team1)} vs {str(self.team2)} -- {str(self.match_datetime)}'
 
 
-class TeamRatings(models.Model):
+class TeamRating(models.Model):
     # teamrating_id pk
-    team = models.ForeignKey(Teams, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
     rating_date = models.DateTimeField()
     rating = models.IntegerField()
 
@@ -48,17 +48,17 @@ class TeamRatings(models.Model):
         return f'{self.team}: {str(self.rating_date)}'
 
 
-class Predictions(models.Model):
+class Prediction(models.Model):
     # prediction_id pk
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    match = models.ForeignKey(Matches, on_delete=models.CASCADE)
+    match = models.ForeignKey(Match, on_delete=models.CASCADE)
     predicted_t1_win_prob = models.IntegerField()
 
     def __str__(self):
         return f'{self.user}--{str(self.match)}: {str(self.predicted_t1_win_prob)}'
 
 
-class UserScores(models.Model):
+class UserScore(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     score = models.IntegerField()
     score_updated = models.DateTimeField(auto_now=True)
