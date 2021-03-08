@@ -15,5 +15,5 @@ python manage.py runserver
 ```
 
 ### Notes
-* I'm starting with sqlite because postgres is giving me issues locally through WSL. Probably move to postgres once I get this running on a server somewhere else.
+* Starting with sqlite because postgres is giving me issues locally through WSL. Probably move to postgres once I get this running on a server somewhere else.
 

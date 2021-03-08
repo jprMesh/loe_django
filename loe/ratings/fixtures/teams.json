@@ -1,0 +1,8 @@
+[
+  {"model": "ratings.Teams", "pk": 1, "fields": {
+    "team_continuity_id": "000", "region": "NA", "color1": "#F82225", "color2": "#F82225", "team_name": "100 Thieves", "short_name": "100", "logo_img": ""} },
+  {"model": "ratings.Teams", "pk": 2, "fields": {
+    "team_continuity_id": "001", "region": "NA", "color1": "#2497D3", "color2": "#2497D3", "team_name": "Cloud9", "short_name": "C9", "logo_img": ""} },
+  {"model": "ratings.Teams", "pk": 3, "fields": {
+    "team_continuity_id": "002", "region": "NA", "color1": "#FCDE4B", "color2": "#FCDE4B", "team_name": "Dignitas", "short_name": "DIG", "logo_img": ""} }
+]
