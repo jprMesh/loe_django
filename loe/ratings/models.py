@@ -18,8 +18,8 @@ class Teams(models.Model):
     short_name = models.CharField(max_length=5)
     region = models.CharField(max_length=3,
         choices=LEAGUE_REGIONS)
-    color1 = ColorField(default='#333333')
-    color2 = ColorField(default='#333333')
+    color1 = ColorField()
+    color2 = ColorField()
     logo_img = models.URLField()
 
     def __str__(self):
