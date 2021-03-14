@@ -7,6 +7,9 @@ python3 -m venv env
 source env/bin/activate
 python -m pip install django psycopg2 django-colorfield python-decouple
 python manage.py collectstatic #needed for colorfield
+git submodule init
+git submodule update
+python manage.py loadfixtures ratings/fixtures/teams.json
 ```
 
 ## Run Server
