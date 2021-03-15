@@ -10,7 +10,7 @@ python manage.py collectstatic #needed for colorfield
 git submodule init
 git submodule update
 python manage.py loaddata ratings/fixtures/teams.json
-python manage.py populate_db matches
+python manage.py populate_matches
 ```
 
 ## Run Server

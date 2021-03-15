@@ -19,6 +19,10 @@ class Command(BaseCommand):
     args = '<foo bar ...>'
     help = 'our help string comes here'
 
+    def add_arguments(self, parser):
+        # Positional arguments
+        parser.add_argument('start_year', type=int, nargs='?', default=2015, help='Year to start fetching data from')
+
     def _get_team(self, team_name):
         try:
             team = Team.objects.get(team_name=team_name)
@@ -39,25 +43,29 @@ class Command(BaseCommand):
         naive_match_ts = datetime.datetime.strptime(match_ts, date_format)
         tz_match_ts = pytz.utc.localize(naive_match_ts)
 
-        match = Match(team1=team1,
-                team2=team2,
-                team1_score=t1s,
-                team2_score=t2s,
-                match_datetime=tz_match_ts,
-                match_info=tab,
-                region=region)
-        if Match.objects.filter(team1=team1, team2=team2, match_datetime=tz_match_ts, match_info=tab, region=region).exists():
+        # Return if exact record exists
+        if Match.objects.filter(team1=team1, team2=team2,
+                team1_score=t1s, team2_score=t2s,
+                match_datetime=tz_match_ts, match_info=tab,
+                region=region).exists():
             print('Record exists')
             return
-        print(match)
-        match.save()
 
-    def _load_matches(self):
+        # Create or update record if new match or updated scores
+        match, _ = Match.objects.update_or_create(
+                team1=team1,
+                team2=team2,
+                match_datetime=tz_match_ts,
+                match_info=tab,
+                region=region,
+                defaults={'team1_score': t1s, 'team2_score': t2s})
+        print(match)
+
+    def _load_matches(self, start_year):
         print('Loading match data from leaguepedia...')
         lpdb = Leaguepedia_DB()
         regions = [abbr for abbr, _ in LEAGUE_REGIONS]
         regions = ['NA']
-        start_year = 2015
         for region in regions:
             season_list = lpdb.getTournaments([region], start_year)
             season_list = list(filter(lambda x: all([t not in x for t in IGNORE_TOURNAMENTS]), season_list))
@@ -68,4 +76,4 @@ class Command(BaseCommand):
                     self._save_match(*match, region=region)
 
     def handle(self, *args, **options):
-            self._load_matches()
+        self._load_matches(options['start_year'])
