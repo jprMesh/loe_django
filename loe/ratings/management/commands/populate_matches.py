@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import datetime
 import pytz
 from ratings.models import LEAGUE_REGIONS, Team, Match, TeamRating, Prediction, UserScore
-from ratings.management.LeagueOfElo.src.get_league_data import Leaguepedia_DB
+from ratings.management.LeagueOfElo.league_of_elo.get_league_data import Leaguepedia_DB
 
 
 IGNORE_TOURNAMENTS = [
