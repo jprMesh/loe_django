@@ -3,15 +3,16 @@ from django.conf import settings
 from colorfield.fields import ColorField
 
 
-class Team(models.Model):
-    LEAGUE_REGIONS = [
-        ('NA', 'North America'),
-        ('EU', 'Europe'),
-        ('KR', 'Korea'),
-        ('CN', 'China'),
-        ('INT', 'International')
-    ]
+LEAGUE_REGIONS = [
+    ('NA', 'North America'),
+    ('EU', 'Europe'),
+    ('KR', 'Korea'),
+    ('CN', 'China'),
+    ('INT', 'International')
+]
 
+
+class Team(models.Model):
     # team_id pk
     team_continuity_id = models.IntegerField()
     team_name = models.CharField(max_length=30)
@@ -33,9 +34,12 @@ class Match(models.Model):
     team1_score = models.IntegerField()
     team2_score = models.IntegerField()
     match_datetime = models.DateTimeField()
+    match_info = models.CharField(max_length=16)
+    region = models.CharField(max_length=3,
+        choices=LEAGUE_REGIONS)
 
     def __str__(self):
-        return f'{str(self.team1)} vs {str(self.team2)} -- {str(self.match_datetime)}'
+        return f'{self.match_datetime} {self.region:3}\t{self.team1.short_name} vs {self.team2.short_name}\t{self.team1_score}:{self.team2_score}\t{self.match_info}'
 
 
 class TeamRating(models.Model):
