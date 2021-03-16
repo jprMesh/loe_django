@@ -24,8 +24,10 @@ class Team(models.Model):
     logo_img = models.URLField()
 
     def __str__(self):
-        return f'<{self.pk}> {self.region} {self.team_continuity_id} -- {self.short_name} {self.team_name:<25}\t{self.color1} {self.color2}  {self.logo_img}'
         return self.team_name
+
+    def __repr__(self):
+        return f'<{self.pk}> {self.region} {self.team_continuity_id} -- {self.short_name} {self.team_name:<25}\t{self.color1} {self.color2}  {self.logo_img}'
 
 
 class Match(models.Model):
@@ -50,7 +52,7 @@ class TeamRating(models.Model):
     rating = models.IntegerField()
 
     def __str__(self):
-        return f'{self.team}: {str(self.rating_date)}'
+        return f'{self.rating} -- {self.team}: {self.rating_date}'
 
 
 class Prediction(models.Model):
