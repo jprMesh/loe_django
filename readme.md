@@ -9,7 +9,7 @@ python -m pip install django psycopg2 django-colorfield python-decouple mwclient
 python manage.py collectstatic #needed for colorfield
 git submodule init
 git submodule update
-python manage.py loaddata ratings/fixtures/teams.json
+python manage.py populate_teams
 python manage.py populate_matches
 ```
 

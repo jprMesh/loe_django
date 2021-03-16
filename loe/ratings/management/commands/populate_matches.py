@@ -1,8 +1,8 @@
-from django.core.management.base import BaseCommand
-from django.core.exceptions import ObjectDoesNotExist
 import datetime
 import pytz
-from ratings.models import LEAGUE_REGIONS, Team, Match, TeamRating, Prediction, UserScore
+from django.core.management.base import BaseCommand
+from django.core.exceptions import ObjectDoesNotExist
+from ratings.models import LEAGUE_REGIONS, Team, Match
 from ratings.management.LeagueOfElo.league_of_elo.get_league_data import Leaguepedia_DB
 
 
@@ -16,9 +16,6 @@ IGNORE_TOURNAMENTS = [
 
 
 class Command(BaseCommand):
-    args = '<foo bar ...>'
-    help = 'our help string comes here'
-
     def add_arguments(self, parser):
         # Positional arguments
         parser.add_argument('start_year', type=int, nargs='?', default=2015, help='Year to start fetching data from')
@@ -43,6 +40,9 @@ class Command(BaseCommand):
         naive_match_ts = datetime.datetime.strptime(match_ts, date_format)
         tz_match_ts = pytz.utc.localize(naive_match_ts)
 
+        t1s = 0 if not t1s else t1s
+        t2s = 0 if not t2s else t2s
+
         # Return if exact record exists
         if Match.objects.filter(team1=team1, team2=team2,
                 team1_score=t1s, team2_score=t2s,
@@ -65,11 +65,9 @@ class Command(BaseCommand):
         print('Loading match data from leaguepedia...')
         lpdb = Leaguepedia_DB()
         regions = [abbr for abbr, _ in LEAGUE_REGIONS]
-        regions = ['NA']
         for region in regions:
             season_list = lpdb.getTournaments([region], start_year)
             season_list = list(filter(lambda x: all([t not in x for t in IGNORE_TOURNAMENTS]), season_list))
-
             for season in season_list:
                 matches = lpdb.getSeasonResults(season)
                 for match in matches:

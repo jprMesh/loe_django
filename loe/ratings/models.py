@@ -24,6 +24,7 @@ class Team(models.Model):
     logo_img = models.URLField()
 
     def __str__(self):
+        return f'<{self.pk}> {self.region} {self.team_continuity_id} -- {self.short_name} {self.team_name:<25}\t{self.color1} {self.color2}  {self.logo_img}'
         return self.team_name
 
 
@@ -34,7 +35,7 @@ class Match(models.Model):
     team1_score = models.IntegerField()
     team2_score = models.IntegerField()
     match_datetime = models.DateTimeField()
-    match_info = models.CharField(max_length=16)
+    match_info = models.CharField(max_length=20)
     region = models.CharField(max_length=3,
         choices=LEAGUE_REGIONS)
 
