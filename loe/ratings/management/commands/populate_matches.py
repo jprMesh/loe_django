@@ -13,6 +13,8 @@ IGNORE_TOURNAMENTS = [
     'EU Face-Off',
     'Mid-Season Showdown',
     'IWCT']
+SPRING_RESET = -1
+SUMMER_RESET = -2
 
 
 class Command(BaseCommand):
@@ -61,17 +63,42 @@ class Command(BaseCommand):
                 defaults={'team1_score': t1s, 'team2_score': t2s})
         print(match)
 
+    def _insert_season_reset(self, sdate, reset_type):
+        reset_date = datetime.datetime.strptime(sdate, '%Y-%m-%d')
+        tz_reset_date = pytz.utc.localize(reset_date) - datetime.timedelta(days=1)
+        print(f'Inserting season reset: {"spring" if reset_type == SPRING_RESET else "summer"} on {sdate}')
+        NullTeam = Team.objects.get(team_name='Null Team')
+        Match.objects.create(team1=NullTeam,team2=NullTeam,
+                match_datetime=tz_reset_date,
+                match_info='inter_season_reset',
+                region='INT',
+                team1_score=reset_type,
+                team2_score=reset_type)
+
     def _load_matches(self, start_year):
         print('Loading match data from leaguepedia...')
         lpdb = Leaguepedia_DB()
         regions = [abbr for abbr, _ in LEAGUE_REGIONS]
+        season_list = []
         for region in regions:
-            season_list = lpdb.getTournaments([region], start_year)
-            season_list = list(filter(lambda x: all([t not in x for t in IGNORE_TOURNAMENTS]), season_list))
-            for season in season_list:
-                matches = lpdb.getSeasonResults(season)
-                for match in matches:
-                    self._save_match(*match, region=region)
+            region_seasons = lpdb.getTournaments([region], start_year)
+            season_list.extend([(sdate, season, region) for season, sdate in region_seasons])
+        season_list = list(filter(lambda x: all([t not in x[1] for t in IGNORE_TOURNAMENTS]), season_list))
+        season_list = sorted(season_list, key=lambda tup: tup[0])
+        last_year = None
+        summer_reset = False
+        for sdate, season, region in season_list:
+            year = sdate[:4]
+            if year != last_year:
+                self._insert_season_reset(sdate, SPRING_RESET)
+                last_year = year
+                summer_reset = False
+            elif not summer_reset and 'Summer' in season:
+                self._insert_season_reset(sdate, SUMMER_RESET)
+                summer_reset = True
+            matches = lpdb.getSeasonResults(season)
+            for match in matches:
+                self._save_match(*match, region=region)
 
     def handle(self, *args, **options):
         self._load_matches(options['start_year'])

@@ -49,17 +49,17 @@ class TeamRating(models.Model):
     # teamrating_id pk
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     rating_date = models.DateTimeField()
-    rating = models.IntegerField()
+    rating = models.FloatField()
 
     def __str__(self):
-        return f'{self.rating} -- {self.team}: {self.rating_date}'
+        return f'{self.rating:.2f} -- {self.team}: {self.rating_date}'
 
 
 class Prediction(models.Model):
     # prediction_id pk
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    predicted_t1_win_prob = models.IntegerField()
+    predicted_t1_win_prob = models.FloatField()
 
     def __str__(self):
         return f'{self.user}--{str(self.match)}: {str(self.predicted_t1_win_prob)}'
@@ -67,7 +67,7 @@ class Prediction(models.Model):
 
 class UserScore(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    score = models.IntegerField()
+    score = models.FloatField()
     score_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):

@@ -1,19 +1,21 @@
-NA, 000,    100,    100 Thieves,            #F82225
-NA, 001,    C9,     Cloud9,                 #2497D3
-NA, 002,    DIG,    Dignitas,               #FCDE4B
-NA, 002,    CG,     Clutch Gaming,          #CC0133
-NA, 002,    APX,    Apex Gaming
-NA, 003,    CLG,    Counter Logic Gaming,   #00B4E5
-NA, 004,    EG,     Evil Geniuses.NA,       #0C121F
-NA, 005,    FOX,    Echo Fox,               #E07026
-NA, 006,    FLY,    FlyQuest,               #13552B
-NA, 007,    GGS,    Golden Guardians,       #F8CF30
-NA, 008,    IMT,    Immortals,              #4DB0AA
-NA, 009,    OPT,    OpTic Gaming,           #9CC538
-NA, 010,    TL,     Team Liquid,            #0C223F
-NA, 011,    TSM,    Team SoloMid,           #252527
-NA, 012,    NV,     Team EnVyUs,            #000000
-NA, 013,    P1,     Phoenix1,               #EE7D1C
+INT,000,    NUL,    Null Team
+
+NA, 001,    100,    100 Thieves,            #F82225
+NA, 002,    C9,     Cloud9,                 #2497D3
+NA, 003,    DIG,    Dignitas,               #FCDE4B
+NA, 003,    CG,     Clutch Gaming,          #CC0133
+NA, 003,    APX,    Apex Gaming
+NA, 004,    CLG,    Counter Logic Gaming,   #00B4E5
+NA, 005,    EG,     Evil Geniuses.NA,       #0C121F
+NA, 006,    FOX,    Echo Fox,               #E07026
+NA, 007,    FLY,    FlyQuest,               #13552B
+NA, 008,    GGS,    Golden Guardians,       #F8CF30
+NA, 009,    IMT,    Immortals,              #4DB0AA
+NA, 010,    OPT,    OpTic Gaming,           #9CC538
+NA, 011,    TL,     Team Liquid,            #0C223F
+NA, 012,    TSM,    Team SoloMid,           #252527
+NA, 013,    NV,     Team EnVyUs,            #000000
+NA, 014,    P1,     Phoenix1,               #EE7D1C
 NA, 015,    NRG,    NRG Esports,            #D00080
 NA, 016,    TIP,    Team Impulse,           #F31E53
 NA, 017,    REN,    Renegades

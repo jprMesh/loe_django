@@ -11,6 +11,7 @@ git submodule init
 git submodule update
 python manage.py populate_teams
 python manage.py populate_matches
+python manage.py calculate_elo
 ```
 
 ## Run Server

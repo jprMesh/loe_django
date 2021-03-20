@@ -21,7 +21,7 @@ class Command(BaseCommand):
                     'color2': team_info.color2,
                     'logo_img': team_info.logo_img
                 })
-        print('New/updated record' if created else 'Record exists')
+        print('New team: ' if created else 'Team exists: ', end='')
         print(team)
 
     def _load_teams(self):
