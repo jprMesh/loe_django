@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LOE Leaderboard</title>
+</head>
+<body>
+
+<table>
+  <tr>
+    <th> Username </th> <th> Average Brier Score </th>
+  </tr>
+{% for user in leaderboard %}
+    <tr>
+      <td>{{ user.user__username }}</td>
+      <td>{{ user.brier }}</td>
+    </tr>
+{% endfor %}
+</table>
+
+</body>
+</html>
+
+
