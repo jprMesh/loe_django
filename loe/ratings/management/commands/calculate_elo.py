@@ -3,7 +3,8 @@ from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 from django.db.models import Avg
-from ratings.models import Team, TeamRating, Match
+from django.contrib.auth import get_user_model
+from ratings.models import Team, TeamRating, Match, Prediction
 from ratings.management.LeagueOfElo.league_of_elo.elo.rating_system import Elo
 
 
@@ -20,6 +21,7 @@ class Command(BaseCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.elo_model = Elo(K=30, score_mult=True)
+        self.elo_user = get_user_model().objects.get(username='LeagueOfElo')
 
     def _inter_season_reset(self, reset_date, inactive_cutoff_date):
         print(f'\nSeason reset: {reset_date}')
@@ -37,8 +39,8 @@ class Command(BaseCommand):
         for active_team in active_teams:
             team_regional_avg = regional_averages[active_team.team.region]
             new_rating = 0.75 * active_team.rating + 0.25 * team_regional_avg
-            print(f'Updating {active_team.team} rating from {active_team.rating:.2f} to {new_rating:.2f}')
             TeamRating.objects.filter(team=active_team.team).update(rating=new_rating, rating_date=reset_date)
+            #print(f'\nUpdating {active_team.team} rating from {active_team.rating:.2f} to {new_rating:.2f}')
 
     def _continuity_check(self, team, match_date):
         continuity_teams = Team.objects.filter(team_continuity_id=team.team_continuity_id)
@@ -57,6 +59,10 @@ class Command(BaseCommand):
             print('F', end='', flush=True) # F for future
             return
 
+        if match.elo_processed:
+            print('A', end='', flush=True) # A for already processed
+            return
+
         if match.match_info == 'inter_season_reset':
             # Need to differentiate between spring and summer reset so inactive teams don't get
             # considered active due to these rating updates.
@@ -65,6 +71,7 @@ class Command(BaseCommand):
             elif match.team1_score == SUMMER_RESET:
                 inactive_cutoff_date = match.match_datetime - datetime.timedelta(days=120)
             self._inter_season_reset(match.match_datetime, inactive_cutoff_date)
+            Match.objects.filter(pk=match.pk).update(elo_processed=True)
             return
 
         stale_rating_cutoff = match.match_datetime - datetime.timedelta(days=90)
@@ -79,21 +86,34 @@ class Command(BaseCommand):
         t2_rating = TeamRating.objects.get(team=match.team2)
 
         if match.match_datetime <= t1_rating.rating_date:
-            print('Team rating newer than match. Ignoring.')
+            print('E', end='', flush=True) # Team rating newer than match. We should never see this.
             return
         if match.team1_score == 0 and match.team2_score == 0:
-            print('Match results not recorded yet. Ignoring.')
+            print('N', end='', flush=True) # Match results not recorded yet.
             return
+
+        prediction = self.elo_model.predict(t1_rating.rating, t2_rating.rating)
+        Prediction.objects.create(user=self.elo_user, match=match, predicted_t1_win_prob=prediction)
 
         t1_adj, t2_adj = self.elo_model.process_outcome(t1_rating.rating, t2_rating.rating, match.team1_score, match.team2_score)
         TeamRating.objects.filter(team=match.team1).update(rating=t1_rating.rating + t1_adj, rating_date=match.match_datetime)
         TeamRating.objects.filter(team=match.team2).update(rating=t2_rating.rating + t2_adj, rating_date=match.match_datetime)
+        Match.objects.filter(pk=match.pk).update(elo_processed=True)
         print('.', end='', flush=True)
 
     def _calculate_ratings(self):
+        docstring = '''
+Legend:
+. : processed match
+A : already processed
+F : future match
+N : no results yet
+'''
+        print(docstring)
         ordered_matches = Match.objects.all().order_by('match_datetime')
         for match in ordered_matches.iterator():
             self._process_match(match)
+        print(f'\nProcessed {ordered_matches.count()} matches')
 
     def handle(self, *args, **options):
         self._calculate_ratings()

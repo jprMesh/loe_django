@@ -11,13 +11,18 @@ IGNORE_TOURNAMENTS = [
     'Play-In',
     'Rift Rivals',
     'EU Face-Off',
-    'Mid-Season Showdown',
+    'Mid-Season Showdown 2020',
+    'Streamathon',
     'IWCT']
 SPRING_RESET = -1
 SUMMER_RESET = -2
 
 
 class Command(BaseCommand):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.new_updated_matches = 0
+
     def add_arguments(self, parser):
         # Positional arguments
         parser.add_argument('start_year', type=int, nargs='?', default=2015, help='Year to start fetching data from')
@@ -50,7 +55,7 @@ class Command(BaseCommand):
                 team1_score=t1s, team2_score=t2s,
                 match_datetime=tz_match_ts, match_info=tab,
                 region=region).exists():
-            print('Record exists')
+            print('X', end='', flush=True) # X for eXists
             return
 
         # Create or update record if new match or updated scores
@@ -62,18 +67,24 @@ class Command(BaseCommand):
                 region=region,
                 defaults={'team1_score': t1s, 'team2_score': t2s})
         print(match)
+        self.new_updated_matches += 1
 
     def _insert_season_reset(self, sdate, reset_type):
         reset_date = datetime.datetime.strptime(sdate, '%Y-%m-%d')
         tz_reset_date = pytz.utc.localize(reset_date) - datetime.timedelta(days=1)
-        print(f'Inserting season reset: {"spring" if reset_type == SPRING_RESET else "summer"} on {sdate}')
         NullTeam = Team.objects.get(team_name='Null Team')
-        Match.objects.create(team1=NullTeam,team2=NullTeam,
+        _, created = Match.objects.get_or_create(
+                team1=NullTeam, team2=NullTeam,
                 match_datetime=tz_reset_date,
                 match_info='inter_season_reset',
                 region='INT',
                 team1_score=reset_type,
-                team2_score=reset_type)
+                team2_score=reset_type
+            )
+        print('\nSeason reset: {reset_type} on {sdate} -- {created}'.format(**{
+            'reset_type': "spring" if reset_type == SPRING_RESET else "summer",
+            'sdate': sdate,
+            'created': "new record" if created else "exists"}))
 
     def _load_matches(self, start_year):
         print('Loading match data from leaguepedia...')
@@ -96,9 +107,11 @@ class Command(BaseCommand):
             elif not summer_reset and 'Summer' in season:
                 self._insert_season_reset(sdate, SUMMER_RESET)
                 summer_reset = True
+            print(f'\n{season}')
             matches = lpdb.getSeasonResults(season)
             for match in matches:
                 self._save_match(*match, region=region)
+        print(f'{self.new_updated_matches} new/updated matches')
 
     def handle(self, *args, **options):
         self._load_matches(options['start_year'])
