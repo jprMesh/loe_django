@@ -27,6 +27,20 @@ class Command(BaseCommand):
         # Positional arguments
         parser.add_argument('start_year', type=int, nargs='?', default=2015, help='Year to start fetching data from')
 
+    def _update_briers(self, match):
+        if match.team1_score == 0 and match.team2_score == 0:
+            return
+        elif match.team1_score > match.team2_score:
+            match_outcome = 1.0
+        elif match.team1_score < match.team2_score:
+            match_outcome = 0.0
+        else:
+            match_outcome = 0.5
+        associated_predictions = match.prediction_set.all()
+        for pred in associated_predictions:
+            brier = (match_outcome - pred.predicted_t1_win_prob)**2
+            Prediction.objects.filter(pk=pred.pk).update(brier=brier)
+
     def _get_team(self, team_name):
         try:
             team = Team.objects.get(team_name=team_name)
@@ -66,6 +80,7 @@ class Command(BaseCommand):
                 match_info=tab,
                 region=region,
                 defaults={'team1_score': t1s, 'team2_score': t2s})
+        self._update_briers(match)
         print(match)
         self.new_updated_matches += 1
 

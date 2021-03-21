@@ -93,7 +93,14 @@ class Command(BaseCommand):
             return
 
         prediction = self.elo_model.predict(t1_rating.rating, t2_rating.rating)
-        Prediction.objects.create(user=self.elo_user, match=match, predicted_t1_win_prob=prediction)
+        if match.team1_score > match.team2_score:
+            match_outcome = 1.0
+        elif match.team1_score < match.team2_score:
+            match_outcome = 0.0
+        else:
+            match_outcome = 0.5
+        brier = (match_outcome - prediction)**2
+        Prediction.objects.create(user=self.elo_user, match=match, predicted_t1_win_prob=prediction, brier=brier)
 
         t1_adj, t2_adj = self.elo_model.process_outcome(t1_rating.rating, t2_rating.rating, match.team1_score, match.team2_score)
         TeamRating.objects.filter(team=match.team1).update(rating=t1_rating.rating + t1_adj, rating_date=match.match_datetime)

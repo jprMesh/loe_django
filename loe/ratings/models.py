@@ -61,9 +61,10 @@ class Prediction(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     predicted_t1_win_prob = models.FloatField()
+    brier = models.FloatField(null=True, blank=True)
 
     def __str__(self):
-        return f'{self.user}--{str(self.match)}: {str(self.predicted_t1_win_prob)}'
+        return f'{self.user}: {self.predicted_t1_win_prob} :: {self.brier} -- {self.match}'
 
 
 class UserScore(models.Model):
