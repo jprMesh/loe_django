@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}LOE Leaderboard{% endblock %}
+
+{% block content %}
+<h3>Log In</h3>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Log In</button>
+</form>
+{% endblock %}

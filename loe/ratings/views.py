@@ -8,7 +8,7 @@ from .models import Prediction, Match, Team
 
 
 def index(request):
-    return HttpResponse("Nothing here yet. Go to /leaderboard")
+    return upcoming(request)
 
 
 def upcoming(request):

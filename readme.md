@@ -19,6 +19,13 @@ python manage.py calculate_elo
 python manage.py runserver
 ```
 
+## Cron
+Cron is going to need to run these commands to update everything:
+```
+python manage.py populate_matches
+python manage.py calculate_elo
+```
+
 ### Notes
 * Starting with sqlite because postgres is giving me issues locally through WSL. Probably move to postgres once I get this running on a server somewhere else.
 

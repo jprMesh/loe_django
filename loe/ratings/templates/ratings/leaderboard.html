@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>LOE Leaderboard</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
+{% block title %}LOE Leaderboard{% endblock %}
+
+{% block content %}
+<h3>Leaderboard</h3>
 <table>
   <tr>
     <th> Username </th> <th> Average Brier Score </th>
@@ -17,7 +16,4 @@
 {% endfor %}
 </table>
 
-</body>
-</html>
-
-
+{% endblock %}
