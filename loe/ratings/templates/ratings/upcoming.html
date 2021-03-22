@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LOE Upcoming Matches</title>
+</head>
+<body>
+
+<table>
+  <tr>
+    <th> Match Time </th>
+    <th> Region </th>
+    <th> Team </th>
+    <th> Prediction </th>
+    <th> Team </th>
+  </tr>
+{% for match in matches %}
+    <tr>
+      <td>{{ match.match_datetime }}</td>
+      <td>{{ match.region }}</td>
+      <td>{{ match.team2__short_name }}</td>
+      <td><input type="range" min="0" max="100" value="50" class="slider" id="{{ match.pk }}"></td>
+      <td>{{ match.team1__short_name }}</td>
+    </tr>
+{% endfor %}
+</table>
+
+</body>
+</html>
+
+

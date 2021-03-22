@@ -1,12 +1,26 @@
+import datetime
 from django.http import HttpResponse
 from django.template import loader
 from django.db.models import Avg
+from django.utils import timezone
 
-from .models import Prediction
+from .models import Prediction, Match, Team
 
 
 def index(request):
     return HttpResponse("Nothing here yet. Go to /leaderboard")
+
+
+def upcoming(request):
+    upcoming_matches = (Match.objects
+            .filter(match_datetime__gte=timezone.now(), match_datetime__lte=timezone.now() + datetime.timedelta(days=14))
+            .order_by('match_datetime')
+            .values('pk', 'match_datetime', 'team1__short_name', 'team2__short_name', 'region'))
+    template = loader.get_template('ratings/upcoming.html')
+    context = {
+        'matches': upcoming_matches
+    }
+    return HttpResponse(template.render(context, request))
 
 
 def leaderboard(request):
