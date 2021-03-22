@@ -2,7 +2,7 @@ import datetime
 import pytz
 from django.core.management.base import BaseCommand
 from django.core.exceptions import ObjectDoesNotExist
-from ratings.models import LEAGUE_REGIONS, Team, Match
+from ratings.models import LEAGUE_REGIONS, Team, Match, Prediction
 from ratings.management.LeagueOfElo.league_of_elo.get_league_data import Leaguepedia_DB
 
 
