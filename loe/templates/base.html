@@ -4,9 +4,6 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
   <style> @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap'); </style>
 
   {% load static %}
@@ -16,11 +13,11 @@
 <body>
   <main>
     <header class="header site_wrapper">
-      <h1 id='header_title'>League of Elo</h1>
+      <h1 id='header_title'><a href="{% url 'index' %}">League of Elo</a></h1>
       {% if user.is_authenticated %}
-        <h4 id="username_login">{{ user.username }}</h4>
+        <h4 id="username_login"><a href="{% url 'user_page' user.username %}">{{ user.username }}</a></h4>
       {% else %}
-        <h4><a id="username_login" href="{% url 'login' %}">Log In</a></h4>
+        <h4 id="username_login"><a href="{% url 'login' %}">Log In</a></h4>
       {% endif %}
     </header>
     <div class="body site_wrapper">

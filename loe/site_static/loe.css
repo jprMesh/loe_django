@@ -1,20 +1,27 @@
 body {
     background: #CCCCCC;
     font-family: sans-serif;
+    margin: 0;
 }
 
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Open Sans', sans-serif;
 }
 
-.site_wrapper {
-    max-width: 1024px;
-    margin: 0 auto;
+a {
+    color: #222222;
+    text-decoration: none;
 }
 
 header {
     display: flex;
     border-bottom: 2px solid #3c3c3c;
+}
+
+.site_wrapper {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 0.625rem;
 }
 
 #header_title {
@@ -24,4 +31,5 @@ header {
 
 #username_login {
     flex: initial;
+    margin: auto;
 }
