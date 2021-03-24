@@ -12,13 +12,23 @@
 </head>
 <body>
   <main>
-    <header class="header site_wrapper">
-      <h1 id='header_title'><a href="{% url 'index' %}">League of Elo</a></h1>
-      {% if user.is_authenticated %}
-        <h4 id="username_login"><a href="{% url 'user_page' user.username %}">{{ user.username }}</a></h4>
-      {% else %}
-        <h4 id="username_login"><a href="{% url 'login' %}">Log In</a></h4>
-      {% endif %}
+    <header>
+      <div class="header_top site_wrapper">
+        <h1 id='header_title'><a href="{% url 'index' %}">League of Elo</a></h1>
+        {% if user.is_authenticated %}
+          <h4 id="username_login"><a href="{% url 'user_page' user.username %}">{{ user.username }}</a></h4>
+        {% else %}
+          <h4 id="username_login"><a href="{% url 'login' %}">Log In</a></h4>
+        {% endif %}
+      </div>
+      <div class="header_bottom site_wrapper">
+        <h4 class="navlink"><a href="{% url 'index' %}">Home</a></h4>
+        <h4 class="navlink"><a href="{% url 'leaderboard' %}">Leaderboard</a></h4>
+        {% if user.is_authenticated %}
+          <h5 id="logout_button"><a href="{% url 'logout' %}">Log out</a></h5>
+        {% else %}
+        {% endif %}
+      </div>
     </header>
     <div class="body site_wrapper">
     {% block content %}

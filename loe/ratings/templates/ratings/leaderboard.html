@@ -3,14 +3,17 @@
 {% block title %}LOE Leaderboard{% endblock %}
 
 {% block content %}
-<h3>Leaderboard</h3>
+<h3 class="section_header">Leaderboard</h3>
 <table>
   <tr>
-    <th> Username </th> <th> Average Brier Score </th>
+    <th> Username </th>
+    <th> Lifetime Analyst Rating </th>
+    <th> Brier Score </th>
   </tr>
 {% for user in leaderboard %}
     <tr>
-      <td>{{ user.user__username }}</td>
+      <td><a href="{% url 'user_page' user.user__username %}">{{ user.user__username }}</a></td>
+      <td>{{ user.analyst_rating }}</td>
       <td>{{ user.brier }}</td>
     </tr>
 {% endfor %}

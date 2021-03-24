@@ -66,6 +66,10 @@ class Prediction(models.Model):
     def __str__(self):
         return f'{self.user}: {self.predicted_t1_win_prob} :: {self.brier} -- {self.match}'
 
+    @property
+    def analyst_rating(self):
+        return 100 - int(200 * self.brier)
+
 
 class UserScore(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

@@ -5,7 +5,8 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Open Sans', sans-serif;
+    font-family: sans-serif;
+    margin:0;
 }
 
 a {
@@ -14,14 +15,32 @@ a {
 }
 
 header {
-    display: flex;
-    border-bottom: 2px solid #3c3c3c;
+    padding: 0.625rem;
 }
 
 .site_wrapper {
     max-width: 1024px;
-    margin: 0 auto;
-    padding: 0.625rem;
+    margin: auto;
+}
+
+.header_top {
+    display: flex;
+    border-bottom: 2px solid #3c3c3c;
+    width: 100%;
+}
+
+.header_bottom {
+    display: flex;
+    width: 100%;
+    margin: 0.625rem auto;
+}
+
+.navlink {
+    padding: 0 1rem;
+}
+
+.section_header {
+    margin-bottom: 0.625rem;
 }
 
 #header_title {
@@ -32,4 +51,11 @@ header {
 #username_login {
     flex: initial;
     margin: auto;
+}
+
+#logout_button {
+    flex: auto;
+}
+#logout_button > a {
+    float: right;
 }

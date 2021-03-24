@@ -3,7 +3,7 @@
 {% block title %}LOE Upcoming Matches{% endblock %}
 
 {% block content %}
-<h3>Upcoming Matches</h3>
+<h3 class="section_header">Upcoming Matches</h3>
 <table>
   <tr>
     <th> Match Time </th>
@@ -19,6 +19,10 @@
       <td>{{ match.team2__short_name }}</td>
       <td><input type="range" min="0" max="100" value="50" class="slider" id="{{ match.pk }}"></td>
       <td>{{ match.team1__short_name }}</td>
+{% if user.is_authenticated %}
+      <td><input type="submit"></td>
+{% else %}
+{% endif %}
     </tr>
 {% endfor %}
 </table>

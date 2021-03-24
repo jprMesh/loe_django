@@ -24,7 +24,9 @@ def upcoming(request):
 
 
 def leaderboard(request):
-    brier_leaderboard = Prediction.objects.all().values('user__username').annotate(brier=Avg('brier')).order_by('brier')[:20]
+    brier_leaderboard = Prediction.objects.all().values('user__username').annotate(brier=Avg('brier')).order_by('brier')[:30]
+    for entry in brier_leaderboard:
+        entry['analyst_rating'] = 100 - int(200 * entry['brier'])
     template = loader.get_template('ratings/leaderboard.html')
     context = {
         'leaderboard': brier_leaderboard,
@@ -34,9 +36,11 @@ def leaderboard(request):
 def user_page(request, username):
     user_predictions = Prediction.objects.filter(user__username=username)
     prior_pred = (user_predictions.filter(match__match_datetime__lte=timezone.now())
-            .values('match__region', 'match__match_info', 'match__team1__short_name', 'match__team2__short_name', 'predicted_t1_win_prob', 'brier'))
+            .values('match__region', 'match__match_info', 'match__team1__short_name', 'match__team2__short_name', 'predicted_t1_win_prob', 'brier')
+            .order_by('-match__match_datetime'))[:50]
     future_pred = (user_predictions.filter(match__match_datetime__gte=timezone.now())
-            .values('match__region', 'match__match_info', 'match__team1__short_name', 'match__team2__short_name', 'predicted_t1_win_prob'))
+            .values('match__region', 'match__match_info', 'match__team1__short_name', 'match__team2__short_name', 'predicted_t1_win_prob')
+            .order_by('-match__match_datetime'))
     context = {
         'prior_preds': prior_pred,
         'future_preds': future_pred

@@ -126,7 +126,7 @@ class Command(BaseCommand):
             matches = lpdb.getSeasonResults(season)
             for match in matches:
                 self._save_match(*match, region=region)
-        print(f'{self.new_updated_matches} new/updated matches')
+        print(f'\n{self.new_updated_matches} new/updated matches')
 
     def handle(self, *args, **options):
         self._load_matches(options['start_year'])
