@@ -3,6 +3,9 @@ from django.http import HttpResponse
 from django.template import loader
 from django.db.models import Avg
 from django.utils import timezone
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from .models import Prediction, Match, Team
 
@@ -47,3 +50,11 @@ def user_page(request, username):
     }
     template = loader.get_template('ratings/user_page.html')
     return HttpResponse(template.render(context, request))
+
+# REST API Views
+
+@api_view(['POST'])
+def hello_world(request):
+    print(request.data)
+    return Response(status=status.HTTP_200_OK)
+

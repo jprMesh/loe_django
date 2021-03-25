@@ -5,7 +5,7 @@
 sudo apt install python3-venv postgresql libpq-dev
 python3 -m venv env
 source env/bin/activate
-python -m pip install django psycopg2 django-colorfield python-decouple mwclient numpy
+python -m pip install django psycopg2 django-colorfield python-decouple mwclient numpy djangorestframework
 python manage.py collectstatic #needed for colorfield
 git submodule init
 git submodule update

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load rest_framework %}
+
 {% block title %}LOE Upcoming Matches{% endblock %}
 
 {% block content %}
@@ -14,13 +16,15 @@
   </tr>
 {% for match in matches %}
     <tr>
-      <td>{{ match.match_datetime }}</td>
-      <td>{{ match.region }}</td>
-      <td>{{ match.team2__short_name }}</td>
-      <td><input type="range" min="0" max="100" value="50" class="slider" id="{{ match.pk }}"></td>
-      <td>{{ match.team1__short_name }}</td>
+      <form method="POST" action="{% url 'hello' %}">{% csrf_token %}
+        <td>{{ match.match_datetime }}</td>
+        <td>{{ match.region }}</td>
+        <td>{{ match.team2__short_name }}</td>
+        <td><input type="range" min="0" max="100" value="50" class="slider" name="{{ match.pk }}"></td>
+        <td>{{ match.team1__short_name }}</td>
 {% if user.is_authenticated %}
-      <td><input type="submit"></td>
+        <td><input type="submit"></td>
+      </form>
 {% else %}
 {% endif %}
     </tr>
