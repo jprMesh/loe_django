@@ -1,5 +1,5 @@
 body {
-    background: #CCCCCC;
+    background: #EEEEEE;
     font-family: sans-serif;
     margin: 0;
 }
@@ -36,7 +36,7 @@ header {
 }
 
 .navlink {
-    padding: 0 1rem;
+    padding: 0 1.5rem 0 0.1rem;
 }
 
 .section_header {
