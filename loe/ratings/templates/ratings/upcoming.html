@@ -21,7 +21,7 @@
         <td>{{ match.region }}</td>
         <td>{{ match.team2__short_name }}</td>
         <td><input type="hidden" name="match" value="{{ match.pk }}">
-          <input type="range" min="0" max="100" value="50" class="slider" name="predicted_t1_win_prob"></td>
+          <input type="range" min="0" max="100" value="{{ match.prediction_val }}" class="slider" name="predicted_t1_win_prob"></td>
         <td>{{ match.team1__short_name }}</td>
 {% if user.is_authenticated %}
         <td><input type="hidden" name="username" value="{{ user.get_username }}">
