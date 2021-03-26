@@ -3,11 +3,13 @@ from django.http import HttpResponse
 from django.template import loader
 from django.db.models import Avg
 from django.utils import timezone
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .models import Prediction, Match, Team
+from .serializers import PredictionSerializer
 
 
 def index(request):
@@ -54,7 +56,25 @@ def user_page(request, username):
 # REST API Views
 
 @api_view(['POST'])
-def hello_world(request):
-    print(request.data)
-    return Response(status=status.HTTP_200_OK)
+def submit_prediction(request):
+    try:
+        match = Match.objects.get(pk=request.data['match'])
+    except Match.DoesNotExist:
+        return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+    User = get_user_model()
+    try:
+        user = User.objects.get(username=request.data['username'])
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+    predicted_t1_win_prob = request.data['predicted_t1_win_prob']
 
+    if timezone.now() > match.match_datetime - datetime.timedelta(hours=1):
+        resp = {'deny_reason': 'match_started'}
+        return Response(resp, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+    pred, created = Prediction.objects.update_or_create(user=user, match=match, defaults={'predicted_t1_win_prob': predicted_t1_win_prob})
+    print(pred)
+    if created:
+        return Response(status=status.HTTP_201_CREATED)
+    else:
+        return Response(status=status.HTTP_202_ACCEPTED)

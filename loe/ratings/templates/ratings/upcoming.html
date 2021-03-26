@@ -16,18 +16,36 @@
   </tr>
 {% for match in matches %}
     <tr>
-      <form method="POST" action="{% url 'hello' %}">{% csrf_token %}
+      <form class="prediction" method="post" action="">{% csrf_token %}
         <td>{{ match.match_datetime }}</td>
         <td>{{ match.region }}</td>
         <td>{{ match.team2__short_name }}</td>
-        <td><input type="range" min="0" max="100" value="50" class="slider" name="{{ match.pk }}"></td>
+        <td><input type="hidden" name="match" value="{{ match.pk }}">
+          <input type="range" min="0" max="100" value="50" class="slider" name="predicted_t1_win_prob"></td>
         <td>{{ match.team1__short_name }}</td>
 {% if user.is_authenticated %}
-        <td><input type="submit"></td>
+        <td><input type="hidden" name="username" value="{{ user.get_username }}">
+          <input type="submit"></td>
       </form>
 {% else %}
 {% endif %}
     </tr>
 {% endfor %}
 </table>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('form.prediction').submit(function(e){
+    e.preventDefault();
+    console.log($(this).serialize())
+    $.post("{% url 'submit_prediction' %}", $(this).serialize(), function(data) {
+      console.log(data.message);
+    });
+    return false;
+  });
+});
+</script>
 {% endblock %}
