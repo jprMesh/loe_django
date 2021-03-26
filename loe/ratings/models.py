@@ -67,6 +67,10 @@ class Prediction(models.Model):
         return f'{self.user}: {self.predicted_t1_win_prob} :: {self.brier} -- {self.match}'
 
     @property
+    def username(self):
+        return self.user.username
+
+    @property
     def analyst_rating(self):
         return 100 - int(200 * self.brier)
 
