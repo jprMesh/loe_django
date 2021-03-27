@@ -5,33 +5,58 @@
 {% block title %}LOE Upcoming Matches{% endblock %}
 
 {% block content %}
-<h3 class="section_header">Upcoming Matches</h3>
-<table>
-  <tr>
-    <th> Match Time </th>
-    <th> Region </th>
-    <th> Team </th>
-    <th> Prediction </th>
-    <th> Team </th>
-  </tr>
-{% for match in matches %}
+<div id="content">
+<div id="upcoming_match_table">
+  <h3 class="section_header">Upcoming Matches</h3>
+  <table>
     <tr>
-      <form class="prediction" method="post" action="">{% csrf_token %}
-        <td>{{ match.match_datetime }}</td>
-        <td>{{ match.region }}</td>
-        <td>{{ match.team2__short_name }}</td>
-        <td><input type="hidden" name="match" value="{{ match.pk }}">
-          <input type="range" min="0" max="100" value="{{ match.prediction_val }}" class="slider" name="predicted_t1_win_prob"></td>
-        <td>{{ match.team1__short_name }}</td>
-{% if user.is_authenticated %}
-        <td><input type="hidden" name="username" value="{{ user.get_username }}">
-          <input type="submit"></td>
-      </form>
-{% else %}
-{% endif %}
+      <th> Match Time </th>
+      <th> Region </th>
+      <th> Team </th>
+      <th> Prediction </th>
+      <th> Team </th>
     </tr>
-{% endfor %}
-</table>
+  {% for match in matches %}
+      <tr>
+        <form class="prediction" method="post" action="">{% csrf_token %}
+          <td>{{ match.match_datetime }}</td>
+          <td>{{ match.region }}</td>
+          <td>{{ match.team2__short_name }}</td>
+          <td><input type="hidden" name="match" value="{{ match.pk }}">
+            <input type="range" min="0" max="100" value="{{ match.prediction_val }}" class="slider" name="predicted_t1_win_prob"></td>
+          <td>{{ match.team1__short_name }}</td>
+  {% if user.is_authenticated %}
+          <td><input type="hidden" name="username" value="{{ user.get_username }}">
+            <input type="submit"></td>
+        </form>
+  {% else %}
+  {% endif %}
+      </tr>
+  {% endfor %}
+  </table>
+</div>
+
+
+<div id="elo_ranking_table">
+  <h3 class="section_header">Team Ratings</h3>
+  <table>
+    <tr>
+      <th> Rating </th>
+      <th> Team </th>
+      <th> Region </th>
+    </tr>
+  {% for team in teams %}
+      <tr>
+          <td>{{ team.rating }}</td>
+          <td>{{ team.team__short_name }}</td>
+          <td>{{ team.team__region }}</td>
+      </tr>
+  {% endfor %}
+  </table>
+</div>
+</div>
+
+
 {% endblock %}
 
 {% block script %}

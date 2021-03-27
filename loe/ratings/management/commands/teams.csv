@@ -9,7 +9,7 @@ NA, 004,    CLG,    Counter Logic Gaming,   #00B4E5
 NA, 005,    EG,     Evil Geniuses.NA,       #0C121F
 NA, 006,    FOX,    Echo Fox,               #E07026
 NA, 007,    FLY,    FlyQuest,               #13552B
-NA, 008,    GGS,    Golden Guardians,       #F8CF30
+NA, 008,    GG,     Golden Guardians,       #F8CF30
 NA, 009,    IMT,    Immortals,              #4DB0AA
 NA, 010,    OPT,    OpTic Gaming,           #9CC538
 NA, 011,    TL,     Team Liquid,            #0C223F
@@ -63,7 +63,7 @@ KR, 204,    HLE,    Hanwha Life Esports,    #EE7529
 KR, 205,    AF,     Afreeca Freecs,         #34ACEE
 KR, 205,    RANC,   Rebels Anarchy
 KR, 205,    ANC,    Anarchy
-KR, 206,    DWG,    DWG KIA,                #5A989D
+KR, 206,    DK,     DWG KIA,                #5A989D
 KR, 206,    DWG,    DAMWON Gaming,          #5A989D
 KR, 207,    LSB,    Liiv SANDBOX,           #F8C32E
 KR, 207,    SB,     SANDBOX Gaming,         #7E0121

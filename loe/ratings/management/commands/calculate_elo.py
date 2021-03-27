@@ -50,6 +50,7 @@ class Command(BaseCommand):
             print(f'\nCreated {new_team}')
         else:
             most_recent_rating = TeamRating.objects.filter(team__in=continuity_teams).order_by('-rating_date')[0]
+            Team.objects.filter(pk=most_recent_rating.team.pk).update(is_active=False)
             updated_rating, _ = TeamRating.objects.update_or_create(team=team,
                     defaults={'rating':most_recent_rating.rating, 'rating_date':most_recent_rating.rating_date})
             print(f'\nSet {updated_rating} from {most_recent_rating}')

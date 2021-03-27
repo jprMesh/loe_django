@@ -22,12 +22,13 @@ class Team(models.Model):
     color1 = ColorField()
     color2 = ColorField()
     logo_img = models.URLField()
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.team_name
 
     def __repr__(self):
-        return f'<{self.pk}> {self.region} {self.team_continuity_id} -- {self.short_name} {self.team_name:<25}\t{self.color1} {self.color2}  {self.logo_img}'
+        return f'<{self.pk}> {self.region} {self.team_continuity_id} -- {self.short_name} {self.team_name:<25} -- {self.color1} {self.color2}  {self.logo_img} active:{self.is_active}'
 
 
 class Match(models.Model):

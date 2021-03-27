@@ -1,7 +1,7 @@
 import datetime
 from django.http import HttpResponse
 from django.template import loader
-from django.db.models import Avg
+from django.db.models import Avg, Max
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from rest_framework import status
@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Prediction, Match, Team
+from .models import Prediction, Match, Team, TeamRating
 from .serializers import PredictionSerializer
 
 
@@ -20,9 +20,13 @@ def index(request):
 def upcoming(request):
     um = UpcomingMatches()
     upcoming_matches = um.get(request)
+    er = EloRanking()
+    active_teams = er.get(request)
+
     template = loader.get_template('ratings/upcoming.html')
     context = {
-        'matches': upcoming_matches
+        'matches': upcoming_matches,
+        'teams': active_teams,
     }
     return HttpResponse(template.render(context, request))
 
@@ -31,6 +35,7 @@ def leaderboard(request):
     brier_leaderboard = Prediction.objects.all().values('user__username').annotate(brier=Avg('brier')).order_by('brier')[:30]
     for entry in brier_leaderboard:
         entry['analyst_rating'] = 100 - int(200 * entry['brier'])
+        entry['brier'] = f"{entry['brier']:.4f}"
     template = loader.get_template('ratings/leaderboard.html')
     context = {
         'leaderboard': brier_leaderboard,
@@ -69,6 +74,17 @@ class UpcomingMatches(APIView):
                     match['prediction_val'] = 50
         return upcoming_matches
         #return Response(data=upcoming_matches, status=status.HTTP_200_OK)
+
+
+class EloRanking(APIView):
+    def get(self, request):
+        active_teams = (TeamRating.objects
+                .filter(team__is_active=True, rating_date__gte=(timezone.now() - datetime.timedelta(days=90)))
+                .values('rating', 'team__short_name', 'team__region')
+                .order_by('-rating'))
+        for team in active_teams:
+            team['rating'] = int(team['rating'])
+        return active_teams
 
 
 class Predictions(APIView):

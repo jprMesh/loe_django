@@ -1,0 +1,24 @@
+# Serialization testing
+from ratings.models import *
+from ratings.serializers import *
+p = Prediction.objects.all().order_by('-match__match_datetime')[0]
+s = PredictionSerializer(p)
+s.data
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+content = JSONRenderer().render(s.data)
+import io
+stream = io.BytesIO(content)
+data = JSONParser().parse(stream)
+serializer = PredictionSerializer(data=data)
+serializer.is_valid()
+serializer.data
+
+# onetime thing: set old teams to inactive
+for cont_id in range(500):
+    teams = Team.objects.filter(team_continuity_id=cont_id)
+    if teams.count() > 1:
+        old_teams = teams.order_by('-teamrating__rating_date')[1:]
+        for ot in old_teams:
+            ot.is_active = False
+            ot.save()
