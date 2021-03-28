@@ -38,6 +38,7 @@ class Match(models.Model):
     team1_score = models.IntegerField()
     team2_score = models.IntegerField()
     match_datetime = models.DateTimeField()
+    best_of = models.IntegerField(default=1)
     match_info = models.CharField(max_length=20)
     region = models.CharField(max_length=3,
         choices=LEAGUE_REGIONS)

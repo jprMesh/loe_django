@@ -1,5 +1,6 @@
 import datetime
 import pytz
+from math import ceil
 from django.core.management.base import BaseCommand
 from django.core.exceptions import ObjectDoesNotExist
 from ratings.models import LEAGUE_REGIONS, Team, Match, Prediction
@@ -52,7 +53,7 @@ class Command(BaseCommand):
                 return ''
         return team
 
-    def _save_match(self, t1, t2, t1s, t2s, match_ts, tab, region):
+    def _save_match(self, t1, t2, t1s, t2s, match_ts, bestof, tab, region):
         team1 = self._get_team(t1)
         team2 = self._get_team(t2)
         if not team1 or not team2:
@@ -63,13 +64,19 @@ class Command(BaseCommand):
 
         t1s = 0 if not t1s else t1s
         t2s = 0 if not t2s else t2s
+        bestof = 1 if not bestof else bestof
 
         # Return if exact record exists
         if Match.objects.filter(team1=team1, team2=team2,
                 team1_score=t1s, team2_score=t2s,
-                match_datetime=tz_match_ts, match_info=tab,
-                region=region).exists():
+                match_datetime=tz_match_ts, best_of=bestof,
+                match_info=tab, region=region).exists():
             print('X', end='', flush=True) # X for eXists
+            return
+
+        # Return if match has not completed yet
+        if min(int(t1s), int(t2s)) > 0 and max(int(t1s), int(t2s)) < int(ceil(float(bestof)/2)):
+            print('O', end='', flush=True) # O for Ongoing
             return
 
         # Create or update record if new match or updated scores
@@ -79,7 +86,7 @@ class Command(BaseCommand):
                 match_datetime=tz_match_ts,
                 match_info=tab,
                 region=region,
-                defaults={'team1_score': t1s, 'team2_score': t2s})
+                defaults={'team1_score': t1s, 'team2_score': t2s, 'best_of': bestof})
         self._update_briers(match)
         print(match)
         self.new_updated_matches += 1
@@ -93,6 +100,7 @@ class Command(BaseCommand):
                 match_datetime=tz_reset_date,
                 match_info='inter_season_reset',
                 region='INT',
+                best_of=0,
                 team1_score=reset_type,
                 team2_score=reset_type
             )
