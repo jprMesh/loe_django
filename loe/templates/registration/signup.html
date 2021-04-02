@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}LOE Signup{% endblock %}
+
+{% block content %}
+<h3>Sign up</h3>
+{% if retry %}
+<p>Something went wrong. Try again.</p>
+{% else %}
+{% endif %}
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Sign up</button>
+</form>
+{% endblock %}
