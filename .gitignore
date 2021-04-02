@@ -4,3 +4,4 @@ env
 *.pyc
 static
 *.sqlite3
+log
