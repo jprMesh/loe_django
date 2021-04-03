@@ -8,5 +8,4 @@ urlpatterns = [
     path('leaderboard', views.leaderboard, name='leaderboard'),
     path('upcoming', views.upcoming, name='upcoming'),
     path('submit_prediction', views.Predictions.as_view(), name='submit_prediction'),
-    path('upcoming_matches', views.UpcomingMatches.as_view(), name='upcoming_matches'),
 ]

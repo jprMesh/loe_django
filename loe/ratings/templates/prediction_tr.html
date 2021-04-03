@@ -1,0 +1,27 @@
+{% load static %}
+
+<tr>
+  <form class="prediction" method="post" action="">{% csrf_token %}
+    <input type="hidden" name="match" value="{{ match.pk }}">
+    <input type="hidden" name="username" value="{{ user.get_username }}">
+    <td class="match_info_td">
+      <strong>{{ match.region }}</strong><br />
+      bo{{ match.best_of }}
+    </td>
+    <td><img class="match_logo" src="{% static 'team_logos/'|add:match.team2__short_name|add:'_logo.png' %}" title="{{ match.team2__team_name }}" alt="{{ match.team2__short_name }}"></td>
+    {% if prediction %}
+      <td><input type="range" min="0" max="100" value="{{ prediction }}" class="slider" name="predicted_t1_win_prob" onchange="sliderChange(this)"></td>
+    {% else %}
+      <td><input type="range" min="0" max="100" value="50" class="slider" name="predicted_t1_win_prob" onchange="sliderChange(this)"></td>
+    {% endif %}
+    <td><img class="match_logo" src="{% static 'team_logos/'|add:match.team1__short_name|add:'_logo.png' %}" title="{{ match.team1__team_name }}" alt="{{ match.team1__short_name }}"></td>
+    {% if user.is_authenticated %}
+      {% if prediction %}
+        <td><input class="submit_box" type="checkbox" onchange="submitPrediction(this)" checked></td>
+      {% else %}
+        <td><input class="submit_box" type="checkbox" onchange="submitPrediction(this)"></td>
+      {% endif %}
+  </form>
+{% else %}
+{% endif %}
+</tr>

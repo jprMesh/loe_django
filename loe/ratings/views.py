@@ -18,8 +18,10 @@ def index(request):
 
 
 def upcoming(request):
-    um = UpcomingMatches()
-    upcoming_matches = um.get(request)
+    upcoming_matches = list(Match.objects
+            .filter(match_datetime__gte=timezone.now(), match_datetime__lte=timezone.now() + datetime.timedelta(days=14))
+            .order_by('match_datetime')
+            .values('pk', 'match_datetime'))
     er = EloRanking()
     active_teams = er.get(request)
 
@@ -57,24 +59,8 @@ def user_page(request, username):
     template = loader.get_template('ratings/user_page.html')
     return HttpResponse(template.render(context, request))
 
+
 # REST API Views
-
-class UpcomingMatches(APIView):
-    def get(self, request):
-        upcoming_matches = list(Match.objects
-                .filter(match_datetime__gte=timezone.now(), match_datetime__lte=timezone.now() + datetime.timedelta(days=14))
-                .order_by('match_datetime')
-                .values('pk', 'match_datetime', 'team1__short_name', 'team2__short_name', 'region'))
-        for match in upcoming_matches:
-            if request.user.is_authenticated:
-                prediction = Prediction.objects.filter(match__pk=match['pk'], user__username=request.user.username).values('predicted_t1_win_prob')
-                if prediction.exists():
-                    match['prediction_val'] = int(100*prediction[0]['predicted_t1_win_prob'])
-                else:
-                    match['prediction_val'] = 50
-        return upcoming_matches
-        #return Response(data=upcoming_matches, status=status.HTTP_200_OK)
-
 
 class EloRanking(APIView):
     def get(self, request):

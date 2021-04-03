@@ -45,6 +45,17 @@ th, td {
 
 .section_header {
     margin-bottom: 0.625rem;
+    text-align: center;
+}
+
+.match_table td {
+    padding: 0;
+}
+
+.match_table .match_info_td {
+    padding: 0 0.5rem;
+    font-size: 0.8rem;
+    text-align: center;
 }
 
 #header_title {
