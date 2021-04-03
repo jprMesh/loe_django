@@ -21,7 +21,7 @@ def index(request):
     er = EloRanking()
     active_teams = er.get(request)
 
-    template = loader.get_template('ratings/upcoming.html')
+    template = loader.get_template('ratings/index.html')
     context = {
         'matches': upcoming_matches,
         'teams': active_teams,
