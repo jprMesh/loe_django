@@ -14,10 +14,6 @@ from .serializers import PredictionSerializer
 
 
 def index(request):
-    return upcoming(request)
-
-
-def upcoming(request):
     upcoming_matches = list(Match.objects
             .filter(match_datetime__gte=timezone.now(), match_datetime__lte=timezone.now() + datetime.timedelta(days=14))
             .order_by('match_datetime')
