@@ -1,7 +1,7 @@
 # Serialization testing
 from ratings.models import *
 from ratings.serializers import *
-p = Prediction.objects.all().order_by('-match__match_datetime')[0]
+p = Prediction.objects.all().order_by('-match__start_timestamp')[0]
 s = PredictionSerializer(p)
 s.data
 from rest_framework.renderers import JSONRenderer

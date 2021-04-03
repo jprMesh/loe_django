@@ -1,40 +1,29 @@
 {% extends 'base.html' %}
 
+{% load template_extras %}
+
 {% block title %}LOE User Profile{% endblock %}
 
 {% block content %}
+<div class="section_div">
 <h3 class="section_header">Match Predictions</h3>
-<table>
+<table class="match_table">
   <tr>
-    <th> Region </th>
-    <th> Match </th>
-    <th colspan="3"> Prediction </th>
-    <th> Brier Score </th>
+    <th colspan="4"> Match Info </th>
+    <th> Analyst Rating </th>
   </tr>
-{% if future_preds %}
-{% for pred in future_preds %}
-  <tr>
-    <td>{{ pred.match__region }}</td>
-    <td>{{ pred.match__match_info }}</td>
-    <td>{{ pred.match__team2__short_name }}</td>
-    <td><input type="range" min="0" max="100" value="{% widthratio pred.predicted_t1_win_prob 1 100 %}" class="slider"></td>
-    <td>{{ pred.match__team1__short_name }}</td>
-  </tr>
-{% endfor %}
-{% else %}
-  <tr><td colspan="6">No Upcoming Predictions</td></tr>
-{% endif %}
+  {% if future_preds %}
+    {% for pred in future_preds %}
+      {% prediction_tr pred.match__pk user %}
+    {% endfor %}
+  {% else %}
+    <tr><td colspan="4">No Upcoming Predictions</td></tr>
+  {% endif %}
   <tr><th colspan="2">Past Predictions</th></tr>
-{% for pred in prior_preds %}
-  <tr>
-    <td>{{ pred.match__region }}</td>
-    <td>{{ pred.match__match_info }}</td>
-    <td>{{ pred.match__team2__short_name }}</td>
-    <td><input type="range" min="0" max="100" value="{% widthratio pred.predicted_t1_win_prob 1 100 %}" class="slider" disabled="true"></td>
-    <td>{{ pred.match__team1__short_name }}</td>
-    <td>{{ pred.brier|floatformat:4 }}</td>
-  </tr>
-{% endfor %}
+  {% for pred in prior_preds %}
+    {% prediction_tr pred.match__pk user %}
+  {% endfor %}
 </table>
+</div>
 
 {% endblock %}

@@ -43,10 +43,10 @@ def leaderboard(request):
 def user_page(request, username):
     user_predictions = Prediction.objects.filter(user__username=username)
     prior_pred = (user_predictions.filter(match__start_timestamp__lte=timezone.now())
-            .values('match__region', 'match__match_info', 'match__team1__short_name', 'match__team2__short_name', 'predicted_t1_win_prob', 'brier')
+            .values('match__pk', 'match__region', 'match__match_info', 'match__team1__short_name', 'match__team2__short_name', 'predicted_t1_win_prob', 'brier')
             .order_by('-match__start_timestamp'))[:50]
     future_pred = (user_predictions.filter(match__start_timestamp__gte=timezone.now())
-            .values('match__region', 'match__match_info', 'match__team1__short_name', 'match__team2__short_name', 'predicted_t1_win_prob')
+            .values('match__pk', 'match__region', 'match__match_info', 'match__team1__short_name', 'match__team2__short_name', 'predicted_t1_win_prob')
             .order_by('-match__start_timestamp'))
     context = {
         'prior_preds': prior_pred,

@@ -43,6 +43,11 @@ th, td {
     padding: 0 1.5rem 0 0.1rem;
 }
 
+.section_div {
+    position: relative;
+    float: left;
+}
+
 .section_header {
     margin-bottom: 0.625rem;
     text-align: center;
@@ -56,6 +61,12 @@ th, td {
     padding: 0 0.5rem;
     font-size: 0.8rem;
     text-align: center;
+}
+
+.losing_team {
+    opacity: 0.5;
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
 }
 
 #header_title {
