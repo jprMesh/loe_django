@@ -57,10 +57,10 @@ th, td {
     margin: auto;
 }
 
-#logout_button {
+#logout_button, #signup_button {
     flex: auto;
 }
-#logout_button > a {
+#logout_button > a, #signup_button > a {
     float: right;
 }
 

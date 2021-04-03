@@ -28,6 +28,7 @@
         {% if user.is_authenticated %}
           <h5 id="logout_button"><a href="{% url 'logout' %}">Log out</a></h5>
         {% else %}
+          <h5 id="signup_button"><a href="{% url 'signup' %}">Sign Up</a></h5>
         {% endif %}
       </div>
     </header>
