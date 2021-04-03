@@ -15,9 +15,9 @@ from .serializers import PredictionSerializer
 
 def index(request):
     upcoming_matches = list(Match.objects
-            .filter(match_datetime__gte=timezone.now(), match_datetime__lte=timezone.now() + datetime.timedelta(days=14))
-            .order_by('match_datetime')
-            .values('pk', 'match_datetime'))
+            .filter(start_timestamp__gte=timezone.now(), start_timestamp__lte=timezone.now() + datetime.timedelta(days=14))
+            .order_by('start_timestamp')
+            .values('pk', 'start_timestamp'))
     er = EloRanking()
     active_teams = er.get(request)
 
@@ -42,12 +42,12 @@ def leaderboard(request):
 
 def user_page(request, username):
     user_predictions = Prediction.objects.filter(user__username=username)
-    prior_pred = (user_predictions.filter(match__match_datetime__lte=timezone.now())
+    prior_pred = (user_predictions.filter(match__start_timestamp__lte=timezone.now())
             .values('match__region', 'match__match_info', 'match__team1__short_name', 'match__team2__short_name', 'predicted_t1_win_prob', 'brier')
-            .order_by('-match__match_datetime'))[:50]
-    future_pred = (user_predictions.filter(match__match_datetime__gte=timezone.now())
+            .order_by('-match__start_timestamp'))[:50]
+    future_pred = (user_predictions.filter(match__start_timestamp__gte=timezone.now())
             .values('match__region', 'match__match_info', 'match__team1__short_name', 'match__team2__short_name', 'predicted_t1_win_prob')
-            .order_by('-match__match_datetime'))
+            .order_by('-match__start_timestamp'))
     context = {
         'prior_preds': prior_pred,
         'future_preds': future_pred
@@ -82,7 +82,7 @@ class Predictions(APIView):
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
         predicted_t1_win_prob = float(request.data['predicted_t1_win_prob']) / 100.0
 
-        if timezone.now() > match.match_datetime - datetime.timedelta(hours=1):
+        if timezone.now() > match.start_timestamp - datetime.timedelta(hours=1):
             resp = {'deny_reason': 'match_started'}
             return Response(resp, status=status.HTTP_406_NOT_ACCEPTABLE)
 

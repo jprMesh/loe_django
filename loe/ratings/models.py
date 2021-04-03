@@ -37,7 +37,7 @@ class Match(models.Model):
     team2 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='side2_match')
     team1_score = models.IntegerField()
     team2_score = models.IntegerField()
-    match_datetime = models.DateTimeField()
+    start_timestamp = models.DateTimeField()
     best_of = models.IntegerField(default=1)
     match_info = models.CharField(max_length=20)
     region = models.CharField(max_length=3,
@@ -45,7 +45,7 @@ class Match(models.Model):
     elo_processed = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.match_datetime} {self.region:3}\t{self.team1.short_name} vs {self.team2.short_name}\t{self.team1_score}:{self.team2_score}\t{self.match_info}'
+        return f'{self.start_timestamp} {self.region:3}\t{self.team1.short_name} vs {self.team2.short_name}\t{self.team1_score}:{self.team2_score}\t{self.match_info}'
 
 
 class TeamRating(models.Model):

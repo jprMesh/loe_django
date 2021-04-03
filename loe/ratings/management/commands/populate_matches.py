@@ -69,7 +69,7 @@ class Command(BaseCommand):
         # Return if exact record exists
         if Match.objects.filter(team1=team1, team2=team2,
                 team1_score=t1s, team2_score=t2s,
-                match_datetime=tz_match_ts, best_of=bestof,
+                start_timestamp=tz_match_ts, best_of=bestof,
                 match_info=tab, region=region).exists():
             print('X', end='', flush=True) # X for eXists
             return
@@ -83,7 +83,7 @@ class Command(BaseCommand):
         match, _ = Match.objects.update_or_create(
                 team1=team1,
                 team2=team2,
-                match_datetime=tz_match_ts,
+                start_timestamp=tz_match_ts,
                 match_info=tab,
                 region=region,
                 defaults={'team1_score': t1s, 'team2_score': t2s, 'best_of': bestof})
@@ -97,7 +97,7 @@ class Command(BaseCommand):
         NullTeam = Team.objects.get(team_name='Null Team')
         _, created = Match.objects.get_or_create(
                 team1=NullTeam, team2=NullTeam,
-                match_datetime=tz_reset_date,
+                start_timestamp=tz_reset_date,
                 match_info='inter_season_reset',
                 region='INT',
                 best_of=0,

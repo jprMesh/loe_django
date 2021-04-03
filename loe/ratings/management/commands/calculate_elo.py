@@ -56,7 +56,7 @@ class Command(BaseCommand):
             print(f'\nSet {updated_rating} from {most_recent_rating}')
 
     def _process_match(self, match):
-        if match.match_datetime > timezone.now():
+        if match.start_timestamp > timezone.now():
             print('F', end='', flush=True) # F for future
             return
 
@@ -68,25 +68,25 @@ class Command(BaseCommand):
             # Need to differentiate between spring and summer reset so inactive teams don't get
             # considered active due to these rating updates.
             if match.team1_score == SPRING_RESET:
-                inactive_cutoff_date = match.match_datetime - datetime.timedelta(days=180)
+                inactive_cutoff_date = match.start_timestamp - datetime.timedelta(days=180)
             elif match.team1_score == SUMMER_RESET:
-                inactive_cutoff_date = match.match_datetime - datetime.timedelta(days=120)
-            self._inter_season_reset(match.match_datetime, inactive_cutoff_date)
+                inactive_cutoff_date = match.start_timestamp - datetime.timedelta(days=120)
+            self._inter_season_reset(match.start_timestamp, inactive_cutoff_date)
             Match.objects.filter(pk=match.pk).update(elo_processed=True)
             return
 
-        stale_rating_cutoff = match.match_datetime - datetime.timedelta(days=90)
+        stale_rating_cutoff = match.start_timestamp - datetime.timedelta(days=90)
         for team in [match.team1, match.team2]:
             try:
                 rating = TeamRating.objects.get(team=team)
                 if rating.rating_date < stale_rating_cutoff:
                     raise StaleRatingWarning
             except (ObjectDoesNotExist, StaleRatingWarning):
-                self._continuity_check(team, match.match_datetime)
+                self._continuity_check(team, match.start_timestamp)
         t1_rating = TeamRating.objects.get(team=match.team1)
         t2_rating = TeamRating.objects.get(team=match.team2)
 
-        if match.match_datetime <= t1_rating.rating_date:
+        if match.start_timestamp <= t1_rating.rating_date:
             print('E', end='', flush=True) # Team rating newer than match. We should never see this.
             return
         if match.team1_score == 0 and match.team2_score == 0:
@@ -104,8 +104,8 @@ class Command(BaseCommand):
         Prediction.objects.create(user=self.elo_user, match=match, predicted_t1_win_prob=prediction, brier=brier)
 
         t1_adj, t2_adj = self.elo_model.process_outcome(t1_rating.rating, t2_rating.rating, match.team1_score, match.team2_score)
-        TeamRating.objects.filter(team=match.team1).update(rating=t1_rating.rating + t1_adj, rating_date=match.match_datetime)
-        TeamRating.objects.filter(team=match.team2).update(rating=t2_rating.rating + t2_adj, rating_date=match.match_datetime)
+        TeamRating.objects.filter(team=match.team1).update(rating=t1_rating.rating + t1_adj, rating_date=match.start_timestamp)
+        TeamRating.objects.filter(team=match.team2).update(rating=t2_rating.rating + t2_adj, rating_date=match.start_timestamp)
         Match.objects.filter(pk=match.pk).update(elo_processed=True)
         print('.', end='', flush=True)
 
@@ -118,7 +118,7 @@ F : future match
 N : no results yet
 '''
         print(docstring)
-        ordered_matches = Match.objects.all().order_by('match_datetime')
+        ordered_matches = Match.objects.all().order_by('start_timestamp')
         for match in ordered_matches.iterator():
             self._process_match(match)
         print(f'\nProcessed {ordered_matches.count()} matches')
