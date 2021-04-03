@@ -75,7 +75,7 @@ class Command(BaseCommand):
             return
 
         # Return if match has not completed yet
-        if min(int(t1s), int(t2s)) > 0 and max(int(t1s), int(t2s)) < int(ceil(float(bestof)/2)):
+        if 0 < max(int(t1s), int(t2s)) < int(ceil(float(bestof)/2)):
             print('O', end='', flush=True) # O for Ongoing
             return
 
