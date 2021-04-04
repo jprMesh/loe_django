@@ -1,3 +1,11 @@
+# Recalculate Elo and LOE predictions
+from ratings.models import *
+Match.objects.all().update(elo_processed=False)
+TeamRating.objects.all().delete()
+Prediction.objects.filter(user__username='LeagueOfElo').delete()
+manage.py populate_matches
+manage.py calculate_elo
+
 # Serialization testing
 from ratings.models import *
 from ratings.serializers import *
