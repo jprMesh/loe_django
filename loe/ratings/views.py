@@ -18,12 +18,17 @@ def index(request):
             .filter(start_timestamp__gte=timezone.now(), start_timestamp__lte=timezone.now() + datetime.timedelta(days=14))
             .order_by('start_timestamp')
             .values('pk', 'start_timestamp'))
+    recent_matches = list(Match.objects
+            .filter(start_timestamp__lte=timezone.now())
+            .order_by('-start_timestamp')
+            .values('pk', 'start_timestamp'))[:20]
     er = EloRanking()
     active_teams = er.get(request)
 
     template = loader.get_template('ratings/index.html')
     context = {
         'matches': upcoming_matches,
+        'recent_matches': recent_matches,
         'teams': active_teams,
     }
     return HttpResponse(template.render(context, request))

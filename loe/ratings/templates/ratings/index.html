@@ -6,8 +6,8 @@
 {% block title %}LOE Upcoming Matches{% endblock %}
 
 {% block content %}
-<div id="content">
-<div id="upcoming_match_table">
+<div class="row">
+<div class="section_div col">
   <h3 class="section_header">Upcoming Matches</h3>
   <table class="match_table">
   {% for match in matches %}
@@ -16,7 +16,16 @@
   </table>
 </div>
 
-<div id="elo_ranking_table">
+<div class="section_div col">
+  <h3 class="section_header">Recent Matches</h3>
+  <table class="match_table">
+  {% for match in recent_matches %}
+    {% prediction_tr user match.pk user.get_username %}
+  {% endfor %}
+  </table>
+</div>
+
+<div class="section_div col">
   <h3 class="section_header">Team Ratings</h3>
   <table>
     <tr>

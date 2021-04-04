@@ -43,10 +43,16 @@ th, td {
     padding: 0 1.5rem 0 0.1rem;
 }
 
-.section_div {
-    position: relative;
-    float: left;
+.row {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 5%;
 }
+
+.col {
+    margin-bottom: 40px;
+}
+
 
 .section_header {
     margin-bottom: 0.625rem;
@@ -83,15 +89,5 @@ th, td {
     flex: auto;
 }
 #logout_button > a, #signup_button > a {
-    float: right;
-}
-
-#upcoming_match_table {
-    position: relative;
-    float: left;
-}
-
-#elo_ranking_table {
-    position: relative;
     float: right;
 }
