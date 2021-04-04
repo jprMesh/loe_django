@@ -5,8 +5,8 @@ from ratings.models import Team
 
 COMMANDS_PATH = Path(__file__).resolve().parent
 TEAMINFO = namedtuple('TeamInfo',
-        ['region', 'continuity_id', 'short_name', 'team_name', 'color1', 'color2', 'logo_img'],
-        defaults=['#868686', '#868686', ''])
+        ['region', 'continuity_id', 'short_name', 'team_name', 'color1', 'logo_img', 'color2'],
+        defaults=['#868686', '', '#868686'])
 
 
 class Command(BaseCommand):
