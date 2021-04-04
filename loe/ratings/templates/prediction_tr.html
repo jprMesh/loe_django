@@ -10,10 +10,14 @@
     <td><img class="match_logo {% if match_complete and match.team1_score > match.team2_score %} losing_team {% endif %}"
           src="{% static 'team_logos/'|add:match.team2__logo_img %}"
           title="{{ match.team2__team_name }}" alt="{{ match.team2__short_name }}"></td>
-    <td><input type="range" class="slider" name="predicted_t1_win_prob" min="0" max="100"
-          value="{% if prediction %}{{ prediction }}{% else %}50{% endif %}"
-          onchange="sliderChange(this)"
-          {% if match_started %} disabled="true" {% endif %}></td>
+    {% if match_started and not prediction %}
+      <td class="match_info_td">No Prediction</td>
+    {% else %}
+      <td><input type="range" class="slider" name="predicted_t1_win_prob" min="0" max="100"
+            value="{% if prediction %}{{ prediction }}{% else %}50{% endif %}"
+            onchange="sliderChange(this)"
+            {% if match_started %} disabled="true" {% endif %}></td>
+    {% endif %}
     <td><img class="match_logo {% if match_complete and match.team1_score < match.team2_score %} losing_team {% endif %}"
           src="{% static 'team_logos/'|add:match.team1__logo_img %}"
           title="{{ match.team1__team_name }}" alt="{{ match.team1__short_name }}"></td>

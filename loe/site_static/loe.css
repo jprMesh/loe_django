@@ -22,6 +22,10 @@ th, td {
     padding: 0 0.5rem;
 }
 
+td img {
+    vertical-align: text-top;
+}
+
 .site_wrapper {
     max-width: 1024px;
     margin: auto;
