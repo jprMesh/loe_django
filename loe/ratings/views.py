@@ -16,12 +16,10 @@ from .serializers import PredictionSerializer
 def index(request):
     upcoming_matches = list(Match.objects
             .filter(start_timestamp__gte=timezone.now(), start_timestamp__lte=timezone.now() + datetime.timedelta(days=14))
-            .order_by('start_timestamp')
-            .values('pk', 'start_timestamp'))
+            .order_by('start_timestamp'))
     recent_matches = list(Match.objects
             .filter(start_timestamp__lte=timezone.now())
-            .order_by('-start_timestamp')
-            .values('pk', 'start_timestamp'))[:20]
+            .order_by('-start_timestamp'))[:20]
     er = EloRanking()
     active_teams = er.get(request)
 

@@ -2,6 +2,7 @@
 
 {% load rest_framework %}
 {% load template_extras %}
+{% load humanize %}
 
 {% block title %}LOE Upcoming Matches{% endblock %}
 
@@ -11,6 +12,9 @@
   <h3 class="section_header">Upcoming Matches</h3>
   <table class="match_table">
   {% for match in matches %}
+    {% ifchanged match.start_timestamp|naturalday %}
+      <tr><td class="table_separator_row" colspan="4">{{ match.start_timestamp|naturalday:"l M j"|title }}</td></tr>
+    {% endifchanged %}
     {% prediction_tr user match.pk user.get_username %}
   {% endfor %}
   </table>
@@ -20,6 +24,9 @@
   <h3 class="section_header">Recent Matches</h3>
   <table class="match_table">
   {% for match in recent_matches %}
+    {% ifchanged match.start_timestamp|naturalday %}
+      <tr><td class="table_separator_row" colspan="4">{{ match.start_timestamp|naturalday:"l M j"|title }}</td></tr>
+    {% endifchanged %}
     {% prediction_tr user match.pk user.get_username %}
   {% endfor %}
   </table>

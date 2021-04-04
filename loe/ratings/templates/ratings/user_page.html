@@ -5,31 +5,33 @@
 {% block title %}LOE User Profile{% endblock %}
 
 {% block content %}
-<div class="section_div left_section">
-<h3 class="section_header">Match Predictions</h3>
-<table class="match_table">
-  <tr>
-    <th colspan="4">Upcoming Predictions</th>
-  </tr>
-  {% if future_matches %}
-    {% for pred in future_matches %}
-      {% prediction_tr user pred.match__pk prediction_user %}
-    {% endfor %}
-  {% else %}
-    <tr><td colspan="4">No Upcoming Predictions</td></tr>
-  {% endif %}
-  <tr>
-    <th colspan="4">Past Predictions</th>
-    <th>AR</th>
-  </tr>
-  {% for pred in past_matches %}
-    {% prediction_tr user pred.match__pk prediction_user %}
-  {% endfor %}
-</table>
-</div>
+<div class="row">
+  <div class="section_div col">
+    <h3 class="section_header">Match Predictions</h3>
+    <table class="match_table">
+      <tr>
+        <th colspan="4">Upcoming Predictions</th>
+      </tr>
+      {% if future_matches %}
+        {% for pred in future_matches %}
+          {% prediction_tr user pred.match__pk prediction_user %}
+        {% endfor %}
+      {% else %}
+        <tr><td colspan="4">No Upcoming Predictions</td></tr>
+      {% endif %}
+      <tr class="table_sep_header">
+        <th colspan="4">Past Predictions</th>
+        <th>AR</th>
+      </tr>
+      {% for pred in past_matches %}
+        {% prediction_tr user pred.match__pk prediction_user %}
+      {% endfor %}
+    </table>
+  </div>
 
-<div class="section_div right_section">
-<h3 class="section_header">Stats</h3>
-  <p>Average Analyst Rating</p>
+  <div class="section_div col">
+    <h3 class="section_header">Stats</h3>
+    <p>Coming Soon</p>
+  </div>
 </div>
 {% endblock %}

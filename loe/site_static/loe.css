@@ -67,6 +67,15 @@ td img {
     padding: 0;
 }
 
+.match_table .table_separator_row {
+    padding-top: 0.2rem;
+    font-size: 0.9rem;
+}
+
+.table_sep_header > th {
+    padding-top: 0.2rem;
+}
+
 .match_table .match_info_td {
     padding: 0 0.5rem;
     font-size: 0.8rem;
