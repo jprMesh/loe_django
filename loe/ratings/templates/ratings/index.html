@@ -11,7 +11,7 @@
   <h3 class="section_header">Upcoming Matches</h3>
   <table class="match_table">
   {% for match in matches %}
-    {% prediction_tr match.pk user %}
+    {% prediction_tr user match.pk user.get_username %}
   {% endfor %}
   </table>
 </div>
@@ -34,23 +34,4 @@
   </table>
 </div>
 </div>
-{% endblock %}
-
-{% block script %}
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script type="text/javascript">
-
-function sliderChange(slider) {
-  $(slider).parent().parent().find(".submit_box").prop("indeterminate", true);
-}
-
-function submitPrediction(checkbox) {
-  $.post("{% url 'submit_prediction' %}", $(checkbox.form).serialize(), function(data) {
-    $(checkbox).prop("checked", true);
-    console.log(data.status);
-    console.log(data.message);
-  });
-}
-
-</script>
 {% endblock %}

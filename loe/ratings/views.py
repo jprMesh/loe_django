@@ -40,17 +40,16 @@ def leaderboard(request):
     }
     return HttpResponse(template.render(context, request))
 
-def user_page(request, username):
-    user_predictions = Prediction.objects.filter(user__username=username)
-    prior_pred = (user_predictions.filter(match__start_timestamp__lte=timezone.now())
-            .values('match__pk', 'match__region', 'match__match_info', 'match__team1__short_name', 'match__team2__short_name', 'predicted_t1_win_prob', 'brier')
-            .order_by('-match__start_timestamp'))[:50]
-    future_pred = (user_predictions.filter(match__start_timestamp__gte=timezone.now())
-            .values('match__pk', 'match__region', 'match__match_info', 'match__team1__short_name', 'match__team2__short_name', 'predicted_t1_win_prob')
-            .order_by('-match__start_timestamp'))
+def user_page(request, prediction_user):
+    user_predictions = Prediction.objects.filter(user__username=prediction_user)
+    past_matches = (user_predictions.filter(match__start_timestamp__lte=timezone.now())
+            .values('match__pk').order_by('-match__start_timestamp'))[:50]
+    future_matches = (user_predictions.filter(match__start_timestamp__gte=timezone.now())
+            .values('match__pk').order_by('-match__start_timestamp'))
     context = {
-        'prior_preds': prior_pred,
-        'future_preds': future_pred
+        'prediction_user': prediction_user,
+        'past_matches': past_matches,
+        'future_matches': future_matches
     }
     template = loader.get_template('ratings/user_page.html')
     return HttpResponse(template.render(context, request))
@@ -71,24 +70,24 @@ class EloRanking(APIView):
 
 class Predictions(APIView):
     def post(self, request):
-        try:
-            match = Match.objects.get(pk=request.data['match'])
-        except Match.DoesNotExist:
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
-        User = get_user_model()
-        try:
-            user = User.objects.get(username=request.data['username'])
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
-        predicted_t1_win_prob = float(request.data['predicted_t1_win_prob']) / 100.0
+        def validate(request):
+            if not request.user.is_authenticated or request.user.username != request.data['username']:
+                return False, 'invalid_user'
+            match = Match.objects.filter(pk=str(request.data['match']))
+            if not match.exists():
+                return False, 'invalid_match'
+            if timezone.now() > match[0].start_timestamp - datetime.timedelta(hours=1):
+                return False, 'match_started'
+            if not 0 <= int(request.data['predicted_t1_win_prob']) <= 100:
+                return False, 'invalid_prediction'
+            return True, None
 
-        if timezone.now() > match.start_timestamp - datetime.timedelta(hours=1):
-            resp = {'deny_reason': 'match_started'}
-            return Response(resp, status=status.HTTP_406_NOT_ACCEPTABLE)
+        valid, reason = validate(request)
+        if not valid:
+            return Response(reason, status=status.HTTP_400_BAD_REQUEST)
 
-        pred, created = Prediction.objects.update_or_create(user=user, match=match, defaults={'predicted_t1_win_prob': predicted_t1_win_prob})
+        match = Match.objects.get(pk=str(request.data['match']))
+        user_prediction = float(request.data['predicted_t1_win_prob']) / 100.0
+        pred, _ = Prediction.objects.update_or_create(user=request.user, match=match, defaults={'predicted_t1_win_prob': user_prediction})
         print(pred)
-        if created:
-            return Response(status=status.HTTP_201_CREATED)
-        else:
-            return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_200_OK)

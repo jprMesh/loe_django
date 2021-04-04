@@ -12,16 +12,16 @@
     <th colspan="4"> Match Info </th>
     <th> Analyst Rating </th>
   </tr>
-  {% if future_preds %}
-    {% for pred in future_preds %}
-      {% prediction_tr pred.match__pk user %}
+  {% if future_matches %}
+    {% for pred in future_matches %}
+      {% prediction_tr user pred.match__pk prediction_user %}
     {% endfor %}
   {% else %}
     <tr><td colspan="4">No Upcoming Predictions</td></tr>
   {% endif %}
   <tr><th colspan="2">Past Predictions</th></tr>
-  {% for pred in prior_preds %}
-    {% prediction_tr pred.match__pk user %}
+  {% for pred in past_matches %}
+    {% prediction_tr user pred.match__pk prediction_user %}
   {% endfor %}
 </table>
 </div>

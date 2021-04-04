@@ -17,7 +17,7 @@
     <td><img class="match_logo {% if match_complete and match.team1_score < match.team2_score %} losing_team {% endif %}"
           src="{% static 'team_logos/'|add:match.team1__logo_img %}"
           title="{{ match.team1__team_name }}" alt="{{ match.team1__short_name }}"></td>
-  {% if user and not match_started %}
+  {% if user.is_authenticated and user.get_username == prediction_user and not match_started %}
     <input type="hidden" name="username" value="{{ user.get_username }}">
     <td><input class="submit_box" type="checkbox" onchange="submitPrediction(this)" {% if prediction %}checked{% endif %}></td>
   {% else %}

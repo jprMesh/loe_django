@@ -7,8 +7,21 @@
   <style> @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap'); </style>
 
   {% load static %}
-  <link rel="stylesheet" type="text/css" href="{% static 'loe.css' %}">
   <title>{% block title %}League of Elo{% endblock %}</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'loe.css' %}">
+
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script type="text/javascript">
+function sliderChange(slider) {
+  $(slider).parent().parent().find(".submit_box").prop("indeterminate", true);
+}
+
+function submitPrediction(checkbox) {
+  $(checkbox).prop("checked", true);
+  $.post("{% url 'submit_prediction' %}", $(checkbox.form).serialize(), function(data, status) {
+  });
+}
+  </script>
   {% block script %} {% endblock %}
 </head>
 <body>

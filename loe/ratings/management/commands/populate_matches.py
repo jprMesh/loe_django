@@ -49,7 +49,7 @@ class Command(BaseCommand):
             try:
                 team = Team.objects.get(short_name=team_name)
             except ObjectDoesNotExist:
-                print(f'UNKNOWN TEAM: {team_name}')
+                print(f'\nUNKNOWN TEAM: {team_name}', end='')
                 return ''
         return team
 
@@ -88,7 +88,7 @@ class Command(BaseCommand):
                 region=region,
                 defaults={'team1_score': t1s, 'team2_score': t2s, 'best_of': bestof})
         self._update_briers(match)
-        print(match)
+        print(f'\n{match}', end='')
         self.new_updated_matches += 1
 
     def _insert_season_reset(self, sdate, reset_type):
