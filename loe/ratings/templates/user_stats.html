@@ -1,25 +1,33 @@
-<table>
+<table class="stats_table">
   <tr><th></th>
     <th>{{ page_user }}</th>
-  {% if user.is_authenticated and user.get_username != page_user %}
+  {% if active_user.is_authenticated and active_user.get_username != page_user %}
     <th>You</th>
   {% endif %}
     <th>LeagueOfElo</th>
   </tr>
 
-  <tr><th>LAR</th>
-    <td class="stat_box">{{ page_user_lar }}</td>
-  {% if user.is_authenticated and user.get_username != page_user %}
-    <td class="stat_box">{{ active_user_lar }}</td>
+  <tr><th class="stat_name">LAR</th>
+    <td class="stat_box">{{ page_user_stats.lar }}</td>
+  {% if active_user.is_authenticated and active_user.get_username != page_user %}
+    <td class="stat_box">{{ active_user_stats.lar }}</td>
   {% endif %}
-    <td class="stat_box">{{ loe_lar }}</td>
+    <td class="stat_box">{{ loe_stats.lar }}</td>
   </tr>
 
-  <tr><th>AAR</th>
-    <td class="stat_box">{{ page_user_aar }}</td>
-  {% if user.is_authenticated and user.get_username != page_user %}
-    <td class="stat_box">{{ active_user_aar }}</td>
+  <tr><th class="stat_name">AAR</th>
+    <td class="stat_box">{{ page_user_stats.aar }}</td>
+  {% if active_user.is_authenticated and active_user.get_username != page_user %}
+    <td class="stat_box">{{ active_user_stats.aar }}</td>
   {% endif %}
-    <td class="stat_box">{{ loe_aar }}</td>
+    <td class="stat_box">{{ loe_stats.aar }}</td>
+  </tr>
+
+  <tr><th class="stat_name">Matches Predicted</th>
+    <td class="stat_box">{{ page_user_stats.num_predictions }}</td>
+  {% if active_user.is_authenticated and active_user.get_username != page_user %}
+    <td class="stat_box">{{ active_user_stats.num_predictions }}</td>
+  {% endif %}
+    <td class="stat_box">{{ loe_stats.num_predictions }}</td>
   </tr>
 </table>

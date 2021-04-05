@@ -130,6 +130,14 @@ input[type="checkbox" i] {
     filter: grayscale(100%);
 }
 
+.stats_table td, .stats_table th {
+    padding-bottom: 0.3rem;
+}
+
+.stat_name {
+    text-align: right;
+}
+
 .stat_box {
     text-align: right;
 }

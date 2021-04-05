@@ -35,31 +35,29 @@ def prediction_tr(active_user, match_pk, prediction_user):
 @register.inclusion_tag('user_stats.html')
 def user_stats(active_user, page_user):
     context = dict()
-    context['user'] = active_user
+    context['active_user'] = active_user
     context['page_user'] = page_user
 
-    def get_lar(username):
+    def get_stats(username, stats_dict):
         '''Return Average Analyst Rating and Lifetime Analyst Rating'''
         avg_brier = Prediction.objects.filter(user__username=username).exclude(brier__isnull=True).values('user__username').annotate(avg_brier=Avg('brier'))
         num_predictions = Prediction.objects.filter(user__username=username).exclude(brier__isnull=True).count()
+        stats_dict['num_predictions'] = num_predictions
         if num_predictions == 0:
-            return None
-        aar = 100 - (200 * avg_brier[0]['avg_brier'])
+            return
         exp_mult = min(10.0, 10 * log10(num_predictions) / 3.0)
+        aar = 100 - (200 * avg_brier[0]['avg_brier'])
         lar = aar * exp_mult
-        return int(aar), int(lar)
+        stats_dict['aar'] = int(aar)
+        stats_dict['lar'] = int(lar)
 
-    ars = get_lar(page_user)
-    if ars:
-        context['page_user_aar'] = ars[0]
-        context['page_user_lar'] = ars[1]
+    context['loe_stats'] = dict()
+    context['page_user_stats'] = dict()
+    context['active_user_stats'] = dict()
+
+    get_stats('LeagueOfElo', context['loe_stats'])
+    get_stats(page_user, context['page_user_stats'])
     if active_user.is_authenticated:
-        ars = get_lar(active_user)
-        if ars:
-            context['active_user_aar'] = ars[0]
-            context['active_user_lar'] = ars[1]
-    loe_aar, loe_lar = get_lar('LeagueOfElo')
-    context['loe_aar'] = loe_aar
-    context['loe_lar'] = loe_lar
+        get_stats(active_user, context['active_user_stats'])
 
     return context
