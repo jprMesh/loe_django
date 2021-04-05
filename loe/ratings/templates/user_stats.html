@@ -1,0 +1,25 @@
+<table>
+  <tr><th></th>
+    <th>{{ page_user }}</th>
+  {% if user.is_authenticated and user.get_username != page_user %}
+    <th>You</th>
+  {% endif %}
+    <th>LeagueOfElo</th>
+  </tr>
+
+  <tr><th>LAR</th>
+    <td class="stat_box">{{ page_user_lar }}</td>
+  {% if user.is_authenticated and user.get_username != page_user %}
+    <td class="stat_box">{{ active_user_lar }}</td>
+  {% endif %}
+    <td class="stat_box">{{ loe_lar }}</td>
+  </tr>
+
+  <tr><th>AAR</th>
+    <td class="stat_box">{{ page_user_aar }}</td>
+  {% if user.is_authenticated and user.get_username != page_user %}
+    <td class="stat_box">{{ active_user_aar }}</td>
+  {% endif %}
+    <td class="stat_box">{{ loe_aar }}</td>
+  </tr>
+</table>

@@ -35,13 +35,14 @@ def index(request):
 def leaderboard(request):
     brier_leaderboard = Prediction.objects.exclude(brier__isnull=True).values('user__username').annotate(brier=Avg('brier')).order_by('brier')[:30]
     for entry in brier_leaderboard:
-        entry['analyst_rating'] = 100 - int(200 * entry['brier'])
+        entry['analyst_rating'] = int(100 - (200 * entry['brier']))
         entry['brier'] = f"{entry['brier']:.4f}"
     template = loader.get_template('ratings/leaderboard.html')
     context = {
         'leaderboard': brier_leaderboard,
     }
     return HttpResponse(template.render(context, request))
+
 
 def user_page(request, prediction_user):
     user_predictions = Prediction.objects.filter(user__username=prediction_user)
