@@ -9,11 +9,11 @@
 {% block content %}
 <div class="row">
 <div class="section_div col">
-  <h3 class="section_header">Upcoming Matches</h3>
+  <h2 class="section_header">Upcoming Matches</h2>
   <table class="match_table">
   {% for match in matches %}
     {% ifchanged match.start_timestamp|naturalday %}
-      <tr><td class="table_separator_row" colspan="4">{{ match.start_timestamp|naturalday:"l M j"|title }}</td></tr>
+      <tr class="table_separator_row"><td colspan="4">{{ match.start_timestamp|naturalday:"l M j"|title }}</td></tr>
     {% endifchanged %}
     {% prediction_tr user match.pk user.get_username %}
   {% endfor %}
@@ -21,11 +21,15 @@
 </div>
 
 <div class="section_div col">
-  <h3 class="section_header">Recent Matches</h3>
+  <h2 class="section_header">Recent Matches</h2>
   <table class="match_table">
   {% for match in recent_matches %}
     {% ifchanged match.start_timestamp|naturalday %}
-      <tr><td class="table_separator_row" colspan="4">{{ match.start_timestamp|naturalday:"l M j"|title }}</td></tr>
+      <tr class="table_separator_row"><td colspan="4">{{ match.start_timestamp|naturalday:"l M j"|title }}</td>
+      {% if forloop.first %}
+        <td class="match_info_td"><strong>AR</strong></td>
+      {% endif %}
+      </tr>
     {% endifchanged %}
     {% prediction_tr user match.pk user.get_username %}
   {% endfor %}
@@ -33,7 +37,7 @@
 </div>
 
 <div class="section_div col">
-  <h3 class="section_header">Team Ratings</h3>
+  <h2 class="section_header">Team Ratings</h2>
   <table>
     <tr>
       <th> Rating </th>

@@ -2,6 +2,7 @@ body {
     background: #EEEEEE;
     font-family: sans-serif;
     margin: 0;
+    line-height: normal;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -9,13 +10,37 @@ h1, h2, h3, h4, h5, h6 {
     margin:0;
 }
 
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.4rem;
+}
+
+h3 {
+    font-size: 1.2rem;
+}
+
+h4 {
+    font-size: 1rem;
+}
+
 a {
     color: #222222;
     text-decoration: none;
 }
 
+a:hover{
+    text-decoration: none;
+}
+
 header {
     padding: 0.625rem;
+}
+
+table {
+    margin: auto;
 }
 
 th, td {
@@ -24,6 +49,10 @@ th, td {
 
 td img {
     vertical-align: text-top;
+}
+
+input[type="checkbox" i] {
+    margin: 3px 3px 3px 4px;
 }
 
 .site_wrapper {
@@ -67,13 +96,8 @@ td img {
 .row {
   display: grid;
   grid-auto-flow: column;
-  gap: 5%;
+  margin-bottom: 40px;
 }
-
-.col {
-    margin-bottom: 40px;
-}
-
 
 .section_header {
     margin-bottom: 0.625rem;
@@ -81,10 +105,11 @@ td img {
 }
 
 .match_table td {
-    padding: 0;
+    padding-left: 0;
+    padding-right: 0;
 }
 
-.match_table .table_separator_row {
+.match_table .table_separator_row>td {
     padding-top: 0.2rem;
     font-size: 0.9rem;
 }
@@ -94,7 +119,7 @@ td img {
 }
 
 .match_table .match_info_td {
-    padding: 0 0.5rem;
+    padding: 0 0.5rem 0.25rem;
     font-size: 0.8rem;
     text-align: center;
 }
@@ -116,7 +141,7 @@ td img {
 
 #username_login {
     flex: initial;
-    margin: auto;
+    margin-top: auto;
 }
 
 #logout_button, #signup_button {

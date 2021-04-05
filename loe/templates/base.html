@@ -8,9 +8,12 @@
 
   {% load static %}
   <title>{% block title %}League of Elo{% endblock %}</title>
-  <link rel="stylesheet" type="text/css" href="{% static 'loe.css' %}">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="{% static 'loe.css' %}" />
 
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
   <script type="text/javascript">
 function sliderChange(slider) {
   $(slider).parent().parent().find(".submit_box").prop("indeterminate", true);
@@ -19,6 +22,11 @@ function sliderChange(slider) {
 function submitPrediction(checkbox) {
   $(checkbox).prop("checked", true);
   $.post("{% url 'submit_prediction' %}", $(checkbox.form).serialize(), function(data, status) {
+    var that = $(checkbox);
+    that.tooltip('show');
+    setTimeout(function() {
+      that.tooltip('hide');
+    }, 1000);
   });
 }
   </script>
@@ -30,18 +38,18 @@ function submitPrediction(checkbox) {
       <div class="header_top site_wrapper">
         <h1 id='header_title'><a href="{% url 'index' %}">League of Elo</a></h1>
         {% if user.is_authenticated %}
-          <h4 id="username_login"><a href="{% url 'user_page' user.username %}">{{ user.username }}</a></h4>
+          <h3 id="username_login"><a href="{% url 'user_page' user.username %}">{{ user.username }}</a></h3>
         {% else %}
-          <h4 id="username_login"><a href="{% url 'login' %}">Log In</a></h4>
+          <h3 id="username_login"><a href="{% url 'login' %}">Log In</a></h3>
         {% endif %}
       </div>
       <div class="header_bottom site_wrapper">
-        <h4 class="navlink"><a href="{% url 'index' %}">Home</a></h4>
-        <h4 class="navlink"><a href="{% url 'leaderboard' %}">Leaderboard</a></h4>
+        <h3 class="navlink"><a href="{% url 'index' %}">Home</a></h3>
+        <h3 class="navlink"><a href="{% url 'leaderboard' %}">Leaderboard</a></h3>
         {% if user.is_authenticated %}
-          <h5 id="logout_button"><a href="{% url 'logout' %}">Log out</a></h5>
+          <h4 id="logout_button"><a href="{% url 'logout' %}">Log out</a></h4>
         {% else %}
-          <h5 id="signup_button"><a href="{% url 'signup' %}">Sign Up</a></h5>
+          <h4 id="signup_button"><a href="{% url 'signup' %}">Sign Up</a></h4>
         {% endif %}
       </div>
     </header>

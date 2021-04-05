@@ -23,7 +23,9 @@
           title="{{ match.team1__team_name }}" alt="{{ match.team1__short_name }}"></td>
   {% if user.is_authenticated and user.get_username == prediction_user and not match_started %}
     <input type="hidden" name="username" value="{{ user.get_username }}">
-    <td><input class="submit_box" type="checkbox" onchange="submitPrediction(this)" {% if prediction %}checked{% endif %}></td>
+    <td><input class="submit_box" type="checkbox" onchange="submitPrediction(this)"
+      title='Saved!' data-placement='right' data-trigger='manual'
+      {% if prediction %}checked{% endif %}></td>
   {% else %}
     <td class="match_info_td"><strong>{{ analyst_rating }}</strong></td>
   {% endif %}
