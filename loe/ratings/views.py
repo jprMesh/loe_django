@@ -4,6 +4,7 @@ from django.template import loader
 from django.db.models import Avg, Max
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from django.shortcuts import render
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
@@ -42,6 +43,10 @@ def leaderboard(request):
         'leaderboard': brier_leaderboard,
     }
     return HttpResponse(template.render(context, request))
+
+
+def about(request):
+    return render(request, 'ratings/about.html')
 
 
 def user_page(request, prediction_user):

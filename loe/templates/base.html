@@ -44,8 +44,8 @@ function submitPrediction(checkbox) {
         {% endif %}
       </div>
       <div class="header_bottom site_wrapper">
-        <h3 class="navlink"><a href="{% url 'index' %}">Home</a></h3>
         <h3 class="navlink"><a href="{% url 'leaderboard' %}">Leaderboard</a></h3>
+        <h3 class="navlink"><a href="{% url 'about' %}">About</a></h3>
         {% if user.is_authenticated %}
           <h4 id="logout_button"><a href="{% url 'logout' %}">Log out</a></h4>
         {% else %}
