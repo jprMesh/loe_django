@@ -19,7 +19,7 @@ def index(request):
             .order_by('start_timestamp'))
     recent_matches = list(Match.objects
             .filter(start_timestamp__lte=timezone.now())
-            .order_by('-start_timestamp'))[:20]
+            .order_by('-start_timestamp'))[:15]
     er = EloRanking()
     active_teams = er.get(request)
 
@@ -65,6 +65,7 @@ class EloRanking(APIView):
     def get(self, request):
         active_teams = (TeamRating.objects
                 .filter(team__is_active=True, rating_date__gte=(timezone.now() - datetime.timedelta(days=90)))
+                .exclude(team__region='INT')
                 .values('rating', 'team__short_name', 'team__region')
                 .order_by('-rating'))
         for team in active_teams:

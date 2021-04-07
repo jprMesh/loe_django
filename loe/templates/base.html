@@ -53,13 +53,17 @@ function submitPrediction(checkbox) {
         {% endif %}
       </div>
     </header>
-    <div class="body site_wrapper">
-    {% block content %}
-    {% endblock %}
+    <div class="body_wrapper">
+      <div class="site_wrapper">
+        {% block content %}
+        {% endblock %}
+      </div>
     </div>
-    <div class="footer site_wrapper">
-      <span>© 2021 <a href="https://github.com/jprmesh">jprMesh</a></span>
-    </div>
+    <footer>
+      <div class="footer site_wrapper">
+        <span>© 2021 <a href="https://github.com/jprmesh">jprMesh</a></span>
+      </div>
+    </footer>
   </main>
 </body>
 </html>

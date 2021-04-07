@@ -7,8 +7,13 @@
 {% block title %}LOE Upcoming Matches{% endblock %}
 
 {% block content %}
-<div class="row">
-<div class="section_div col">
+<div class="content_grid">
+<div class="section_div grid_item site_intro">
+  <p>Welcome to the League of Elo! We run an Elo model across the 4 major regions of professional League of Legends play. Our model predicts the outcome of each match by assigning a probability to each team winning. These predictions drive and are are driven by the ratings the model maintains of each team.</p>
+  <p>You can play along by creating an account and saving your own predictions for each match. The site will give you an Analyst Rating (AR) based on how accurate your predictions are, so you can compete with friends, strangers, and the titular Elo model itself! See the About page for more info on how AR and other stats are calculated, as well as more info about how the model works.</p>
+</div>
+
+<div class="section_div grid_item match_lists">
   <h2 class="section_header">Upcoming Matches</h2>
   <table class="match_table">
   {% for match in matches %}
@@ -20,7 +25,7 @@
   </table>
 </div>
 
-<div class="section_div col">
+<div class="section_div grid_item match_lists">
   <h2 class="section_header">Recent Matches</h2>
   <table class="match_table">
   {% for match in recent_matches %}
@@ -36,7 +41,7 @@
   </table>
 </div>
 
-<div class="section_div col">
+<div class="section_div grid_item team_ratings">
   <h2 class="section_header">Team Ratings</h2>
   <table>
     <tr>
