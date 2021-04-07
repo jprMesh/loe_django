@@ -30,7 +30,7 @@ DEBUG = True
 # Find out what the IP addresses are at run time
 # This is necessary because otherwise Gunicorn will reject the connections
 def ip_addresses():
-    ip_list = []
+    ip_list = ['leagueofelo.jprmesh.xyz']
     for interface in netifaces.interfaces():
         addrs = netifaces.ifaddresses(interface)
         for x in (netifaces.AF_INET, netifaces.AF_INET6):
