@@ -1,7 +1,8 @@
 body {
     background: #EEEEEE;
     margin: 0;
-    min-height:100%;
+    min-height: 100%;
+    min-width: 300px;
     font-family: sans-serif;
     font-size: 0.9rem;
     line-height: normal;
@@ -9,7 +10,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: sans-serif;
-    margin:0;
+    margin: 0;
 }
 
 h1 {
@@ -35,22 +36,6 @@ a {
 
 a:hover{
     text-decoration: none;
-}
-
-table {
-    margin: auto;
-}
-
-th, td {
-    padding: 0 0.5rem;
-}
-
-td img {
-    vertical-align: text-top;
-}
-
-input[type="checkbox" i] {
-    margin: 3px 3px 3px 4px;
 }
 
 .site_wrapper {
@@ -171,6 +156,22 @@ header, footer {
 /* end grid stuff */
 
 /* content styling */
+
+table {
+    margin: auto;
+}
+
+th, td {
+    padding: 0 0.5rem;
+}
+
+td img {
+    vertical-align: text-top;
+}
+
+input[type="checkbox" i] {
+    margin: 3px 3px 3px 4px;
+}
 
 .section_header {
     margin-bottom: 0.625rem;
