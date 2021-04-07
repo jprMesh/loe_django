@@ -37,10 +37,6 @@ a:hover{
     text-decoration: none;
 }
 
-header, footer {
-    padding: 0.625rem;
-}
-
 table {
     margin: auto;
 }
@@ -67,6 +63,12 @@ input[type="checkbox" i] {
     padding-right: 0.7rem;
 }
 
+/* header and footer */
+
+header, footer {
+    padding: 0.625rem;
+}
+
 .header_top {
     display: flex;
     border-bottom: 2px solid #3c3c3c;
@@ -81,6 +83,23 @@ input[type="checkbox" i] {
 
 .navlink {
     padding: 0 1.5rem 0 0.1rem;
+}
+
+#header_title {
+    flex: auto;
+    margin: 0;
+}
+
+#username_login {
+    flex: initial;
+    margin-top: auto;
+}
+
+#logout_button, #signup_button {
+    flex: auto;
+}
+#logout_button > a, #signup_button > a {
+    float: right;
 }
 
 .footer {
@@ -100,6 +119,8 @@ input[type="checkbox" i] {
     color: #008fd5;
 }
 
+/* end header and footer */
+
 /* grid stuff */
 
 .content_grid {
@@ -108,6 +129,10 @@ input[type="checkbox" i] {
   grid-template-columns: 1fr 1fr 0.75fr;
   grid-template-rows: auto auto;
   grid-auto-flow: column;
+}
+
+.grid_item {
+    margin-bottom: 1rem;
 }
 
 .site_intro {
@@ -123,7 +148,29 @@ input[type="checkbox" i] {
     grid-row: span 2;
 }
 
+@media (max-width: 927px) {
+    .content_grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+    }
+}
+
+@media (max-width: 580px) {
+    .content_grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+    }
+    .site_intro {
+        grid-column: span 1;
+    }
+    .team_ratings {
+        grid-row: span 1;
+    }
+}
+
 /* end grid stuff */
+
+/* content styling */
 
 .section_header {
     margin-bottom: 0.625rem;
@@ -168,19 +215,4 @@ input[type="checkbox" i] {
     text-align: right;
 }
 
-#header_title {
-    flex: auto;
-    margin: 0;
-}
-
-#username_login {
-    flex: initial;
-    margin-top: auto;
-}
-
-#logout_button, #signup_button {
-    flex: auto;
-}
-#logout_button > a, #signup_button > a {
-    float: right;
-}
+/* end content styling */
