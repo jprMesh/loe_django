@@ -44,7 +44,7 @@ def leaderboard(request):
         entry['adjusted_ar'] = f'{adjusted_ar:.2f}'
         entry['raw_ar'] = f'{raw_ar:.2f}'
         entry['num_preds'] = num_predictions
-    sorted_leaderboard = sorted(list(brier_leaderboard), key=lambda e: e['adjusted_ar'])
+    sorted_leaderboard = sorted(list(brier_leaderboard), key=lambda e: float(e['adjusted_ar']), reverse=True)
     template = loader.get_template('ratings/leaderboard.html')
     context = {
         'leaderboard': sorted_leaderboard,
