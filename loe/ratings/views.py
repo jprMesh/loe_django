@@ -1,4 +1,5 @@
 import datetime
+from math import log10
 from django.http import HttpResponse
 from django.template import loader
 from django.db.models import Avg, Max
@@ -34,13 +35,19 @@ def index(request):
 
 
 def leaderboard(request):
-    brier_leaderboard = Prediction.objects.exclude(brier__isnull=True).values('user__username').annotate(brier=Avg('brier')).order_by('brier')[:30]
+    brier_leaderboard = Prediction.objects.exclude(brier__isnull=True).values('user__username').annotate(avg_brier=Avg('brier')).order_by('avg_brier')
     for entry in brier_leaderboard:
-        entry['analyst_rating'] = int(100 - (200 * entry['brier']))
-        entry['brier'] = f"{entry['brier']:.4f}"
+        num_predictions = Prediction.objects.filter(user__username=entry['user__username']).exclude(brier__isnull=True).count()
+        exp_mult = min(3.0, log10(num_predictions))
+        raw_ar = 100 - (200 * entry['avg_brier'])
+        adjusted_ar = raw_ar * exp_mult
+        entry['adjusted_ar'] = f'{adjusted_ar:.2f}'
+        entry['raw_ar'] = f'{raw_ar:.2f}'
+        entry['num_preds'] = num_predictions
+    sorted_leaderboard = sorted(list(brier_leaderboard), key=lambda e: e['adjusted_ar'])
     template = loader.get_template('ratings/leaderboard.html')
     context = {
-        'leaderboard': brier_leaderboard,
+        'leaderboard': sorted_leaderboard,
     }
     return HttpResponse(template.render(context, request))
 

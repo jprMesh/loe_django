@@ -3,20 +3,27 @@
 {% block title %}LOE Leaderboard{% endblock %}
 
 {% block content %}
-<h2 class="section_header">Leaderboard</h2>
-<table>
-  <tr>
-    <th> Username </th>
-    <th> Lifetime Analyst Rating </th>
-    <th> Brier Score </th>
-  </tr>
-{% for user in leaderboard %}
-    <tr>
-      <td><a href="{% url 'user_page' user.user__username %}">{{ user.user__username }}</a></td>
-      <td>{{ user.analyst_rating }}</td>
-      <td>{{ user.brier }}</td>
-    </tr>
-{% endfor %}
-</table>
-
+<div class="content_grid">
+  <div class="leaderboard_grid_item grid_item">
+    <h2 class="section_header">Leaderboard</h2>
+    <table class="leaderboard_table">
+      <tr>
+        <th> Rank </th>
+        <th> Username </th>
+        <th> Adjusted AR </th>
+        <th> Raw AR </th>
+        <th> Games Predicted </th>
+      </tr>
+      {% for entry in leaderboard %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td><a href="{% url 'user_page' entry.user__username %}">{{ entry.user__username }}</a></td>
+          <td>{{ entry.adjusted_ar }}</td>
+          <td>{{ entry.raw_ar }}</td>
+          <td>{{ entry.num_preds }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
 {% endblock %}
