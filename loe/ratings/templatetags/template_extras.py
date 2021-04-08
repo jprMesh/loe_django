@@ -61,3 +61,21 @@ def user_stats(active_user, page_user):
         get_stats(active_user, context['active_user_stats'])
 
     return context
+
+
+@register.inclusion_tag('team_ratings.html')
+def team_ratings():
+    context = dict()
+
+    active_teams = (TeamRating.objects
+            .filter(team__is_active=True, rating_date__gte=(timezone.now() - timedelta(days=150)))
+            .exclude(team__region='INT')
+            .values('rating', 'team__short_name', 'team__region')
+            .order_by('-rating'))
+
+    for team in active_teams:
+        pass
+
+    context['active_teams'] = active_teams
+
+    return context

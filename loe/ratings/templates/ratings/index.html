@@ -43,20 +43,7 @@
 
 <div class="section_div grid_item team_ratings">
   <h2 class="section_header">Team Ratings</h2>
-  <table>
-    <tr>
-      <th> Rating </th>
-      <th> Team </th>
-      <th> Region </th>
-    </tr>
-  {% for team in teams %}
-      <tr>
-          <td>{{ team.rating }}</td>
-          <td>{{ team.team__short_name }}</td>
-          <td>{{ team.team__region }}</td>
-      </tr>
-  {% endfor %}
-  </table>
+  {% team_ratings %}
 </div>
 </div>
 {% endblock %}

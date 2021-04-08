@@ -1,0 +1,14 @@
+<table>
+  <tr>
+    <th> Rating </th>
+    <th> Team </th>
+    <th> Region </th>
+  </tr>
+{% for team in active_teams %}
+    <tr>
+        <td>{{ team.rating|floatformat:"0" }}</td>
+        <td>{{ team.team__short_name }}</td>
+        <td>{{ team.team__region }}</td>
+    </tr>
+{% endfor %}
+</table>

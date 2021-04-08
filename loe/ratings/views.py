@@ -22,16 +22,18 @@ def index(request):
     recent_matches = list(Match.objects
             .filter(start_timestamp__lte=timezone.now())
             .order_by('-start_timestamp'))[:15]
-    er = EloRanking()
-    active_teams = er.get(request)
+    active_teams = list(TeamRating.objects
+            .filter(team__is_active=True, rating_date__gte=(timezone.now() - datetime.timedelta(days=150)))
+            .exclude(team__region='INT')
+            .values('rating', 'team__short_name', 'team__region')
+            .order_by('-rating'))
 
-    template = loader.get_template('ratings/index.html')
     context = {
         'matches': upcoming_matches,
         'recent_matches': recent_matches,
         'teams': active_teams,
     }
-    return HttpResponse(template.render(context, request))
+    return render(request, 'ratings/index.html', context)
 
 
 def leaderboard(request):
@@ -45,11 +47,11 @@ def leaderboard(request):
         entry['raw_ar'] = f'{raw_ar:.2f}'
         entry['num_preds'] = num_predictions
     sorted_leaderboard = sorted(list(brier_leaderboard), key=lambda e: float(e['adjusted_ar']), reverse=True)
-    template = loader.get_template('ratings/leaderboard.html')
+
     context = {
         'leaderboard': sorted_leaderboard,
     }
-    return HttpResponse(template.render(context, request))
+    return render(request, 'ratings/leaderboard.html', context)
 
 
 def about(request):
@@ -62,28 +64,16 @@ def user_page(request, prediction_user):
             .values('match__pk').order_by('-match__start_timestamp'))[:50]
     future_matches = (user_predictions.filter(match__start_timestamp__gte=timezone.now())
             .values('match__pk').order_by('-match__start_timestamp'))
+
     context = {
         'prediction_user': prediction_user,
         'past_matches': past_matches,
         'future_matches': future_matches
     }
-    template = loader.get_template('ratings/user_page.html')
-    return HttpResponse(template.render(context, request))
+    return render(request, 'ratings/user_page.html', context)
 
 
 # REST API Views
-
-class EloRanking(APIView):
-    def get(self, request):
-        active_teams = (TeamRating.objects
-                .filter(team__is_active=True, rating_date__gte=(timezone.now() - datetime.timedelta(days=90)))
-                .exclude(team__region='INT')
-                .values('rating', 'team__short_name', 'team__region')
-                .order_by('-rating'))
-        for team in active_teams:
-            team['rating'] = int(team['rating'])
-        return active_teams
-
 
 class Predictions(APIView):
     def post(self, request):
