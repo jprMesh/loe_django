@@ -40,7 +40,7 @@ def leaderboard(request):
     brier_leaderboard = Prediction.objects.exclude(brier__isnull=True).values('user__username').annotate(avg_brier=Avg('brier')).order_by('avg_brier')
     for entry in brier_leaderboard:
         num_predictions = Prediction.objects.filter(user__username=entry['user__username']).exclude(brier__isnull=True).count()
-        exp_mult = min(3.0, log10(num_predictions))
+        exp_mult = min(1.0, log10(num_predictions) / 3.0 )
         raw_ar = 100 - (200 * entry['avg_brier'])
         adjusted_ar = raw_ar * exp_mult
         entry['adjusted_ar'] = f'{adjusted_ar:.2f}'

@@ -45,11 +45,12 @@ def user_stats(active_user, page_user):
         stats_dict['num_predictions'] = num_predictions
         if num_predictions == 0:
             return
-        exp_mult = min(3.0, log10(num_predictions))
-        aar = 100 - (200 * avg_brier[0]['avg_brier'])
-        lar = aar * exp_mult
-        stats_dict['aar'] = int(aar)
-        stats_dict['lar'] = int(lar)
+        exp_mult = min(1.0, log10(num_predictions) / 3.0 )
+        raw_ar = 100 - (200 * avg_brier[0]['avg_brier'])
+        adjusted_ar = raw_ar * exp_mult
+
+        stats_dict['raw_ar'] = raw_ar
+        stats_dict['adjusted_ar'] = adjusted_ar
 
     context['loe_stats'] = dict()
     context['page_user_stats'] = dict()

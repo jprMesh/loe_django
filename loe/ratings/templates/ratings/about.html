@@ -4,5 +4,19 @@
 
 {% block content %}
 <h2 class="section_header">About League of Elo</h2>
-<p>content. ghostwriter pls</p>
+<div class="content_grid about_grid">
+  <div class="about_content">
+    <h3 class="section_header">How to Play</h3>
+    <p>Move slider. Check box.</p>
+  </div>
+  <div class="about_content">
+    <h3 class="section_header">Elo Model</h3>
+    <p>The Elo Rating System aims to accurately predict match outcomes by maintaining a rating for each team. The model using those ratings to derive probabilities for each match outcome, and then depending on the actual match result, the model updates its ratings for the teams. The implementation used here initializes teams with a rating of 1500 and uses the formula</p>
+    <p> $$P(T_1) = \frac{1} {10^ {\frac{-(T_1 - T_2)} {400}} + 1}$$ </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?..."></script>
 {% endblock %}

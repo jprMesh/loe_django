@@ -7,20 +7,20 @@
     <th>LeagueOfElo</th>
   </tr>
 
-  <tr><th class="stat_name">LAR</th>
-    <td class="stat_box">{{ page_user_stats.lar }}</td>
+  <tr><th class="stat_name">Adjusted AR</th>
+    <td class="stat_box">{{ page_user_stats.adjusted_ar }}</td>
   {% if active_user.is_authenticated and active_user.get_username != page_user %}
-    <td class="stat_box">{{ active_user_stats.lar }}</td>
+    <td class="stat_box">{{ active_user_stats.adjusted_ar }}</td>
   {% endif %}
-    <td class="stat_box">{{ loe_stats.lar }}</td>
+    <td class="stat_box">{{ loe_stats.adjusted_ar }}</td>
   </tr>
 
-  <tr><th class="stat_name">AAR</th>
-    <td class="stat_box">{{ page_user_stats.aar }}</td>
+  <tr><th class="stat_name">Raw AR</th>
+    <td class="stat_box">{{ page_user_stats.raw_ar }}</td>
   {% if active_user.is_authenticated and active_user.get_username != page_user %}
-    <td class="stat_box">{{ active_user_stats.aar }}</td>
+    <td class="stat_box">{{ active_user_stats.raw_ar }}</td>
   {% endif %}
-    <td class="stat_box">{{ loe_stats.aar }}</td>
+    <td class="stat_box">{{ loe_stats.raw_ar }}</td>
   </tr>
 
   <tr><th class="stat_name">Matches Predicted</th>

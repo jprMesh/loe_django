@@ -152,6 +152,15 @@ header, footer {
     grid-column: span 3;
 }
 
+.about_grid {
+    grid-auto-flow: row;
+    grid-template-columns: 1fr 1fr;
+}
+
+.about_content {
+    grid-column: span 1.5;
+}
+
 @media (max-width: 927px) {
     .content_grid {
         grid-template-columns: 1fr 1fr;
@@ -169,6 +178,9 @@ header, footer {
     }
     .team_ratings {
         grid-row: span 1;
+    }
+    .about_content {
+        grid-template-columns: 1fr;
     }
 }
 
