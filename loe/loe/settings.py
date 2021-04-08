@@ -25,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG')
+DEBUG = config('DEBUG', cast=bool)
 
 # Security settings
-SESSION_COOKIE_SECURE = not config('DEBUG')
-CSRF_COOKIE_SECURE = not config('DEBUG')
-SECURE_SSL_REDIRECT = not config('DEBUG')
+SESSION_COOKIE_SECURE = not config('DEBUG', cast=bool)
+CSRF_COOKIE_SECURE = not config('DEBUG', cast=bool)
+#SECURE_SSL_REDIRECT = not config('DEBUG', cast=bool) need to figure out why this causes infinite redirects
 
 # Find out what the IP addresses are at run time
 # This is necessary because otherwise Gunicorn will reject the connections
