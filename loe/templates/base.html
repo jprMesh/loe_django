@@ -16,7 +16,26 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
   <script type="text/javascript">
 function sliderChange(slider) {
+  clearTimeout(sliderChange.hide_timeout);
   $(slider).parent().parent().find(".submit_box").prop("indeterminate", true);
+  var pred = slider.value;
+  var t1 = $(slider).parent().parent().find(".team1").attr("alt");
+  var t2 = $(slider).parent().parent().find(".team2").attr("alt");
+  if (pred > 50) {
+    pred_title = pred + "% " + t1;
+  } else if (pred < 50) {
+    pred_title = (100 - pred) + "% " + t2;
+  } else {
+    pred_title = "50/50";
+  }
+
+  $(slider).attr('title', pred_title);
+  $(slider).attr('data-original-title', pred_title);
+  var that = $(slider);
+  that.tooltip('show');
+  sliderChange.hide_timeout = setTimeout(function() {
+    that.tooltip('hide');
+  }, 1000);
 }
 
 function submitPrediction(checkbox) {
