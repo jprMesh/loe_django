@@ -13,10 +13,10 @@
     {% if match_started and not prediction %}
       <td class="match_info_td">No Prediction</td>
     {% else %}
-      <td><input type="range" class="slider" name="predicted_t1_win_prob" min="0" max="100"
+      <td><input type="range" class="slider prediction_slider" name="predicted_t1_win_prob" min="0" max="100"
             value="{% if prediction %}{{ prediction }}{% else %}50{% endif %}"
             oninput="sliderChange(this)"
-            title='x% y team' data-placement='bottom' data-trigger='manual'
+            title='50/50' data-placement='bottom' data-trigger='manual'
             {% if match_started %} disabled="true" {% endif %}></td>
     {% endif %}
     <td><img class="match_logo team1 {% if match_complete and match.team1_score < match.team2_score %} losing_team {% endif %}"
