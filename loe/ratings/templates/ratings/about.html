@@ -13,7 +13,7 @@
     <p>AR is a measure of how good your predictions are. AR rewards well-placed confidence, but punishes misplaced confidence heavily. <em>Adjusted AR</em> takes into account how experienced you are as an analyst, scaling up to eventually match your <em>Raw AR</em> as you make more and more predictions.</p>
     <p>Predicting a 50/50 tossup will always result in an AR of 50, where correct predictions can get up to 100 and incorrect predictions can go down to -100.</p>
     <h4>The Math</h4>
-    <p>AR is derived directly from <a href="https://en.wikipedia.org/wiki/Brier_score">Brier Score</a>, which is a measure of accuracy for probabilistic predictions. The Brier score for a prediction is the squared error between the predicted outcome and the actual outcome, and AR is calculated by scaling brier score to a range of ±100. In the formulas below, AR is Analyst Rating, BS is Brier Score, N is the number of matches predicted, and XP is the analyst experience factor:</p>
+    <p>AR is derived directly from <a href="https://en.wikipedia.org/wiki/Brier_score">Brier Score</a>, which is a measure of accuracy for probabilistic predictions. The Brier score for a prediction is the squared error between the predicted outcome and the actual outcome, and AR is calculated by scaling brier score to a range of ±100. In the formulas below, \(AR\) is Analyst Rating, \(BS\) is Brier Score, \(N\) is the number of matches predicted, and \(XP\) is the analyst experience factor:</p>
     <p> $$Adjusted AR = (100 - 200BS) * XP $$ </p>
     <p> $$BS = \frac{1}{N} \sum_{t=1}^N (p_t - o_t)^2$$ </p>
     <p> $$XP = min\left(3 , \frac{1}{3} log_{10} (N)\right)$$ </p>
