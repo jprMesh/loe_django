@@ -1,4 +1,4 @@
-<table>
+<table class="team_ratings_table">
   <tr>
     <th> Rating </th>
     <th> Team </th>
@@ -7,8 +7,8 @@
 {% for team in active_teams %}
     <tr>
         <td>{{ team.rating|floatformat:"0" }}</td>
-        <td>{{ team.team__short_name }}</td>
-        <td>{{ team.team__region }}</td>
+        <td style="background-color: {{ team.team__color1 }}">{{ team.team__short_name }}</td>
+        <td class="{{ team.team__region }}">{{ team.team__region }}</td>
     </tr>
 {% endfor %}
 </table>

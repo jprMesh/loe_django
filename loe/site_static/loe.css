@@ -119,7 +119,7 @@ header, footer {
     padding-right: 0.5rem;
 }
 
-.footer a {
+.footer a, .site_intro a, .about_content a {
     color: #008fd5;
 }
 
@@ -164,10 +164,6 @@ header, footer {
 .about_content {
     grid-column: span 1.5;
     padding: 0 1rem;
-}
-
-.about_content a {
-    color: #008fd5;
 }
 
 @media (max-width: 927px) {
@@ -254,6 +250,31 @@ input[type="checkbox" i] {
 
 .stat_box {
     text-align: right;
+}
+
+.team_ratings_table {
+    border-collapse: separate;
+    border-spacing: 0 0.15rem;
+}
+.team_ratings_table td:nth-child(2) {
+    border-radius: 0.3rem;
+    color: #EEEEEE;
+}
+.team_ratings_table td:nth-child(n+2) {
+    text-align: center;
+    font-weight: 600;
+}
+.team_ratings_table .KR {
+    color: #221D32;
+}
+.team_ratings_table .NA {
+    color: #6455F7;
+}
+.team_ratings_table .CN {
+    color: #EE0909;
+}
+.team_ratings_table .EU {
+    color: #00DEB9;
 }
 
 /* end content styling */
