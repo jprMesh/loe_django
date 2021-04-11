@@ -21,8 +21,13 @@
 
   <div class="about_content">
     <h2 class="section_header">Elo Model</h2>
-    <p>The Elo Rating System aims to accurately predict match outcomes by maintaining a rating for each team. The model using those ratings to derive probabilities for each match outcome, and then depending on the actual match result, the model updates its ratings for the teams. The implementation used here initializes teams with a rating of 1500 and uses the formula</p>
-    <p> $$P(T_1) = \frac{1} {10^ {\frac{-(T_1 - T_2)} {400}} + 1}$$ </p>
+    <p>The Elo Rating System aims to accurately predict match outcomes by maintaining a rating for each team. The model uses those ratings to derive probabilities for each match outcome, and then depending on the actual match result, the model updates its ratings for the teams.</p>
+    <p>The implementation used here initializes teams with a rating of 1500 and uses the following formula to predict match outcome, using Team 1's rating \(T_1\) and Team 2's rating \(T_2\).</p>
+    <p> $$ P(T_1) = \frac{1} {10^ {\frac{-(T_1 - T_2)} {400}} + 1} $$ </p>
+    <p>The prediction is expressed as a probability that one team beats the other, with the opposite being true for the other team in the match. After the match concludes, the model will calculate an adjustment value that winning team gains to its rating while the losing team loses to its. The adjustment value is calculated as:
+    $$ Adj = KM(1-P(T_W)) $$
+    where \(K\) is a fixed parameter in the model, \(M\) is the match score adjustment, and \(T_W\) is the winning team.</p>
+    <p>One other implementation detail here is between seasons, every team's rating regresses 25% toward the regional mean to adjust for any changes in roster, meta, coaching, etc. It also tells the model that there is more uncertainty at the beginning of each new season.</p>
   </div>
 </div>
 {% endblock %}
