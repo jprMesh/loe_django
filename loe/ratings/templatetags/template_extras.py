@@ -71,7 +71,7 @@ def team_ratings():
     active_teams = (TeamRating.objects
             .filter(team__is_active=True, rating_date__gte=(timezone.now() - timedelta(days=150)))
             .exclude(team__region='INT')
-            .values('rating', 'team__short_name', 'team__region', 'team__color1')
+            .values('rating', 'team__team_name', 'team__short_name', 'team__region', 'team__color1')
             .order_by('-rating'))
 
     for team in active_teams:
