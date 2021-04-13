@@ -43,6 +43,9 @@ class Command(BaseCommand):
             Prediction.objects.filter(pk=pred.pk).update(brier=brier)
 
     def _get_team(self, team_name):
+        if team_name == '' or team_name == 'TBD':
+            print('T', end='', flush=True)
+            return ''
         try:
             team = Team.objects.get(team_name=team_name)
         except ObjectDoesNotExist:
