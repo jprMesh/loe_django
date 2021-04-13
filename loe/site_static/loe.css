@@ -119,7 +119,7 @@ header, footer {
     padding-right: 0.5rem;
 }
 
-.footer a, .site_intro a, .about_content a {
+.footer a, p a {
     color: #008fd5;
 }
 
