@@ -37,6 +37,7 @@ def index(request):
 
 
 def leaderboard(request):
+    last_season_reset = Match.objects.filter(match_info='inter_season_reset', start_timestamp__lte=timezone.now()).order_by('-start_timestamp').first().start_timestamp
     brier_leaderboard = Prediction.objects.exclude(brier__isnull=True).values('user__username').annotate(avg_brier=Avg('brier')).order_by('avg_brier')
     for entry in brier_leaderboard:
         num_predictions = Prediction.objects.filter(user__username=entry['user__username']).exclude(brier__isnull=True).count()
@@ -48,6 +49,14 @@ def leaderboard(request):
         entry['num_preds'] = num_predictions
         up_down_correct = Prediction.objects.filter(user__username=entry['user__username'], brier__lt=0.25).count()
         entry['up_down'] = f'{100.0 * up_down_correct / num_predictions:.1f}%'
+
+        # Current Season stats
+        current_season = Prediction.objects.filter(match__start_timestamp__gte=last_season_reset, user__username=entry['user__username']).exclude(brier__isnull=True)
+        entry['curr_num_preds'] = current_season.count()
+        curr_raw_ar = 100 - (200 * current_season.values('user__username').annotate(avg_brier=Avg('brier'))[0]['avg_brier'])
+        entry['curr_raw_ar'] = f'{curr_raw_ar:.2f}'
+        curr_up_down_correct = current_season.filter(brier__lt=0.25).count()
+        entry['curr_up_down'] = f'{100.0 * curr_up_down_correct / current_season.count():.1f}%'
     sorted_leaderboard = sorted(list(brier_leaderboard), key=lambda e: float(e['adjusted_ar']), reverse=True)
 
     context = {

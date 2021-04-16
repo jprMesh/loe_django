@@ -280,7 +280,21 @@ input[type="checkbox" i] {
 /* end content styling */
 
 /* leaderboard style */
+.dataTables_wrapper {
+    margin: 0 0.8rem;
+}
 
+.super_th {
+    text-align: center;
+    border-left: 1px solid #3c3c3c;
+}
+.leaderboard_table th:nth-child(4),
+.leaderboard_table th:nth-child(7),
+.leaderboard_table td:nth-child(4),
+.leaderboard_table td:nth-child(7) {
+    border-left: 1px solid #3c3c3c;
+}
+/*
 .leaderboard_table {
     border-spacing: 0;
     border-collapse: collapse;
@@ -303,5 +317,5 @@ input[type="checkbox" i] {
     text-align: right;
     padding-right: 1rem;
 }
-
+*/
 /* end leaderboard style */
