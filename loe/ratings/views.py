@@ -46,6 +46,8 @@ def leaderboard(request):
         entry['adjusted_ar'] = f'{adjusted_ar:.2f}'
         entry['raw_ar'] = f'{raw_ar:.2f}'
         entry['num_preds'] = num_predictions
+        up_down_correct = Prediction.objects.filter(user__username=entry['user__username'], brier__lt=0.25).count()
+        entry['up_down'] = f'{100.0 * up_down_correct / num_predictions:.1f}%'
     sorted_leaderboard = sorted(list(brier_leaderboard), key=lambda e: float(e['adjusted_ar']), reverse=True)
 
     context = {
