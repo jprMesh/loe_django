@@ -47,3 +47,21 @@
 </div>
 </div>
 {% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+
+function sort_ratings(column) {
+  var ratings_tbody = $('.team_ratings_table > tbody');
+  ratings_tbody.find('tr').sort(function (a, b) {
+    var td_sel = 'td:nth('+column+')';
+    var sort_action = 1 - 2*($(td_sel, b).text() > $(td_sel, a).text());
+    if (column === 0) {
+      sort_action *= -1;
+    }
+    return sort_action;
+  }).appendTo(ratings_tbody);
+}
+
+</script>
+{% endblock %}

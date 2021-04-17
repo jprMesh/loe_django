@@ -1,14 +1,18 @@
 <table class="team_ratings_table">
-  <tr>
-    <th> Rating </th>
-    <th> Team </th>
-    <th> Region </th>
-  </tr>
-{% for team in active_teams %}
+  <thead>
     <tr>
-        <td>{{ team.rating|floatformat:"0" }}</td>
-        <td style="background-color: {{ team.team__color1 }}" title="{{ team.team__team_name }}">{{ team.team__short_name }}</td>
-        <td class="{{ team.team__region }}">{{ team.team__region }}</td>
+      <th onclick='sort_ratings(0)'><a href="#"> Rating </a></th>
+      <th> Team </th>
+      <th onclick='sort_ratings(2)'><a href="#"> Region </a></th>
     </tr>
-{% endfor %}
+  </thead>
+  <tbody>
+    {% for team in active_teams %}
+      <tr>
+          <td>{{ team.rating|floatformat:"0" }}</td>
+          <td style="background-color: {{ team.team__color1 }}" title="{{ team.team__team_name }}">{{ team.team__short_name }}</td>
+          <td class="{{ team.team__region }}">{{ team.team__region }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
 </table>
