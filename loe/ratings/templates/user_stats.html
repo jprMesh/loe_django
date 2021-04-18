@@ -1,33 +1,76 @@
-<table class="stats_table">
-  <tr><th></th>
-    <th>{{ page_user }}</th>
-  {% if active_user.is_authenticated and active_user.get_username != page_user %}
-    <th>You</th>
-  {% endif %}
-    <th>LeagueOfElo</th>
-  </tr>
+{% load template_extras %}
 
-  <tr><th class="stat_name">Adjusted AR</th>
-    <td class="stat_box">{{ page_user_stats.adjusted_ar }}</td>
-  {% if active_user.is_authenticated and active_user.get_username != page_user %}
-    <td class="stat_box">{{ active_user_stats.adjusted_ar }}</td>
-  {% endif %}
-    <td class="stat_box">{{ loe_stats.adjusted_ar }}</td>
-  </tr>
 
-  <tr><th class="stat_name">Raw AR</th>
-    <td class="stat_box">{{ page_user_stats.raw_ar }}</td>
-  {% if active_user.is_authenticated and active_user.get_username != page_user %}
-    <td class="stat_box">{{ active_user_stats.raw_ar }}</td>
-  {% endif %}
-    <td class="stat_box">{{ loe_stats.raw_ar }}</td>
-  </tr>
+<p>
+  <h3 class="stats_user_section">{{ page_user }} stats</h3>
+  <table class="stats_table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Raw AR</th>
+        <th>Up Down</th>
+        <th>Matches<br>Predicted</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for region in regions %}
+      <tr>
+        <th>{{ region }}</th>
+        <td>{{ page_user_stats.raw_ar|keyvalue:region }}</td>
+        <td>{{ page_user_stats.updown|keyvalue:region }}</td>
+        <td>{{ page_user_stats.num_pred|keyvalue:region }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</p>
 
-  <tr><th class="stat_name">Matches Predicted</th>
-    <td class="stat_box">{{ page_user_stats.num_predictions }}</td>
-  {% if active_user.is_authenticated and active_user.get_username != page_user %}
-    <td class="stat_box">{{ active_user_stats.num_predictions }}</td>
-  {% endif %}
-    <td class="stat_box">{{ loe_stats.num_predictions }}</td>
-  </tr>
-</table>
+{% if active_user.is_authenticated and active_user.get_username != page_user %}
+<p>
+  <h3 class="stats_user_section">Your stats</h3>
+  <table class="stats_table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Raw AR</th>
+        <th>Up Down</th>
+        <th>Matches<br>Predicted</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for region in regions %}
+      <tr>
+        <th>{{ region }}</th>
+        <td>{{ active_user_stats.raw_ar|keyvalue:region }}</td>
+        <td>{{ active_user_stats.updown|keyvalue:region }}</td>
+        <td>{{ active_user_stats.num_pred|keyvalue:region }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</p>
+{% endif %}
+
+<p>
+  <h3 class="stats_user_section">League of Elo stats</h3>
+  <table class="stats_table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Raw AR</th>
+        <th>Up Down</th>
+        <th>Matches<br>Predicted</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for region in regions %}
+      <tr>
+        <th>{{ region }}</th>
+        <td>{{ loe_stats.raw_ar|keyvalue:region }}</td>
+        <td>{{ loe_stats.updown|keyvalue:region }}</td>
+        <td>{{ loe_stats.num_pred|keyvalue:region }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</p>

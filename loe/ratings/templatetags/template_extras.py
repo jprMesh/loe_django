@@ -37,20 +37,32 @@ def user_stats(active_user, page_user):
     context = dict()
     context['active_user'] = active_user
     context['page_user'] = page_user
+    context['regions'] = ['Overall', 'NA', 'EU', 'KR', 'CN', 'INT']
 
-    def get_stats(username, stats_dict):
+    def get_stats(username, user_stats):
         '''Return Average Analyst Rating and Lifetime Analyst Rating'''
         avg_brier = Prediction.objects.filter(user__username=username).exclude(brier__isnull=True).values('user__username').annotate(avg_brier=Avg('brier'))
         num_predictions = Prediction.objects.filter(user__username=username).exclude(brier__isnull=True).count()
-        stats_dict['num_predictions'] = num_predictions
         if num_predictions == 0:
             return
         exp_mult = min(1.0, log10(num_predictions) / 3.0 )
         raw_ar = 100 - (200 * avg_brier[0]['avg_brier'])
         adjusted_ar = raw_ar * exp_mult
+        user_stats['adjusted_ar'] = adjusted_ar
 
-        stats_dict['raw_ar'] = raw_ar
-        stats_dict['adjusted_ar'] = adjusted_ar
+        user_stats['raw_ar'] = {'Overall': f'{raw_ar:.2f}'}
+        user_stats['updown'] = {'Overall': f'{100.0 * Prediction.objects.filter(user__username=username, brier__lt=0.25).count() / num_predictions:.1f}%'}
+        user_stats['num_pred'] = {'Overall': num_predictions}
+
+        predictions = Prediction.objects.filter(user__username=username).exclude(brier__isnull=True)
+        for region in context['regions'][1:]:
+            region_predictions = predictions.filter(match__region=region)
+            region_brier = region_predictions.values('user__username').annotate(avg_brier=Avg('brier'))
+            user_stats[region] = dict()
+            if region_brier.exists():
+                user_stats['raw_ar'][region] = f'{100 - (200 * region_brier[0]["avg_brier"]):.2f}'
+                user_stats['updown'][region] = f'{100.0 * region_predictions.filter(brier__lt=0.25).count() / region_predictions.count():.1f}%'
+                user_stats['num_pred'][region] = region_predictions.count()
 
     context['loe_stats'] = dict()
     context['page_user_stats'] = dict()
@@ -74,9 +86,10 @@ def team_ratings():
             .values('rating', 'team__team_name', 'team__short_name', 'team__region', 'team__color1')
             .order_by('-rating'))
 
-    for team in active_teams:
-        pass
-
     context['active_teams'] = active_teams
-
     return context
+
+
+@register.filter
+def keyvalue(dict, key):
+    return dict.get(key, 0)

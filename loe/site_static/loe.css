@@ -240,17 +240,33 @@ input[type="checkbox" i] {
     filter: grayscale(100%);
 }
 
+/* stats page */
 .stats_table td, .stats_table th {
-    padding-bottom: 0.3rem;
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
 }
 
-.stat_name {
-    text-align: right;
+.stats_table thead th {
+    border-bottom: 1px solid #3c3c3c;
 }
 
-.stat_box {
+.stats_table tbody th:nth-child(1) {
     text-align: right;
+    border-right: 1px solid #3c3c3c;
 }
+
+.stats_table td {
+    text-align: right;
+    border-top: 0.5px solid #CCC;
+    border-left: 0.5px solid #CCC;
+}
+
+.stats_user_section {
+    width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+}
+/*////////////*/
 
 .team_ratings_table {
     border-collapse: separate;
@@ -294,28 +310,5 @@ input[type="checkbox" i] {
 .leaderboard_table td:nth-child(7) {
     border-left: 1px solid #3c3c3c;
 }
-/*
-.leaderboard_table {
-    border-spacing: 0;
-    border-collapse: collapse;
-}
 
-.leaderboard_table th {
-    border-bottom: 1px solid #3c3c3c;
-    padding-bottom: 0.3rem;
-}
-
-.leaderboard_table td {
-    padding-top: 0.1rem;
-}
-
-.leaderboard_table td:nth-child(2) {
-    border-right: 1px solid #3c3c3c;
-}
-
-.leaderboard_table td:nth-child(n+3) {
-    text-align: right;
-    padding-right: 1rem;
-}
-*/
 /* end leaderboard style */
