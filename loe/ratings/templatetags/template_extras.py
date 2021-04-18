@@ -41,6 +41,10 @@ def user_stats(active_user, page_user):
 
     def get_stats(username, user_stats):
         '''Return Average Analyst Rating and Lifetime Analyst Rating'''
+        user_stats['raw_ar'] = dict()
+        user_stats['updown'] = dict()
+        user_stats['num_pred'] = dict()
+
         avg_brier = Prediction.objects.filter(user__username=username).exclude(brier__isnull=True).values('user__username').annotate(avg_brier=Avg('brier'))
         num_predictions = Prediction.objects.filter(user__username=username).exclude(brier__isnull=True).count()
         if num_predictions == 0:
@@ -50,9 +54,9 @@ def user_stats(active_user, page_user):
         adjusted_ar = raw_ar * exp_mult
         user_stats['adjusted_ar'] = adjusted_ar
 
-        user_stats['raw_ar'] = {'Overall': f'{raw_ar:.2f}'}
-        user_stats['updown'] = {'Overall': f'{100.0 * Prediction.objects.filter(user__username=username, brier__lt=0.25).count() / num_predictions:.1f}%'}
-        user_stats['num_pred'] = {'Overall': num_predictions}
+        user_stats['raw_ar']['Overall'] = f'{raw_ar:.2f}'
+        user_stats['updown']['Overall'] = f'{100.0 * Prediction.objects.filter(user__username=username, brier__lt=0.25).count() / num_predictions:.1f}%'
+        user_stats['num_pred']['Overall'] = num_predictions
 
         predictions = Prediction.objects.filter(user__username=username).exclude(brier__isnull=True)
         for region in context['regions'][1:]:
