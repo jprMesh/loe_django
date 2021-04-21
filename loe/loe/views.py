@@ -8,7 +8,7 @@ class Signup(View):
     def post(self, request):
         form = SignUpForm(request.POST)
         if not form.is_valid():
-            return self.get(request, retry=True)
+            return self.get(request, form=form, retry=True)
         form.save()
         username = form.cleaned_data.get('username')
         raw_password = form.cleaned_data.get('password1')
@@ -16,6 +16,7 @@ class Signup(View):
         login(request, user)
         return redirect('index')
 
-    def get(self, request, retry=False):
-        form = SignUpForm()
+    def get(self, request, form=None, retry=False):
+        if not form:
+            form = SignUpForm()
         return render(request, 'registration/signup.html', {'form': form, 'retry': retry})
