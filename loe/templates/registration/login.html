@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}LOE Login{% endblock %}
+{% block title %}League of Elo Login{% endblock %}
 
 {% block content %}
 <h3>Log In</h3>
@@ -9,4 +9,6 @@
   {{ form.as_p }}
   <button type="submit">Log In</button>
 </form>
+<p>&nbsp;</p>
+<p><a href="{% url 'password_reset' %}">Forgot password?</a></p>
 {% endblock %}
