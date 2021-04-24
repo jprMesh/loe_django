@@ -28,9 +28,12 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', cast=bool)
 
 # Security settings
-SESSION_COOKIE_SECURE = not config('DEBUG', cast=bool)
-CSRF_COOKIE_SECURE = not config('DEBUG', cast=bool)
-#SECURE_SSL_REDIRECT = not config('DEBUG', cast=bool) need to figure out why this causes infinite redirects
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 1000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+#SECURE_SSL_REDIRECT = True # This causes infinite redirects because of some proxy header thing
 
 # Find out what the IP addresses are at run time
 # This is necessary because otherwise Gunicorn will reject the connections
