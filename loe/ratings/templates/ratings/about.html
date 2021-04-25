@@ -22,7 +22,7 @@
   <div class="about_content">
     <h2 class="section_header">Elo Model</h2>
     <h3>Elo Basics</h3>
-    <p>The Elo Rating System aims to accurately predict match outcomes by maintaining a rating for each team. The model uses those ratings to derive probabilities for each match outcome, and then depending on the actual match result, the model updates its ratings for the teams.</p>
+    <p>The <a href="https://en.wikipedia.org/wiki/Elo_rating_system">Elo Rating System</a> aims to accurately predict match outcomes by maintaining a rating for each team. The model uses those ratings to derive probabilities for each match outcome, and then depending on the actual match result, the model updates its ratings for the teams.</p>
     <p>The model uses the following formula to predict the outcome of a match between Team 1 \(T_1\) and Team 2 \(T_2\) where the teams are represented by their current ratings. The prediction is expressed as a probability between 0 and 1 that \(T_1\) will win, with the opposite being true for \(T_2\).</p>
     <p> $$ P(T_1) = \frac{1} {10^ {\frac{-(T_1 - T_2)} {400}} + 1} $$ </p>
     <p>After the match concludes, the model will calculate an adjustment value that's used to update each team's rating:
@@ -38,6 +38,9 @@
     where the \(W\) is the winner's match score and \(L\) is the loser's match score. What this effectively means is that a team that wins a match 3-0 will gain <em>2.15x</em> what they would have otherwise gained for a single game victory. A 3-1 victory would yield a <em>1.33x</em> modifier, and a 3-2 victory yields a <em>0.70x</em> modifier. This compensates teams appropriately for being more or less dominant than expected.</p>
     <h4>Season Resets</h4>
     <p>Between seasons, every team's rating regresses 25% toward the regional mean to adjust for any changes in roster, meta, coaching, etc. This also tells the model that there is more uncertainty at the beginning of each new season.</p>
+
+    <h3>Data Sources</h3>
+    <p>All match data is graciously pulled from <a href="https://lol.fandom.com/wiki/League_of_Legends_Esports_Wiki">Leaguepedia</a> through their <a href="https://lol.fandom.com/wiki/Help:Leaguepedia_API">API</a>.</p>
   </div>
 </div>
 {% endblock %}
