@@ -112,6 +112,7 @@ header, footer {
     border-top: 2px solid #3c3c3c;
     width: 100%;
     font-size: 0.8rem;
+    display: flex;
 }
 
 .footer span {
@@ -122,6 +123,14 @@ header, footer {
 .footer a, p a {
     color: #008fd5;
 }
+
+.feedback {
+    flex: auto;
+}
+.footer > .feedback > a {
+    float: right;
+}
+
 
 /* end header and footer */
 
