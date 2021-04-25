@@ -1,19 +1,19 @@
 INT,000,    NUL,    Null Team
 
-NA, 001,    100,    100 Thieves,            #F82225,    100_logo.png
-NA, 002,    C9,     Cloud9,                 #2497D3,    C9_logo.png
-NA, 003,    DIG,    Dignitas,               #FCDE4B,    DIG_logo.png
+NA, 001,    100,    100 Thieves,            #F82225,    100_logo.webp
+NA, 002,    C9,     Cloud9,                 #2497D3,    C9_logo.webp
+NA, 003,    DIG,    Dignitas,               #FCDE4B,    DIG_logo.webp
 NA, 003,    CG,     Clutch Gaming,          #CC0133
 NA, 003,    APX,    Apex Gaming
-NA, 004,    CLG,    Counter Logic Gaming,   #00B4E5,    CLG_logo.png
-NA, 005,    EG,     Evil Geniuses.NA,       #0C121F,    EG_logo.png
+NA, 004,    CLG,    Counter Logic Gaming,   #00B4E5,    CLG_logo.webp
+NA, 005,    EG,     Evil Geniuses.NA,       #0C121F,    EG_logo.webp
 NA, 006,    FOX,    Echo Fox,               #E07026
-NA, 007,    FLY,    FlyQuest,               #13552B,    FLY_logo.png
-NA, 008,    GG,     Golden Guardians,       #F8CF30,    GG_logo.png
-NA, 009,    IMT,    Immortals,              #4DB0AA,    IMT_logo.png
+NA, 007,    FLY,    FlyQuest,               #13552B,    FLY_logo.webp
+NA, 008,    GG,     Golden Guardians,       #F8CF30,    GG_logo.webp
+NA, 009,    IMT,    Immortals,              #4DB0AA,    IMT_logo.webp
 NA, 010,    OPT,    OpTic Gaming,           #9CC538
-NA, 011,    TL,     Team Liquid,            #0C223F,    TL_logo.png
-NA, 012,    TSM,    Team SoloMid,           #252527,    TSM_logo.png
+NA, 011,    TL,     Team Liquid,            #0C223F,    TL_logo.webp
+NA, 012,    TSM,    Team SoloMid,           #252527,    TSM_logo.webp
 NA, 013,    NV,     Team EnVyUs,            #000000
 NA, 014,    P1,     Phoenix1,               #EE7D1C
 NA, 015,    NRG,    NRG Esports,            #D00080
@@ -26,18 +26,18 @@ NA, 021,    NME,    Enemy
 NA, 022,    WFX,    Winterfox
 NA, 023,    CST,    Team Coast
 
-EU, 100,    XL,     Excel Esports,          #DF4400,    XL_logo.png
-EU, 101,    S04,    FC Schalke 04 Esports,  #004B9C,    S04_logo.png
-EU, 102,    FNC,    Fnatic,                 #F19D33,    FNC_logo.png
-EU, 103,    G2,     G2 Esports,             #2E2E2E,    G2_logo.png
-EU, 104,    MSF,    Misfits Gaming,         #A60E29,    MSF_logo.png
-EU, 105,    AST,    Astralis,               #F9001C,    AST_logo.png
+EU, 100,    XL,     Excel Esports,          #DF4400,    XL_logo.webp
+EU, 101,    S04,    FC Schalke 04 Esports,  #004B9C,    S04_logo.webp
+EU, 102,    FNC,    Fnatic,                 #F19D33,    FNC_logo.webp
+EU, 103,    G2,     G2 Esports,             #2E2E2E,    G2_logo.webp
+EU, 104,    MSF,    Misfits Gaming,         #A60E29,    MSF_logo.webp
+EU, 105,    AST,    Astralis,               #F9001C,    AST_logo.webp
 EU, 105,    OG,     Origen,                 #141F72
-EU, 106,    RGE,    Rogue (European Team),  #2D97D3,    RGE_logo.png
-EU, 107,    SK,     SK Gaming,              #101B48,    SK_logo.png
-EU, 108,    MAD,    MAD Lions,              #DFB566,    MAD_logo.png
+EU, 106,    RGE,    Rogue (European Team),  #2D97D3,    RGE_logo.webp
+EU, 107,    SK,     SK Gaming,              #101B48,    SK_logo.webp
+EU, 108,    MAD,    MAD Lions,              #DFB566,    MAD_logo.webp
 EU, 108,    SPY,    Splyce,                 #EEBB09
-EU, 109,    VIT,    Team Vitality,          #FdC04B,    VIT_logo.png
+EU, 109,    VIT,    Team Vitality,          #FdC04B,    VIT_logo.webp
 EU, 110,    UOL,    Unicorns Of Love,       #E85F86
 EU, 111,    H2k,    H2k-Gaming,             #4B93B9
 EU, 112,    ROC,    Team ROCCAT,            #429ED6
@@ -49,23 +49,23 @@ EU, 117,    GMB,    Gambit Gaming
 EU, 118,    CW,     Copenhagen Wolves
 EU, 119,    MYM,    MeetYourMakers
 
-KR, 200,    T1,     T1,                     #DD0035,    T1_logo.png
+KR, 200,    T1,     T1,                     #DD0035,    T1_logo.webp
 KR, 200,    SKT,    SK Telecom T1
-KR, 201,    DRX,    DragonX,                #6588FE,    DRX_logo.png
+KR, 201,    DRX,    DragonX,                #6588FE,    DRX_logo.webp
 KR, 201,    KZ,     Kingzone DragonX
 KR, 201,    LZ,     Longzhu Gaming
 KR, 201,    IM,     Incredible Miracle
-KR, 202,    KT,     KT Rolster,             #E8112A,    KT_logo.png
-KR, 203,    GEN,    Gen.G,                  #A98E30,    GEN_logo.png
+KR, 202,    KT,     KT Rolster,             #E8112A,    KT_logo.webp
+KR, 203,    GEN,    Gen.G,                  #A98E30,    GEN_logo.webp
 KR, 203,    KSV,    KSV eSports
 KR, 203,    SSG,    Samsung Galaxy
-KR, 204,    HLE,    Hanwha Life Esports,    #EE7529,    HLE_logo.png
-KR, 205,    AF,     Afreeca Freecs,         #34ACEE,    AF_logo.png
+KR, 204,    HLE,    Hanwha Life Esports,    #EE7529,    HLE_logo.webp
+KR, 205,    AF,     Afreeca Freecs,         #34ACEE,    AF_logo.webp
 KR, 205,    RANC,   Rebels Anarchy
 KR, 205,    ANC,    Anarchy
-KR, 206,    DK,     DWG KIA,                #5A989D,    DK_logo.png
+KR, 206,    DK,     DWG KIA,                #5A989D,    DK_logo.webp
 KR, 206,    DWG,    DAMWON Gaming,          #5A989D
-KR, 207,    LSB,    Liiv SANDBOX,           #F8C32E,    LSB_logo.png
+KR, 207,    LSB,    Liiv SANDBOX,           #F8C32E,    LSB_logo.webp
 KR, 207,    SB,     SANDBOX Gaming,         #7E0121
 KR, 208,    GRF,    Griffin (Korean Team),  #D30C24
 KR, 209,    SP,     SeolHaeOne Prince,      #D3454A
@@ -83,34 +83,34 @@ KR, 214,    GET,    GE Tigers
 KR, 215,    E8W,    Ever8 Winners
 KR, 216,    CJ,     CJ Entus
 KR, 217,    SBENU,  SBENU Sonicboom
-KR, 218,    NS,     Nongshim RedForce,      #D81E2B,    NS_logo.png
+KR, 218,    NS,     Nongshim RedForce,      #D81E2B,    NS_logo.webp
 KR, 218,    TD,     Team Dynamics,          #2C73BD
-KR, 219,    BRO,    Fredit BRION,           #074926,    BRO_logo.png
+KR, 219,    BRO,    Fredit BRION,           #074926,    BRO_logo.webp
 
-CN, 300,    FPX,    FunPlus Phoenix,        #EB2B43,    FPX_logo.png
-CN, 301,    iG,     Invictus Gaming,        #010101,    iG_logo.png
-CN, 302,    TES,    Top Esports,            #F93B2C,    TES_logo.png
+CN, 300,    FPX,    FunPlus Phoenix,        #EB2B43,    FPX_logo.webp
+CN, 301,    iG,     Invictus Gaming,        #010101,    iG_logo.webp
+CN, 302,    TES,    Top Esports,            #F93B2C,    TES_logo.webp
 CN, 302,    TOP,    Topsports Gaming
-CN, 303,    JDG,    JD Gaming,              #D5061F,    JDG_logo.png
+CN, 303,    JDG,    JD Gaming,              #D5061F,    JDG_logo.webp
 CN, 303,    QG,     QG Reapers
-CN, 304,    ES,     eStar (Chinese Team),   #3B3E98,    ES_logo.png
-CN, 305,    EDG,    EDward Gaming,          #1C110C,    EDG_logo.png
-CN, 306,    RNG,    Royal Never Give Up,    #B2936C,    RNG_logo.png
-CN, 307,    WE,     Team WE,                #D91A2F,    WE_logo.png
-CN, 308,    RA,     Rare Atom,              #AF45C4,    RA_logo.png
+CN, 304,    ES,     eStar (Chinese Team),   #3B3E98,    ES_logo.webp
+CN, 305,    EDG,    EDward Gaming,          #1C110C,    EDG_logo.webp
+CN, 306,    RNG,    Royal Never Give Up,    #B2936C,    RNG_logo.webp
+CN, 307,    WE,     Team WE,                #D91A2F,    WE_logo.webp
+CN, 308,    RA,     Rare Atom,              #AF45C4,    RA_logo.webp
 CN, 308,    VG,     Vici Gaming,            #83F15D
-CN, 309,    BLG,    Bilibili Gaming,        #1B4D9B,    BLG_logo.png
+CN, 309,    BLG,    Bilibili Gaming,        #1B4D9B,    BLG_logo.webp
 CN, 309,    IM,     I May
-CN, 310,    SN,     Suning,                 #EA8325,    SN_logo.png
-CN, 311,    OMG,    Oh My God,              #000000,    OMG_logo.png
-CN, 312,    RW,     Rogue Warriors,         #D21544,    RW_logo.png
-CN, 313,    TT,     ThunderTalk Gaming,     #4CAAE3,    TT_logo.png
+CN, 310,    SN,     Suning,                 #EA8325,    SN_logo.webp
+CN, 311,    OMG,    Oh My God,              #000000,    OMG_logo.webp
+CN, 312,    RW,     Rogue Warriors,         #D21544,    RW_logo.webp
+CN, 313,    TT,     ThunderTalk Gaming,     #4CAAE3,    TT_logo.webp
 CN, 313,    DMO,    Dominus Esports,        #4E1DE0
 CN, 313,    SDG,    SinoDragon Gaming
-CN, 314,    LGD,    LGD Gaming,             #E8112A,    LGD_logo.png
-CN, 315,    LNG,    LNG Esports,            #3185F3,    LNG_logo.png
+CN, 314,    LGD,    LGD Gaming,             #E8112A,    LGD_logo.webp
+CN, 315,    LNG,    LNG Esports,            #3185F3,    LNG_logo.webp
 CN, 315,    SS,     Snake Esports
-CN, 316,    V5,     Victory Five,           #B49468,    V5_logo.png
+CN, 316,    V5,     Victory Five,           #B49468,    V5_logo.webp
 CN, 318,    NB,     Newbee,                 #429DD1
 CN, 318,    QG,     Qiao Gu Reapers
 CN, 319,    GT,     Game Talents
