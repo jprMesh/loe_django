@@ -1,9 +1,41 @@
+/* Color defs */
+
+:root {
+    --gold: #D1B254;
+    --dark-gold: #BFA34D;
+    --light-purple: #995CB8;
+    --dark-purple: #7D4C96;
+
+    --bg-color: #EEEEEE;
+    --primary-color: var(--dark-purple);
+    --primary-hover: var(--light-purple);
+    --secondary-color: var(--gold);
+    --text-color: #000000;
+
+    --kr-text: #221D32;
+    --table-bg: #FFFFFF;
+}
+
+[data-theme="dark"] {
+    --bg-color: #33333F;
+    --primary-color: var(--gold);
+    --primary-hover: var(--dark-gold);
+    --secondary-color: var(--light-purple);
+    --text-color: #ADBAC7;
+
+    --kr-text: #EFEFEF;
+    --table-bg: #55555F;
+}
+
+/* Style start */
+
 html {
     height: 100%;
 }
 
 body {
-    background: #EEEEEE;
+    background: var(--bg-color);
+    color: var(--text-color);
     margin: 0;
     height: 100%;
     min-width: 300px;
@@ -18,9 +50,30 @@ main {
     padding-bottom: 75px;
 }
 
+input {
+    background: transparent;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    color: var(--text-color);
+}
+
+button {
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--secondary-color);
+    border-radius: 5px;
+    padding: 0.3rem 0.4rem;
+}
+
+button:hover {
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-family: sans-serif;
     margin: 0;
+    color: var(--primary-color);
 }
 
 h1 {
@@ -49,11 +102,12 @@ p {
 }
 
 a {
-    color: #222222;
+    color: var(--primary-color);
     text-decoration: none;
 }
 
 a:hover{
+    color: var(--primary-hover);
     text-decoration: none;
 }
 
@@ -75,7 +129,7 @@ header, footer {
 
 .header_top {
     display: flex;
-    border-bottom: 2px solid #3c3c3c;
+    border-bottom: 2px solid var(--secondary-color);
     width: 100%;
 }
 
@@ -109,7 +163,7 @@ header, footer {
 .footer {
     margin-bottom: 30px;
     padding-top: 0.5rem;
-    border-top: 2px solid #3c3c3c;
+    border-top: 2px solid var(--secondary-color);
     width: 100%;
     font-size: 0.8rem;
     display: flex;
@@ -206,6 +260,10 @@ table {
     margin: auto;
 }
 
+th {
+    color: var(--primary-color);
+}
+
 th, td {
     padding: 0 0.5rem;
 }
@@ -256,12 +314,12 @@ input[type="checkbox" i] {
 }
 
 .stats_table thead th {
-    border-bottom: 1px solid #3c3c3c;
+    border-bottom: 1px solid var(--secondary-color);
 }
 
 .stats_table tbody th:nth-child(1) {
     text-align: right;
-    border-right: 1px solid #3c3c3c;
+    border-right: 1px solid var(--secondary-color);
 }
 
 .stats_table td {
@@ -283,14 +341,14 @@ input[type="checkbox" i] {
 }
 .team_ratings_table td:nth-child(2) {
     border-radius: 0.3rem;
-    color: #EEEEEE;
+    color: #EFEFEF;
 }
 .team_ratings_table td:nth-child(n+2) {
     text-align: center;
     font-weight: 600;
 }
 .team_ratings_table .KR {
-    color: #221D32;
+    color: var(--kr-text);
 }
 .team_ratings_table .NA {
     color: #6455F7;
@@ -311,13 +369,41 @@ input[type="checkbox" i] {
 
 .super_th {
     text-align: center;
-    border-left: 1px solid #3c3c3c;
+    border-left: 1px solid var(--secondary-color);
 }
 .leaderboard_table th:nth-child(4),
 .leaderboard_table th:nth-child(7),
 .leaderboard_table td:nth-child(4),
 .leaderboard_table td:nth-child(7) {
-    border-left: 1px solid #3c3c3c;
+    border-left: 1px solid var(--secondary-color);
 }
 
+.leaderboard_table > thead > tr > th, .leaderboard_table.dataTable.no-footer {
+    border-bottom: 1px solid var(--secondary-color);
+}
+
+.leaderboard_table td {
+    background: var(--table-bg);
+}
 /* end leaderboard style */
+
+/* dark mode match table css -- maybe necessary? not sure yet */
+/*
+@media (prefers-color-scheme: dark) {
+  .match_table td:nth-child(5) {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+    background-color: #99999F;
+  }
+  .match_table td:nth-child(6) {
+    color: #333;
+    background-color: #99999F;
+  }
+  .match_table td:nth-child(7) {
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    background-color: #99999F;
+  }
+}
+*/
+/* end dark mode */
