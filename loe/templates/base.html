@@ -59,6 +59,19 @@ $(document).ready(function() {
   }
 });
 
+
+// This function will execute itself when the script is loaded
+(function(){
+  var theme = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+
+function changeTheme() {
+  var targetTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', targetTheme);
+  localStorage.setItem('theme', targetTheme);
+}
+
 function sliderChange(slider) {
   clearTimeout(sliderChange.hide_timeout);
   $(slider).parent().parent().find(".submit_box").prop("indeterminate", true);
