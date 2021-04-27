@@ -183,6 +183,10 @@ header, footer {
 }
 .footer > .feedback > a {
     float: right;
+    margin-right: -28px;
+}
+.footer > #theme_switch {
+    margin: -50px 10px 50px -10px;
 }
 
 
