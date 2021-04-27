@@ -16,7 +16,7 @@ LEAGUE_REGIONS = [
 class Team(models.Model):
     # team_id pk
     team_continuity_id = models.IntegerField()
-    team_name = models.CharField(max_length=30)
+    team_name = models.CharField(max_length=50)
     short_name = models.CharField(max_length=5)
     region = models.CharField(max_length=3,
         choices=LEAGUE_REGIONS)
