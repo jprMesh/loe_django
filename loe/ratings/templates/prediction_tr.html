@@ -12,13 +12,13 @@
           title="{{ match.team2__team_name }}" alt="{{ match.team2__short_name }}"
           style="text-align: center;"
           onerror="$(this).replaceWith(function() {return $(this).prop('alt'); });"></td>
-    {% if match_started and not prediction %}
+    {% if match_started and not prediction_exists %}
       <td class="match_info_td">No Prediction</td>
     {% else %}
       <td><input type="range" class="slider prediction_slider" name="predicted_t1_win_prob" min="0" max="100"
-            value="{% if prediction %}{{ prediction }}{% else %}50{% endif %}"
+            value="{% if prediction_exists %}{{ prediction }}{% else %}50{% endif %}"
             oninput="sliderChange(this)"
-            title='{% if prediction %}{{ prediction }}{% else %}50/50{% endif %}' data-placement='bottom' data-trigger='manual'
+            title='{% if prediction_exists %}{{ prediction }}{% else %}50/50{% endif %}' data-placement='bottom' data-trigger='manual'
             {% if match_started %} disabled="true" {% endif %}></td>
     {% endif %}
     <td class="team_logo_td"><img class="match_logo team1 {% if match_complete and match.team1_score < match.team2_score %} losing_team {% endif %}"
@@ -29,7 +29,7 @@
     <input type="hidden" name="username" value="{{ user.get_username }}">
     <td><input class="submit_box" type="checkbox" onchange="submitPrediction(this)"
       title='Saved!' data-placement='right' data-trigger='manual'
-      {% if prediction %}checked{% endif %}></td>
+      {% if prediction_exists %}checked{% endif %}></td>
   {% else %}
     <td class="match_info_td"><strong>{{ analyst_rating }}</strong></td>
   {% endif %}

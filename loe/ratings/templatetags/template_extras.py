@@ -25,6 +25,7 @@ def prediction_tr(active_user, match_pk, prediction_user):
 
     prediction = Prediction.objects.filter(match__pk=match_pk, user__username=prediction_user)
     if prediction.exists():
+        context['prediction_exists'] = True
         context['prediction'] = int(100.0 * prediction[0].predicted_t1_win_prob)
         if context['match_complete']:
             context['analyst_rating'] = prediction[0].analyst_rating
