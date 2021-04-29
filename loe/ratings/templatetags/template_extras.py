@@ -51,7 +51,7 @@ def user_stats(active_user, page_user):
         if num_predictions == 0:
             return
         exp_mult = min(1.0, log10(num_predictions) / 3.0 )
-        raw_ar = 100 - (200 * avg_brier[0]['avg_brier'])
+        raw_ar = 100 - (100 * avg_brier[0]['avg_brier'])
         adjusted_ar = raw_ar * exp_mult
         user_stats['adjusted_ar'] = adjusted_ar
 
@@ -65,7 +65,7 @@ def user_stats(active_user, page_user):
             region_brier = region_predictions.values('user__username').annotate(avg_brier=Avg('brier'))
             user_stats[region] = dict()
             if region_brier.exists():
-                user_stats['raw_ar'][region] = f'{100 - (200 * region_brier[0]["avg_brier"]):.2f}'
+                user_stats['raw_ar'][region] = f'{100 - (100 * region_brier[0]["avg_brier"]):.2f}'
                 user_stats['updown'][region] = f'{100.0 * region_predictions.filter(brier__lt=0.25).count() / region_predictions.count():.1f}%'
                 user_stats['num_pred'][region] = region_predictions.count()
 

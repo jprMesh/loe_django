@@ -379,10 +379,10 @@ input[type="checkbox" i] {
     text-align: center;
     border-left: 1px solid var(--secondary-color);
 }
-.leaderboard_table th:nth-child(4),
-.leaderboard_table th:nth-child(7),
-.leaderboard_table td:nth-child(4),
-.leaderboard_table td:nth-child(7) {
+.leaderboard_table th:nth-child(3),
+.leaderboard_table th:nth-child(6),
+.leaderboard_table td:nth-child(3),
+.leaderboard_table td:nth-child(6) {
     border-left: 1px solid var(--secondary-color);
 }
 
@@ -393,6 +393,22 @@ input[type="checkbox" i] {
 .leaderboard_table td {
     background: var(--table-bg);
 }
+
+select {
+    cursor: pointer;
+    background: transparent;
+    color: var(--primary-color);
+    font-weight: 600;
+    border: 1px solid var(--secondary-color);
+    border-radius: 5px;
+    padding: 0.1rem 0.4rem;
+}
+
+select option {
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
 /* end leaderboard style */
 
 /* dark mode match table css -- maybe necessary? not sure yet */

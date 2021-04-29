@@ -9,36 +9,42 @@
     <table class="leaderboard_table hover row-border compact">
       <thead>
         <tr>
-          <th colspan="3">  </th>
+          <th colspan="2">  </th>
+          <th colspan="3" class="super_th">
+            <select id="season_selector" onchange="get_seasonal_stats(this);">
+            {% for season in seasons %}
+              <option value="{{ season }}">{{ season }}</option>
+            {% endfor %}
+            </select>
+          </th>
           <th colspan="3" class="super_th"> All-Time </th>
-          <th colspan="3" class="super_th"> Current Season </th>
         </tr>
         <tr>
           <th> Rank </th>
           <th> Username </th>
-          <th> Adjusted AR </th>
+
+          <th> Score </th>
           <th> Raw AR </th>
           <th> Up/Down </th>
-          <th> Matches Predicted </th>
 
-          <th> Raw AR </th>
+          <th> AR </th>
           <th> Up/Down </th>
           <th> Matches Predicted </th>
         </tr>
       </thead>
       <tbody>
         {% for entry in leaderboard %}
-          <tr>
+          <tr class="leaderboard_row">
             <td>{{ forloop.counter }}</td>
             <td><a href="{% url 'user_page' entry.user__username %}">{{ entry.user__username }}</a></td>
+
+            <td class="seasonal_cell" id="user_{{ entry.user_id }}_score_cell">0</td>
+            <td class="seasonal_cell" id="user_{{ entry.user_id }}_raw_ar_cell">0</td>
+            <td class="seasonal_cell" id="user_{{ entry.user_id }}_updown_cell">0</td>
+
             <td>{{ entry.adjusted_ar }}</td>
-            <td>{{ entry.raw_ar }}</td>
             <td>{{ entry.up_down }}</td>
             <td>{{ entry.num_preds }}</td>
-
-            <td>{{ entry.curr_raw_ar }}</td>
-            <td>{{ entry.curr_up_down }}</td>
-            <td>{{ entry.curr_num_preds }}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -67,6 +73,26 @@ $(document).ready(function() {
     } ],
   });
 });
+
+$(document).ready(function() {
+  get_seasonal_stats($("#season_selector")[0]);
+});
+
+function get_seasonal_stats(select_box) {
+  $.get("stats", {season: select_box.value})
+    .done(function( data ) {
+      // Reset all to 0 for any users without seasonal data
+      $(".seasonal_cell").each(function() {
+        $(this).html('0');
+      });
+
+      for (var i = data.length - 1; i >= 0; i--) {
+        $('#user_'+data[i]['user__pk']+'_score_cell').html(data[i]['score']);
+        $('#user_'+data[i]['user__pk']+'_raw_ar_cell').html(data[i]['raw_ar']);
+        $('#user_'+data[i]['user__pk']+'_updown_cell').html(data[i]['up_down']);
+      }
+    });
+}
 </script>
 
 {% endblock %}

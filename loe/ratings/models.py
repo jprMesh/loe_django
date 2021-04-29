@@ -75,7 +75,7 @@ class Prediction(models.Model):
 
     @property
     def analyst_rating(self):
-        return 100 - int(200 * self.brier)
+        return 100 - int(100 * self.brier)
 
 
 class UserScore(models.Model):
