@@ -1,0 +1,5 @@
+* text=auto
+
+# Even if the repo is cloned on Windows, these scripts will execute in a Linux
+# environment (potentially through Docker). Be sure to use LF line endings.
+*.sh text eol=lf
