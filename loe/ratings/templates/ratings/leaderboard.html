@@ -57,8 +57,10 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
 
 <script type="text/javascript">
-$(document).ready(function() {
-  $('.leaderboard_table').DataTable({
+
+function init_datatable() {
+  $('.leaderboard_table').dataTable({
+    "destroy": true,
     "order": [[ 2, "desc" ]],
     "paging": false,
     "info": false,
@@ -72,7 +74,9 @@ $(document).ready(function() {
       className: "dt-body-right"
     } ],
   });
-});
+}
+
+$(document).ready(init_datatable);
 
 $(document).ready(function() {
   get_seasonal_stats($("#season_selector")[0]);
@@ -91,6 +95,9 @@ function get_seasonal_stats(select_box) {
         $('#user_'+data[i]['user__pk']+'_raw_ar_cell').html(data[i]['raw_ar']);
         $('#user_'+data[i]['user__pk']+'_updown_cell').html(data[i]['up_down']);
       }
+
+      // Refresh datatable
+      init_datatable();
     });
 }
 </script>
