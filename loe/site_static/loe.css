@@ -239,6 +239,11 @@ header, footer {
         grid-template-rows: auto auto auto;
     }
 }
+@media (max-width: 860px) {
+    .dataTables_wrapper {
+        overflow-x: scroll;
+    }
+}
 
 @media (max-width: 580px) {
     .content_grid {
@@ -372,7 +377,8 @@ input[type="checkbox" i] {
 
 /* leaderboard style */
 .dataTables_wrapper {
-    margin: 0 0.8rem;
+    margin: 0 auto;
+    max-width: 850px;
 }
 
 .super_th {

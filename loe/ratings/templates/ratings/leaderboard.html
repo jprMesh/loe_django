@@ -20,14 +20,14 @@
           <th colspan="3" class="super_th"> All-Time </th>
         </tr>
         <tr>
-          <th> Rank </th>
+          <th>  </th>
           <th> Username </th>
 
           <th> Score </th>
-          <th> Raw AR </th>
           <th> Up/Down </th>
+          <th> Raw AR </th>
 
-          <th> AR </th>
+          <th> Adjusted AR </th>
           <th> Up/Down </th>
           <th> Matches Predicted </th>
         </tr>
@@ -35,12 +35,12 @@
       <tbody>
         {% for entry in leaderboard %}
           <tr class="leaderboard_row">
-            <td>{{ forloop.counter }}</td>
+            <td>0</td>
             <td><a href="{% url 'user_page' entry.user__username %}">{{ entry.user__username }}</a></td>
 
             <td class="seasonal_cell" id="user_{{ entry.user_id }}_score_cell">0</td>
-            <td class="seasonal_cell" id="user_{{ entry.user_id }}_raw_ar_cell">0</td>
             <td class="seasonal_cell" id="user_{{ entry.user_id }}_updown_cell">0</td>
+            <td class="seasonal_cell" id="user_{{ entry.user_id }}_raw_ar_cell">0</td>
 
             <td>{{ entry.adjusted_ar }}</td>
             <td>{{ entry.up_down }}</td>
@@ -59,7 +59,7 @@
 <script type="text/javascript">
 
 function init_datatable() {
-  $('.leaderboard_table').dataTable({
+  var dt = $('.leaderboard_table').DataTable({
     "destroy": true,
     "order": [[ 2, "desc" ]],
     "paging": false,
@@ -71,15 +71,20 @@ function init_datatable() {
     },
     {
       targets: ["_all"],
+      orderSequence: ["desc", "asc"],
       className: "dt-body-right"
     } ],
   });
+
+  dt.on('order.dt', function() {
+    dt.column(0, {order:'applied'}).nodes().each( function(cell, i) {
+      cell.innerHTML = i+1;
+    });
+  }).draw();
 }
 
-$(document).ready(init_datatable);
-
-$(document).ready(function() {
-  get_seasonal_stats($("#season_selector")[0]);
+$(document).ready(function(){
+  get_seasonal_stats($("#season_selector")[0])
 });
 
 function get_seasonal_stats(select_box) {
@@ -100,6 +105,7 @@ function get_seasonal_stats(select_box) {
       init_datatable();
     });
 }
+
 </script>
 
 {% endblock %}
