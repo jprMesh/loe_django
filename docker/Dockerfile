@@ -18,6 +18,7 @@ RUN python3 -m venv venv \
 # Set environment variables that Django will read.
 ENV SECRET_KEY=secret_key \
     DEBUG=True \
+    FORCE_USE_POSTGRESQL=True \
     DJANGO_POSTGRES_PASS=django_password \
     EMAIL_ACCT=placeholder_email_account \
     EMAIL_PASS=placeholder_email_password

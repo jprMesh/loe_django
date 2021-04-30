@@ -99,7 +99,9 @@ WSGI_APPLICATION = 'loe.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-if not DEBUG:
+FORCE_USE_POSTGRESQL = config('FORCE_USE_POSTGRESQL', default=False, cast=bool)
+
+if not DEBUG or FORCE_USE_POSTGRESQL:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
