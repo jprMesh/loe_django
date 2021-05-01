@@ -43,41 +43,44 @@ def index(request):
 
 
 def leaderboard(request):
-    brier_leaderboard = Prediction.objects.exclude(brier__isnull=True).values('user__username').annotate(avg_brier=Avg('brier')).order_by('avg_brier')
+    brier_leaderboard = Prediction.objects.values('user__username').annotate(avg_brier=Avg('brier')).order_by('avg_brier')
     for entry in brier_leaderboard:
+        entry['user_id'] = get_user_model().objects.get(username=entry['user__username']).pk
         num_predictions = Prediction.objects.filter(user__username=entry['user__username']).exclude(brier__isnull=True).count()
+        entry['num_preds'] = num_predictions
+        if num_predictions == 0:
+            entry['adjusted_ar'] = '0.00'
+            entry['up_down'] = '0.0%'
+            continue
         exp_mult = min(1.0, log10(num_predictions) / 3.0 )
         raw_ar = 100 - (100 * entry['avg_brier'])
         adjusted_ar = raw_ar * exp_mult
         entry['adjusted_ar'] = f'{adjusted_ar:.2f}'
-        entry['raw_ar'] = f'{raw_ar:.2f}'
-        entry['num_preds'] = num_predictions
         up_down_correct = Prediction.objects.filter(user__username=entry['user__username'], brier__lt=0.25).count()
         entry['up_down'] = f'{100.0 * up_down_correct / num_predictions:.1f}%'
-        entry['user_id'] = get_user_model().objects.get(username=entry['user__username']).pk
 
-    sorted_leaderboard = sorted(list(brier_leaderboard), key=lambda e: float(e['adjusted_ar']), reverse=True)
-
-    seasons = []
-    resets = Match.objects.filter(match_info='inter_season_reset', start_timestamp__lte=timezone.now()).order_by('-start_timestamp')
-    season_intl_tournament = Match.objects.filter(
-            region='INT',
-            start_timestamp__gte=resets.first().start_timestamp,
-            start_timestamp__lte=timezone.now() + datetime.timedelta(days=14)
-            ).exclude(match_info='inter_season_reset').exists()
-    for reset_ts in resets:
-        year = reset_ts.start_timestamp.year
-        season, intl_tournament = ('Spring', 'MSI') if reset_ts.start_timestamp.month < 3 else ('Summer', 'Worlds')
-        season_name = f'{year} {season}'
-        tournament_name = f'{year} {intl_tournament}'
-        if season_intl_tournament:
-            seasons.append(tournament_name)
-        seasons.append(season_name)
-        season_intl_tournament = True
+    def get_seasons():
+        seasons = []
+        resets = Match.objects.filter(match_info='inter_season_reset', start_timestamp__lte=timezone.now()).order_by('-start_timestamp')
+        season_intl_tournament = Match.objects.filter(
+                region='INT',
+                start_timestamp__gte=resets.first().start_timestamp,
+                start_timestamp__lte=timezone.now() + datetime.timedelta(days=14)
+                ).exclude(match_info='inter_season_reset').exists()
+        for reset_ts in resets:
+            year = reset_ts.start_timestamp.year
+            season, intl_tournament = ('Spring', 'MSI') if reset_ts.start_timestamp.month < 3 else ('Summer', 'Worlds')
+            season_name = f'{year} {season}'
+            tournament_name = f'{year} {intl_tournament}'
+            if season_intl_tournament:
+                seasons.append(tournament_name)
+            seasons.append(season_name)
+            season_intl_tournament = True
+        return seasons
 
     context = {
-        'leaderboard': sorted_leaderboard,
-        'seasons': seasons,
+        'leaderboard': brier_leaderboard,
+        'seasons': get_seasons(),
     }
     return render(request, 'ratings/leaderboard.html', context)
 
