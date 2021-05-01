@@ -9,14 +9,19 @@
     <h3>Making Predictions</h3>
     <p>After creating an account, you'll be able to save your predictions for upcoming matches by checking the box on the right after moving the slider, representing the range of probabilities for the outcome, to your predicted outcome. You can always change your prediction up until an hour before the match begins.</p>
     <p>New matches and match results are automatically updated, so be sure to check back frequently, especially during playoffs when matchups may not be set until a few days before the match happens!</p>
-    <h3>Analyst Rating (AR)</h3>
-    <p>AR is a measure of how good your predictions are. AR rewards well-placed confidence, but punishes misplaced confidence heavily. <em>Adjusted AR</em> takes into account how experienced you are as an analyst, scaling up to eventually match your <em>Raw AR</em> as you make more and more predictions.</p>
-    <p>Predicting a 50/50 tossup will always result in an AR of 50, where correct predictions can get up to 100 and incorrect predictions can go down to -100.</p>
+    <h3>Score & Analyst Rating (AR)</h3>
+    <p>Your score over the course of a season or tournament is the sum of all your match prediction AR values, where AR is a measure of how accurate a prediction was. Scores reset each season and international competition, so everyone starts out on a level playing field.</p>
+    <p>AR values range from 0 to 100, with a 50/50 prediction yielding 75 points. It rewards well-placed confidence, but punishes misplaced confidence heavily.</p>
+    <h3>Other Stats</h3>
+    <p><strong>Up/Down</strong> rating is the percent of predictions in which you predicted the winning team, regardless of the probability you selected.</p>
+    <p><strong>Raw AR</strong> is the average AR across all the matches you've predicted.</p>
+    <p><strong>Adjusted AR</strong> takes into account how experienced you are as an analyst, scaling up to eventually match your <strong>Raw AR</strong> as you make more and more predictions.</p>
     <h4>The Math</h4>
     <p>AR is derived directly from <a href="https://en.wikipedia.org/wiki/Brier_score">Brier Score</a>, which is a measure of accuracy for probabilistic predictions. The Brier score for a prediction is the squared error between the predicted outcome and the actual outcome, and AR is calculated by scaling brier score to a range of ±100. In the formulas below, \(AR\) is Analyst Rating, \(BS\) is Brier Score, \(N\) is the number of matches predicted, and \(XP\) is the analyst experience factor:</p>
-    <p> $$Adjusted AR = (100 - 200BS) * XP $$ </p>
+    <p> $$Adjusted AR = (100 - 100BS) * XP $$ </p>
     <p> $$BS = \frac{1}{N} \sum_{t=1}^N (p_t - o_t)^2$$ </p>
     <p> $$XP = min\left(1 , \frac{1}{3} log_{10} (N)\right)$$ </p>
+    <p>Due to the nature of Brier Scores being based on <em>squared</em> errors, an optimal score can be achieved by being consistenty accurate in your predictions. For instance, among matches you predict with 70% certainty, you should be correct 70% of the time. If you are getting more than 70% correct, you should be more confident in your predictions to increase your score, but if your record isn't keeping up with your predictions, you should be less confident in your predictions.</p>
   </div>
 
   <div class="about_content">
