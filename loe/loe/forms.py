@@ -1,6 +1,10 @@
+import logging
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
+
+
+logger = logging.getLogger(__name__)
 
 
 class SignUpForm(UserCreationForm):
@@ -19,3 +23,7 @@ class SignUpForm(UserCreationForm):
         if username and get_user_model().objects.filter(username__iexact=username).exists():
             self.add_error('username', 'A user with that username already exists.')
         return cleaned_data
+
+    def save(self, commit=True):
+        new_user = super(SignUpForm, self).save(commit=True)
+        logger.info(f'New user account created: {new_user.username}')

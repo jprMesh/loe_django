@@ -1,4 +1,5 @@
 import datetime
+import logging
 from math import log10
 from django.http import HttpResponse
 from django.template import loader
@@ -17,6 +18,7 @@ from .serializers import PredictionSerializer
 
 SPRING_RESET = -1
 SUMMER_RESET = -2
+logger = logging.getLogger(__name__)
 
 
 def index(request):
@@ -122,7 +124,7 @@ class Predictions(APIView):
         match = Match.objects.get(pk=str(request.data['match']))
         user_prediction = float(request.data['predicted_t1_win_prob']) / 100.0
         pred, _ = Prediction.objects.update_or_create(user=request.user, match=match, defaults={'predicted_t1_win_prob': user_prediction})
-        print(pred)
+        logger.debug(f'Prediction submitted: {pred}')
         return Response(status=status.HTTP_200_OK)
 
 
