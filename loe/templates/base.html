@@ -78,8 +78,8 @@ function unsavedMatchesExist() {
   var date_row = $('.table_separator_row:first');
   var match_rows = date_row.nextUntil('.table_separator_row');
   for (var i = match_rows.length - 1; i >= 0; i--) {
-    var row = $(match_rows[i]);
-    if (row.find('.submit_box').length && !row.find('.submit_box')[0].checked) {
+    var checkbox = $(match_rows[i]).find('.submit_box');
+    if (checkbox.length && !checkbox[0].checked) {
       return true;
     }
   }
