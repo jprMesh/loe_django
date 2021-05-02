@@ -55,8 +55,23 @@ class Command(BaseCommand):
                     defaults={'rating':most_recent_rating.rating, 'rating_date':most_recent_rating.rating_date})
             print(f'\nSet {updated_rating} from {most_recent_rating}')
 
+    def _set_prediction(self, match):
+        stale_rating_cutoff = match.start_timestamp - datetime.timedelta(days=90)
+        for team in [match.team1, match.team2]:
+            try:
+                rating = TeamRating.objects.get(team=team)
+                if rating.rating_date < stale_rating_cutoff:
+                    raise StaleRatingWarning
+            except (ObjectDoesNotExist, StaleRatingWarning):
+                self._continuity_check(team, match.start_timestamp)
+        t1_rating = TeamRating.objects.get(team=match.team1)
+        t2_rating = TeamRating.objects.get(team=match.team2)
+        prediction = self.elo_model.predict(t1_rating.rating, t2_rating.rating)
+        Prediction.objects.update_or_create(user=self.elo_user, match=match, defaults={'predicted_t1_win_prob': prediction})
+
     def _process_match(self, match):
         if match.start_timestamp > timezone.now():
+            self._set_prediction(match)
             print('F', end='', flush=True) # F for future
             return
 
@@ -101,7 +116,7 @@ class Command(BaseCommand):
         else:
             match_outcome = 0.5
         brier = (match_outcome - prediction)**2
-        Prediction.objects.create(user=self.elo_user, match=match, predicted_t1_win_prob=prediction, brier=brier)
+        Prediction.objects.update_or_create(user=self.elo_user, match=match, defaults={'predicted_t1_win_prob': prediction, 'brier': brier})
 
         t1_adj, t2_adj = self.elo_model.process_outcome(t1_rating.rating, t2_rating.rating, match.team1_score, match.team2_score)
         TeamRating.objects.filter(team=match.team1).update(rating=t1_rating.rating + t1_adj, rating_date=match.start_timestamp)

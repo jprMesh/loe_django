@@ -15,11 +15,26 @@
     {% if match_started and not prediction_exists %}
       <td class="match_info_td">No Prediction</td>
     {% else %}
-      <td><input type="range" class="slider prediction_slider" name="predicted_t1_win_prob" min="0" max="100"
+      <td>
+        <input type="range" class="slider prediction_slider" name="predicted_t1_win_prob" min="0" max="100"
             value="{% if prediction_exists %}{{ prediction }}{% else %}50{% endif %}"
             oninput="sliderChange(this)"
             title='{% if prediction_exists %}{{ prediction }}{% else %}50/50{% endif %}' data-placement='bottom' data-trigger='manual'
-            {% if match_started or not user.is_authenticated or user.get_username != prediction_user %} disabled="true" {% endif %}></td>
+            {% if match_started or not user.is_authenticated or user.get_username != prediction_user %} disabled="true" {% endif %}
+            style="background: linear-gradient(90deg,
+                    #00000000 0%,
+                    #00000000 {{ model_pred|add:'-1' }}%,
+                    var(--primary-color) {{ model_pred }}%,
+                    #00000000 {{ model_pred|add:'1' }}%,
+                    #00000000 100%),
+                        linear-gradient(0deg,
+                    var(--bg-color) 0%,
+                    var(--bg-color) 30%,
+                    var(--slider-bg) 30.1%,
+                    var(--slider-bg) 69.9%,
+                    var(--bg-color) 70%,
+                    var(--bg-color) 100%); ">
+      </td>
     {% endif %}
     <td class="team_logo_td"><img class="match_logo team1 {% if match_complete and match.team1_score < match.team2_score %} losing_team {% endif %}"
           src="{% static 'team_logos/'|add:match.team1__logo_img %}"

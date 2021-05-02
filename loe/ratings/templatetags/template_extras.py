@@ -30,6 +30,11 @@ def prediction_tr(active_user, match_pk, prediction_user):
         if context['match_complete']:
             context['analyst_rating'] = prediction[0].analyst_rating
 
+    context['model_pred'] = 50
+    model_pred = Prediction.objects.filter(match__pk=match_pk, user__username='LeagueOfElo')
+    if model_pred.exists():
+        context['model_pred'] = int(100.0 * model_pred[0].predicted_t1_win_prob)
+
     return context
 
 

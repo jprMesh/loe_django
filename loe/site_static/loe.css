@@ -14,6 +14,7 @@
 
     --kr-text: #221D32;
     --table-bg: #FFFFFF;
+    --slider-bg: #BFBFBF;
 }
 
 [data-theme="dark"] {
@@ -25,6 +26,7 @@
 
     --kr-text: #EFEFEF;
     --table-bg: #55555F;
+    --slider-bg: var(--text-color);
 }
 
 /* Style start */
@@ -50,7 +52,7 @@ main {
     padding-bottom: 75px;
 }
 
-input {
+input[type="search"] {
     background: transparent;
     border: 1px solid #aaa;
     border-radius: 3px;
@@ -417,23 +419,7 @@ select option {
 
 /* end leaderboard style */
 
-/* dark mode match table css -- maybe necessary? not sure yet */
-/*
-@media (prefers-color-scheme: dark) {
-  .match_table td:nth-child(5) {
-    border-top-left-radius: 0.5rem;
-    border-bottom-left-radius: 0.5rem;
-    background-color: #99999F;
-  }
-  .match_table td:nth-child(6) {
-    color: #333;
-    background-color: #99999F;
-  }
-  .match_table td:nth-child(7) {
-    border-top-right-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem;
-    background-color: #99999F;
-  }
+/* slider style */
+.prediction_slider {
+    -webkit-appearance: none;
 }
-*/
-/* end dark mode */
