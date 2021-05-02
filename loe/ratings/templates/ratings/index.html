@@ -18,7 +18,8 @@
   <table class="match_table">
   {% for match in matches %}
     {% ifchanged match.start_timestamp|naturalday %}
-      <tr class="table_separator_row"><td colspan="4">{{ match.start_timestamp|naturalday:"l M j"|title }}</td></tr>
+      <tr class="table_separator_row">
+        <td colspan="4" title="Unpredicted matches won't get you points!">{{ match.start_timestamp|naturalday:"l M j"|title }}</td></tr>
     {% endifchanged %}
     {% prediction_tr user match.pk user.get_username %}
   {% endfor %}

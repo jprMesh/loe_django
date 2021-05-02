@@ -375,6 +375,30 @@ input[type="checkbox" i] {
     color: #00DEB9;
 }
 
+/*///////// unpredicted matches alert style */
+.unpredicted::before {
+    display: inline-block;
+    margin-right: 4px;
+    padding-top: 2px;
+    content: "!";
+    background: red;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    line-height: 8px;
+    text-align: center;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 900;
+}
+
+.table_separator_row > td {
+    pointer-events: none;
+}
+.table_separator_row > td.unpredicted {
+    pointer-events: all;
+}
+
 /* end content styling */
 
 /* leaderboard style */
@@ -423,3 +447,4 @@ select option {
 .prediction_slider {
     -webkit-appearance: none;
 }
+/* end slider style*/
