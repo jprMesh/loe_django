@@ -122,12 +122,13 @@ class Predictions(APIView):
 
         valid, reason = validate(request)
         if not valid:
+            logger.warning(f'Prediction submission was invalid: {reason}')
             return Response(reason, status=status.HTTP_400_BAD_REQUEST)
 
         match = Match.objects.get(pk=str(request.data['match']))
         user_prediction = float(request.data['predicted_t1_win_prob']) / 100.0
         pred, _ = Prediction.objects.update_or_create(user=request.user, match=match, defaults={'predicted_t1_win_prob': user_prediction})
-        logger.debug(f'Prediction submitted: {pred}')
+        logger.info(f'Prediction submitted: {pred}')
         return Response(status=status.HTTP_200_OK)
 
 
