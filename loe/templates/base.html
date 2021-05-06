@@ -119,6 +119,19 @@ function sliderChange(slider) {
   }, 1000);
 }
 
+function submitPredictionSlider(slider) {
+  var checkbox = $(slider).parent().parent().find(".submit_box");
+  checkbox.prop("checked", true);
+  checkbox.prop("indeterminate", false);
+  $.post("{% url 'submit_prediction' %}", $(slider.form).serialize(), function(data, status) {
+    checkbox.tooltip('show');
+    setTimeout(function() {
+      checkbox.tooltip('hide');
+    }, 1000);
+  });
+  setUnsavedAlert(unsavedMatchesExist());
+}
+
 function submitPrediction(checkbox) {
   $(checkbox).prop("checked", true);
   $.post("{% url 'submit_prediction' %}", $(checkbox.form).serialize(), function(data, status) {

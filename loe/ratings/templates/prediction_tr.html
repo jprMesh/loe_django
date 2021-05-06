@@ -18,7 +18,7 @@
       <td>
         <input type="range" class="slider prediction_slider" name="predicted_t1_win_prob" min="0" max="100"
             value="{% if prediction_exists %}{{ prediction }}{% else %}50{% endif %}"
-            oninput="sliderChange(this)"
+            oninput="sliderChange(this)" onchange="submitPredictionSlider(this)"
             title='{% if prediction_exists %}{{ prediction }}{% else %}50/50{% endif %}' data-placement='bottom' data-trigger='manual'
             {% if match_started or not user.is_authenticated or user.get_username != prediction_user %} disabled="true" {% endif %}
             style="background: linear-gradient(90deg,
