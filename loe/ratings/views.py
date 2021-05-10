@@ -153,7 +153,7 @@ class Stats(APIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        season_preds = Prediction.objects.filter(match__start_timestamp__gte=reset_start, match__start_timestamp__lte=reset_end)
+        season_preds = Prediction.objects.filter(match__start_timestamp__gte=reset_start, match__start_timestamp__lte=reset_end).exclude(match__match_info__icontains='Tie')
         if tournament in ('MSI', 'Worlds'):
             season_preds = season_preds.filter(match__region='INT')
         else:
