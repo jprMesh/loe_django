@@ -24,9 +24,11 @@ logger = logging.getLogger(__name__)
 def index(request):
     upcoming_matches = list(Match.objects
             .filter(start_timestamp__gte=timezone.now(), start_timestamp__lte=timezone.now() + datetime.timedelta(days=14))
+            .exclude(team1_score__lt=0)
             .order_by('start_timestamp'))
     recent_matches = list(Match.objects
             .filter(start_timestamp__lte=timezone.now())
+            .exclude(team1_score__lt=0)
             .order_by('-start_timestamp'))[:15]
     active_teams = list(TeamRating.objects
             .filter(team__is_active=True, rating_date__gte=(timezone.now() - datetime.timedelta(days=150)))
