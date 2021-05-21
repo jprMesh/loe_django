@@ -200,7 +200,7 @@ header, footer {
   margin-bottom: 30px;
   display: grid;
   grid-template-columns: 1fr 1fr 0.75fr;
-  grid-template-rows: auto auto;
+  grid-template-rows: auto 1fr;
   grid-auto-flow: column;
 }
 
