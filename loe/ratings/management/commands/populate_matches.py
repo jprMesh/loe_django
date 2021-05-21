@@ -77,6 +77,10 @@ class Command(BaseCommand):
             print('X', end='', flush=True) # X for eXists
             return
 
+        # Set teams to active if they are not
+        Team.objects.filter(pk=team1.pk).update(is_active=True)
+        Team.objects.filter(pk=team2.pk).update(is_active=True)
+
         # Return if match has not completed yet
         if 0 < max(int(t1s), int(t2s)) < int(ceil(float(bestof)/2)):
             print('O', end='', flush=True) # O for Ongoing
