@@ -56,6 +56,8 @@ class Command(BaseCommand):
             print(f'\nSet {updated_rating} from {most_recent_rating}')
 
     def _set_prediction(self, match):
+        if match.match_info == 'inter_season_reset':
+            return
         stale_rating_cutoff = match.start_timestamp - datetime.timedelta(days=90)
         for team in [match.team1, match.team2]:
             try:
