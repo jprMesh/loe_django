@@ -40,7 +40,7 @@ class Command(BaseCommand):
             team_regional_avg = regional_averages[active_team.team.region]
             new_rating = 0.75 * active_team.rating + 0.25 * team_regional_avg
             TeamRating.objects.filter(team=active_team.team).update(rating=new_rating, rating_date=reset_date)
-            #print(f'\nUpdating {active_team.team} rating from {active_team.rating:.2f} to {new_rating:.2f}')
+            print(f'\nUpdating {active_team.team} rating from {active_team.rating:.2f} to {new_rating:.2f}')
 
     def _continuity_check(self, team, match_date):
         continuity_teams = Team.objects.filter(team_continuity_id=team.team_continuity_id)
@@ -58,16 +58,14 @@ class Command(BaseCommand):
     def _set_prediction(self, match):
         if match.match_info == 'inter_season_reset':
             return
-        stale_rating_cutoff = match.start_timestamp - datetime.timedelta(days=90)
-        for team in [match.team1, match.team2]:
-            try:
-                rating = TeamRating.objects.get(team=team)
-                if rating.rating_date < stale_rating_cutoff:
-                    raise StaleRatingWarning
-            except (ObjectDoesNotExist, StaleRatingWarning):
-                self._continuity_check(team, match.start_timestamp)
-        t1_rating = TeamRating.objects.get(team=match.team1)
-        t2_rating = TeamRating.objects.get(team=match.team2)
+        try:
+            t1_rating = TeamRating.objects.get(team=match.team1)
+        except (ObjectDoesNotExist):
+            t1_rating = 1500
+        try:
+            t2_rating = TeamRating.objects.get(team=match.team2)
+        except (ObjectDoesNotExist):
+            t2_rating = 1500
         prediction = self.elo_model.predict(t1_rating.rating, t2_rating.rating)
         Prediction.objects.update_or_create(user=self.elo_user, match=match, defaults={'predicted_t1_win_prob': prediction})
 
