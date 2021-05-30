@@ -53,21 +53,36 @@
   <script async src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
   <script type="text/javascript">
 
+// Global vars
+var selected_regions;
+
+// On load functions //--------------------------------------------------------------
+(function(){
+  var theme = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  if (localStorage.getItem('regions')) {
+    selected_regions = new Set(localStorage.getItem('regions').split(','))
+  }
+  else {
+    selected_regions = new Set(['NA', 'EU', 'KR', 'CN', 'INT']);
+  }
+  localStorage.setItem('regions', Array.from(selected_regions));
+})();
+
 $(document).ready(function() {
   let mql = window.matchMedia('(max-width: 927px)');
   if (mql.matches) {
     $(".prediction_slider").attr("data-placement", "top");
   }
+
   setUnsavedAlert(unsavedMatchesExist());
+
+  $('.dropdown-menu input').each(function() {
+    $(this).prop("checked", selected_regions.has($(this).prop("id")));
+  });
 });
 
-
-// This function will execute itself when the script is loaded
-(function(){
-  var theme = localStorage.getItem('theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', theme);
-})();
-
+// On demand functions //------------------------------------------------------------
 function changeTheme() {
   var targetTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', targetTheme);
@@ -143,6 +158,24 @@ function submitPrediction(checkbox) {
   });
   setUnsavedAlert(unsavedMatchesExist());
 }
+
+// On event functions //-----------------------------------------------------------------
+$(document).on('click', '.dropdown-menu', function (e) {
+  e.stopPropagation();
+  if (e.target.type != 'checkbox') {
+    return;
+  }
+  var box_checked = $(e.target).prop("checked");
+  var region = $(e.target).prop("id");
+  if (box_checked) {
+    selected_regions.add(region);
+  }
+  else {
+    selected_regions.delete(region);
+  }
+  localStorage.setItem('regions', Array.from(selected_regions));
+});
+
   </script>
   {% block script %} {% endblock %}
 </head>
@@ -158,6 +191,16 @@ function submitPrediction(checkbox) {
         {% endif %}
       </div>
       <div class="header_bottom site_wrapper">
+        <div class="navlink">
+          <h3 data-toggle="dropdown"><a href="javascript:void(0)">Regions ▾</a></h3>
+          <ul class="dropdown-menu">
+            <li> <input id="NA" type="checkbox"/><label for="NA"> North America</label></li>
+            <li> <input id="EU" type="checkbox"/><label for="EU"> Europe</label></li>
+            <li> <input id="KR" type="checkbox"/><label for="KR"> Korea</label></li>
+            <li> <input id="CN" type="checkbox"/><label for="CN"> China</label></li>
+            <li> <input id="INT" type="checkbox"/><label for="INT"> International</label></li>
+          </ul>
+        </div>
         <h3 class="navlink"><a href="{% url 'leaderboard' %}">Leaderboard</a></h3>
         <h3 class="navlink"><a href="{% url 'about' %}">About</a></h3>
         {% if user.is_authenticated %}

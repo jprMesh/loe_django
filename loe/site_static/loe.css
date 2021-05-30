@@ -448,3 +448,21 @@ select option {
     -webkit-appearance: none;
 }
 /* end slider style*/
+
+/* Region filter dropdown */
+
+.dropdown-menu {
+    background: var(--bg-color);
+    color: var(--text-color);
+    border-color: var(--secondary-color);
+}
+
+.dropdown-menu input {
+    vertical-align: baseline;
+}
+
+.dropdown-menu label {
+    margin-bottom: 0.1rem;
+}
+
+/* end region filter dropdown */
