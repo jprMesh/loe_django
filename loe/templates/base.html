@@ -71,6 +71,8 @@ var all_regions = ['NA', 'EU', 'KR', 'CN', 'INT'];
 })();
 
 $(document).ready(function() {
+  updateMatchTables();
+
   let mql = window.matchMedia('(max-width: 927px)');
   if (mql.matches) {
     $(".prediction_slider").attr("data-placement", "top");
@@ -89,6 +91,27 @@ function changeTheme() {
   var targetTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', targetTheme);
   localStorage.setItem('theme', targetTheme);
+}
+
+function updateMatchTables() {
+  $.get('match_table', {
+    'dataType': 'html',
+    'regions': localStorage.getItem("regions"),
+    'upcoming': 1,
+  }).done(function (data) {
+    $('#upcoming_match_table').html(data);
+  }).fail(function (error) {
+    console.log(error);
+  });
+
+  $.get('match_table', {
+    'dataType': 'html',
+    'regions': localStorage.getItem("regions"),
+  }).done(function (data) {
+    $('#recent_match_table').html(data);
+  }).fail(function (error) {
+    console.log(error);
+  });
 }
 
 function unsavedMatchesExist() {
@@ -188,6 +211,7 @@ $(document).on('click', '.dropdown-menu', function (e) {
 
   localStorage.setItem('regions', Array.from(selected_regions));
   updateVisibleRegions();
+  updateMatchTables();
 });
 
   </script>

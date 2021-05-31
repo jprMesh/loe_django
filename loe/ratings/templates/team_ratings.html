@@ -8,7 +8,7 @@
   </thead>
   <tbody>
     {% for team in active_teams %}
-      <tr class="disp_{{ team.team__region }}">
+      <tr>
           <td>{{ team.rating|floatformat:"0" }}</td>
           <td style="background-color:{% if team.team__color1 %}{{ team.team__color1 }}{% else %}#333{% endif %}" title="{{ team.team__team_name }}">{{ team.team__short_name }}</td>
           <td class="{{ team.team__region }}">{{ team.team__region }}</td>
