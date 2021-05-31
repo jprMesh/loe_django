@@ -9,4 +9,5 @@ urlpatterns = [
     path('about', views.about, name='about'),
     path('user/<str:prediction_user>', views.user_page, name='user_page'),
     path('submit_prediction', views.Predictions.as_view(), name='submit_prediction'),
+    path('match_table', views.MatchTable.as_view(), name='match_table'),
 ]

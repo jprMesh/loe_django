@@ -11,8 +11,9 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.renderers import TemplateHTMLRenderer
 
-from .models import Prediction, Match, Team, TeamRating
+from .models import Prediction, Match, Team, TeamRating, LEAGUE_REGIONS
 from .serializers import PredictionSerializer
 
 
@@ -176,3 +177,33 @@ class Stats(APIView):
             entry['score'] = f'{score:.0f}'
 
         return Response(data=users_w_scores, status=status.HTTP_200_OK)
+
+
+class MatchTable(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+
+    def get(self, request):
+        requested_regions = request.GET.get('regions', '')[:20].split(',')
+        all_regions = [abbr for abbr, full in LEAGUE_REGIONS]
+        regions = [r for r in requested_regions if r in all_regions]
+        if not regions:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        if request.GET.get('upcoming', 0):
+            matches = (Match.objects
+                    .filter(region__in=regions)
+                    .filter(start_timestamp__gte=timezone.now(), start_timestamp__lte=timezone.now() + datetime.timedelta(days=14))
+                    .exclude(team1_score__lt=0)
+                    .order_by('start_timestamp'))
+        else:
+            matches = (Match.objects
+                    .filter(region__in=regions)
+                    .filter(start_timestamp__lte=timezone.now())
+                    .exclude(team1_score__lt=0)
+                    .order_by('-start_timestamp'))[:15]
+
+        context = {
+            'matches': matches,
+            'user': request.user,
+        }
+        return Response(context, template_name='match_table.html')

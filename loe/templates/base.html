@@ -55,6 +55,7 @@
 
 // Global vars
 var selected_regions;
+var all_regions = ['NA', 'EU', 'KR', 'CN', 'INT'];
 
 // On load functions //--------------------------------------------------------------
 (function(){
@@ -64,7 +65,7 @@ var selected_regions;
     selected_regions = new Set(localStorage.getItem('regions').split(','))
   }
   else {
-    selected_regions = new Set(['NA', 'EU', 'KR', 'CN', 'INT']);
+    selected_regions = new Set(all_regions);
   }
   localStorage.setItem('regions', Array.from(selected_regions));
 })();
@@ -80,6 +81,7 @@ $(document).ready(function() {
   $('.dropdown-menu input').each(function() {
     $(this).prop("checked", selected_regions.has($(this).prop("id")));
   });
+  updateVisibleRegions();
 });
 
 // On demand functions //------------------------------------------------------------
@@ -159,21 +161,33 @@ function submitPrediction(checkbox) {
   setUnsavedAlert(unsavedMatchesExist());
 }
 
+function updateVisibleRegions() {
+  all_regions.forEach(function(region) {
+    if (selected_regions.has(region)) {
+      $('.disp_'+region).show();
+    } else {
+      $('.disp_'+region).hide();
+    }
+  })
+}
+
 // On event functions //-----------------------------------------------------------------
 $(document).on('click', '.dropdown-menu', function (e) {
   e.stopPropagation();
   if (e.target.type != 'checkbox') {
     return;
   }
+
   var box_checked = $(e.target).prop("checked");
   var region = $(e.target).prop("id");
   if (box_checked) {
     selected_regions.add(region);
-  }
-  else {
+  } else {
     selected_regions.delete(region);
   }
+
   localStorage.setItem('regions', Array.from(selected_regions));
+  updateVisibleRegions();
 });
 
   </script>

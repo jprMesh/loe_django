@@ -15,30 +15,13 @@
 
 <div class="section_div grid_item match_lists">
   <h2 class="section_header">Upcoming Matches</h2>
-  <table class="match_table">
-  {% for match in matches %}
-    {% ifchanged match.start_timestamp|naturalday %}
-      <tr class="table_separator_row">
-        <td colspan="4" title="Unpredicted matches won't get you points!">{{ match.start_timestamp|naturalday:"l M j"|title }}</td></tr>
-    {% endifchanged %}
-    {% prediction_tr user match.pk user.get_username %}
-  {% endfor %}
+  <table class="match_table" id="upcoming_match_table">
   </table>
 </div>
 
 <div class="section_div grid_item match_lists">
   <h2 class="section_header">Recent Matches</h2>
-  <table class="match_table">
-  {% for match in recent_matches %}
-    {% ifchanged match.start_timestamp|naturalday %}
-      <tr class="table_separator_row"><td colspan="4">{{ match.start_timestamp|naturalday:"l M j"|title }}</td>
-      {% if forloop.first %}
-        <td class="match_info_td"><strong>AR</strong></td>
-      {% endif %}
-      </tr>
-    {% endifchanged %}
-    {% prediction_tr user match.pk user.get_username %}
-  {% endfor %}
+  <table class="match_table" id="recent_match_table">
   </table>
 </div>
 
@@ -63,6 +46,27 @@ function sort_ratings(column) {
     return sort_action;
   }).appendTo(ratings_tbody);
 }
+
+$( document ).ready(function() {
+  $.get('match_table', {
+    'dataType': 'html',
+    'regions': localStorage.getItem("regions"),
+    'upcoming': 1,
+  }).done(function (data) {
+    $('#upcoming_match_table').html(data);
+  }).fail(function (error) {
+    console.log(error);
+  });
+
+  $.get('match_table', {
+    'dataType': 'html',
+    'regions': localStorage.getItem("regions"),
+  }).done(function (data) {
+    $('#recent_match_table').html(data);
+  }).fail(function (error) {
+    console.log(error);
+  });
+});
 
 </script>
 {% endblock %}
