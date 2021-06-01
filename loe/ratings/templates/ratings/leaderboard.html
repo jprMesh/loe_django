@@ -87,8 +87,16 @@ $(document).ready(function(){
   get_seasonal_stats($("#season_selector")[0])
 });
 
+$(document).on('click', '.region_filter', function (e) {
+  e.stopPropagation();
+  setTimeout(get_seasonal_stats($("#season_selector")[0]), 10);
+});
+
 function get_seasonal_stats(select_box) {
-  $.get("stats", {season: select_box.value})
+  $.get("stats", {
+    'season': select_box.value,
+    'regions': localStorage.getItem("regions"),
+  })
     .done(function( data ) {
       // Reset all to 0 for any users without seasonal data
       $(".seasonal_cell").each(function() {

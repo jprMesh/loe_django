@@ -140,6 +140,12 @@ class Stats(APIView):
         season = request.GET.get('season', '')[:20]
         if not season:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        requested_regions = request.GET.get('regions', '')[:20].split(',')
+        all_regions = [abbr for abbr, full in LEAGUE_REGIONS]
+        regions = [r for r in requested_regions if r in all_regions]
+        if not regions:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
         year, tournament = season.split(' ', 1)
         if tournament in ('Spring', 'MSI'):
             reset_start = Match.objects.filter(match_info='inter_season_reset', start_timestamp__year=int(year), team1_score=SPRING_RESET)[0].start_timestamp
@@ -156,7 +162,10 @@ class Stats(APIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        season_preds = Prediction.objects.filter(match__start_timestamp__gte=reset_start, match__start_timestamp__lte=reset_end).exclude(match__match_info__icontains='Tie')
+        season_preds = (Prediction.objects
+                            .filter(match__region__in=regions)
+                            .filter(match__start_timestamp__gte=reset_start, match__start_timestamp__lte=reset_end)
+                            .exclude(match__match_info__icontains='Tie'))
         if tournament in ('MSI', 'Worlds'):
             season_preds = season_preds.filter(match__region='INT')
         else:
