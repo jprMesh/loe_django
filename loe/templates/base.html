@@ -82,7 +82,6 @@ $(document).ready(function() {
 
   $('.region_filter').each(function() {
     var region = $(this).prop("id").split("_")[0];
-    console.log($(this));
     if (selected_regions.has(region)) {
       $(this).addClass("down");
     } else {
@@ -216,6 +215,10 @@ $(document).on('click', '.region_filter', function (e) {
   updateMatchTables();
 });
 
+$(document).on('click', '.menu_button', function(e) {
+  $('#mobile_menu_items').toggleClass("collapse");
+});
+
   </script>
   {% block script %} {% endblock %}
 </head>
@@ -231,6 +234,15 @@ $(document).on('click', '.region_filter', function (e) {
         {% endif %}
       </div>
       <div class="header_bottom site_wrapper">
+        <div class="navlink mobile_menu">
+          <button class="menu_button">
+            <svg width="28" height="28" shape-rendering="crispEdges">
+              <line x1="3" x2="25" y1="5" y2="5" stroke-width="3" stroke-linecap="square"/>
+              <line x1="3" x2="25" y1="14" y2="14" stroke-width="3" stroke-linecap="square"/>
+              <line x1="3" x2="25" y1="23" y2="23" stroke-width="3" stroke-linecap="square"/>
+            </svg>
+          </button>
+        </div>
         <div class="navlink">
           <button class="region_filter" id="NA_select">NA</button>
           <button class="region_filter" id="EU_select">EU</button>
@@ -238,13 +250,19 @@ $(document).on('click', '.region_filter', function (e) {
           <button class="region_filter" id="CN_select">CN</button>
           <button class="region_filter" id="INT_select">INT</button>
         </div>
-        <h3 class="navlink"><a href="{% url 'leaderboard' %}">Leaderboard</a></h3>
-        <h3 class="navlink"><a href="{% url 'about' %}">About</a></h3>
+        <h3 class="navlink desktop_menu"><a href="{% url 'leaderboard' %}">Leaderboard</a></h3>
+        <h3 class="navlink desktop_menu"><a href="{% url 'about' %}">About</a></h3>
         {% if user.is_authenticated %}
           <h4 id="logout_button"><a href="{% url 'logout' %}">Log out</a></h4>
         {% else %}
           <h4 id="signup_button"><a href="{% url 'signup' %}">Sign Up</a></h4>
         {% endif %}
+      </div>
+      <div class="collapse" id="mobile_menu_items">
+        <ul>
+          <li><h3><a href="{% url 'leaderboard' %}">⮞ Leaderboard</a></h3></li>
+          <li><h3><a href="{% url 'about' %}">⮞ About</a></h3></li>
+        </ul>
       </div>
     </header>
     <div class="body_wrapper">
