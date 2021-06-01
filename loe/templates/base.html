@@ -72,18 +72,23 @@ var all_regions = ['NA', 'EU', 'KR', 'CN', 'INT'];
 
 $(document).ready(function() {
   updateMatchTables();
+  updateVisibleRegions();
+  setUnsavedAlert(unsavedMatchesExist());
 
   let mql = window.matchMedia('(max-width: 927px)');
   if (mql.matches) {
     $(".prediction_slider").attr("data-placement", "top");
   }
 
-  setUnsavedAlert(unsavedMatchesExist());
-
-  $('.dropdown-menu input').each(function() {
-    $(this).prop("checked", selected_regions.has($(this).prop("id")));
+  $('.region_filter').each(function() {
+    var region = $(this).prop("id").split("_")[0];
+    console.log($(this));
+    if (selected_regions.has(region)) {
+      $(this).addClass("down");
+    } else {
+      $(this).removeClass("down");
+    }
   });
-  updateVisibleRegions();
 });
 
 // On demand functions //------------------------------------------------------------
@@ -195,15 +200,12 @@ function updateVisibleRegions() {
 }
 
 // On event functions //-----------------------------------------------------------------
-$(document).on('click', '.dropdown-menu', function (e) {
+$(document).on('click', '.region_filter', function (e) {
   e.stopPropagation();
-  if (e.target.type != 'checkbox') {
-    return;
-  }
+  $(e.target).toggleClass("down");
+  var region = $(this).prop("id").split("_")[0];
 
-  var box_checked = $(e.target).prop("checked");
-  var region = $(e.target).prop("id");
-  if (box_checked) {
+  if ($(e.target).hasClass("down")) {
     selected_regions.add(region);
   } else {
     selected_regions.delete(region);
@@ -230,14 +232,11 @@ $(document).on('click', '.dropdown-menu', function (e) {
       </div>
       <div class="header_bottom site_wrapper">
         <div class="navlink">
-          <h3 data-toggle="dropdown"><a href="javascript:void(0)">Regions ▾</a></h3>
-          <ul class="dropdown-menu">
-            <li> <input id="NA" type="checkbox"/><label for="NA"> North America</label></li>
-            <li> <input id="EU" type="checkbox"/><label for="EU"> Europe</label></li>
-            <li> <input id="KR" type="checkbox"/><label for="KR"> Korea</label></li>
-            <li> <input id="CN" type="checkbox"/><label for="CN"> China</label></li>
-            <li> <input id="INT" type="checkbox"/><label for="INT"> International</label></li>
-          </ul>
+          <button class="region_filter" id="NA_select">NA</button>
+          <button class="region_filter" id="EU_select">EU</button>
+          <button class="region_filter" id="KR_select">KR</button>
+          <button class="region_filter" id="CN_select">CN</button>
+          <button class="region_filter" id="INT_select">INT</button>
         </div>
         <h3 class="navlink"><a href="{% url 'leaderboard' %}">Leaderboard</a></h3>
         <h3 class="navlink"><a href="{% url 'about' %}">About</a></h3>

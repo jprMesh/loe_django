@@ -12,7 +12,13 @@
     --secondary-color: var(--gold);
     --text-color: #000000;
 
-    --kr-text: #221D32;
+    --na-color: #6455F7;
+    --eu-color: #00DEB9;
+    --kr-color: #221D32;
+    --cn-color: #EE0909;
+    --int-color: var(--gold);
+    --kr-color-2: #EFEFEF;
+
     --table-bg: #FFFFFF;
     --slider-bg: #BFBFBF;
 }
@@ -24,7 +30,8 @@
     --secondary-color: var(--light-purple);
     --text-color: #ADBAC7;
 
-    --kr-text: #EFEFEF;
+    --kr-color: #EFEFEF;
+    --kr-color-2: #221D32;
     --table-bg: #55555F;
     --slider-bg: var(--text-color);
 }
@@ -362,17 +369,17 @@ input[type="checkbox" i] {
     text-align: center;
     font-weight: 600;
 }
-.team_ratings_table .KR {
-    color: var(--kr-text);
-}
 .team_ratings_table .NA {
-    color: #6455F7;
-}
-.team_ratings_table .CN {
-    color: #EE0909;
+    color: var(--na-color);
 }
 .team_ratings_table .EU {
-    color: #00DEB9;
+    color: var(--eu-color);
+}
+.team_ratings_table .KR {
+    color: var(--kr-color);
+}
+.team_ratings_table .CN {
+    color: var(--cn-color);
 }
 
 /*///////// unpredicted matches alert style */
@@ -451,18 +458,49 @@ select option {
 
 /* Region filter dropdown */
 
-.dropdown-menu {
-    background: var(--bg-color);
-    color: var(--text-color);
-    border-color: var(--secondary-color);
+button.region_filter {
+    font-weight: 600;
+    border-radius: 0.6rem;
+    color: white;
+}
+button.region_filter:focus {
+    outline: none;
 }
 
-.dropdown-menu input {
-    vertical-align: baseline;
+#NA_select {
+    border-color: var(--na-color);
+}
+#NA_select.down {
+    background-color: var(--na-color);
 }
 
-.dropdown-menu label {
-    margin-bottom: 0.1rem;
+#EU_select {
+    border-color: var(--eu-color);
+}
+#EU_select.down {
+    background-color: var(--eu-color);
+}
+
+#KR_select {
+    border-color: var(--kr-color);
+}
+#KR_select.down {
+    background-color: var(--kr-color);
+    color: var(--kr-color-2);
+}
+
+#CN_select {
+    border-color: var(--cn-color);
+}
+#CN_select.down {
+    background-color: var(--cn-color);
+}
+
+#INT_select {
+    border-color: var(--int-color);
+}
+#INT_select.down {
+    background-color: var(--int-color);
 }
 
 /* end region filter dropdown */
