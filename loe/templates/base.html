@@ -75,11 +75,6 @@ $(document).ready(function() {
   updateVisibleRegions();
   setUnsavedAlert(unsavedMatchesExist());
 
-  let mql = window.matchMedia('(max-width: 927px)');
-  if (mql.matches) {
-    $(".prediction_slider").attr("data-placement", "top");
-  }
-
   $('.region_filter').each(function() {
     var region = $(this).prop("id").split("_")[0];
     if (selected_regions.has(region)) {
@@ -104,6 +99,7 @@ function updateMatchTables() {
     'upcoming': 1,
   }).done(function (data) {
     $('#upcoming_match_table').html(data);
+    mobileTooltipPosition();
   }).fail(function (error) {
     console.log(error);
   });
@@ -113,9 +109,17 @@ function updateMatchTables() {
     'regions': localStorage.getItem("regions"),
   }).done(function (data) {
     $('#recent_match_table').html(data);
+    mobileTooltipPosition();
   }).fail(function (error) {
     console.log(error);
   });
+}
+
+function mobileTooltipPosition() {
+  let mql = window.matchMedia('(max-width: 927px)');
+  if (mql.matches) {
+    $(".prediction_slider").attr("data-placement", "top");
+  }
 }
 
 function unsavedMatchesExist() {
@@ -156,18 +160,17 @@ function sliderChange(slider) {
 
   $(slider).attr('title', pred_title);
   $(slider).attr('data-original-title', pred_title);
-  var that = $(slider);
-  that.tooltip('show');
+  $(slider).tooltip('show');
   sliderChange.hide_timeout = setTimeout(function() {
-    that.tooltip('hide');
+    $(slider).tooltip('hide');
   }, 1000);
 }
 
 function submitPredictionSlider(slider) {
   var checkbox = $(slider).parent().parent().find(".submit_box");
-  checkbox.prop("checked", true);
-  checkbox.prop("indeterminate", false);
   $.post("{% url 'submit_prediction' %}", $(slider.form).serialize(), function(data, status) {
+    checkbox.prop("checked", true);
+    checkbox.prop("indeterminate", false);
     checkbox.tooltip('show');
     setTimeout(function() {
       checkbox.tooltip('hide');
@@ -177,12 +180,12 @@ function submitPredictionSlider(slider) {
 }
 
 function submitPrediction(checkbox) {
-  $(checkbox).prop("checked", true);
   $.post("{% url 'submit_prediction' %}", $(checkbox.form).serialize(), function(data, status) {
-    var that = $(checkbox);
-    that.tooltip('show');
+    $(checkbox).prop("checked", true);
+    $(checkbox).prop("indeterminate", false);
+    $(checkbox).tooltip('show');
     setTimeout(function() {
-      that.tooltip('hide');
+      $(checkbox).tooltip('hide');
     }, 1000);
   });
   setUnsavedAlert(unsavedMatchesExist());

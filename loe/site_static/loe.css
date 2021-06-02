@@ -280,9 +280,9 @@ button.menu_button:focus {
     padding: 0 1rem;
 }
 
-@media (max-width: 927px) {
+@media (max-width: 975px) {
     .content_grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 0.5fr;
         grid-template-rows: auto auto auto;
     }
 }
@@ -292,7 +292,7 @@ button.menu_button:focus {
     }
 }
 
-@media (max-width: 580px) {
+@media (max-width: 585px) {
     .content_grid {
         grid-template-columns: 1fr;
         grid-template-rows: auto auto auto auto;
@@ -359,6 +359,22 @@ input[type="checkbox" i] {
     padding: 0 0.5rem 0.25rem;
     font-size: 0.8rem;
     text-align: center;
+}
+
+.match_table .no_pred {
+    vertical-align: super;
+}
+
+.match_table .match_prediction_cell {
+    display: inline-block;
+}
+
+.match_table .match_logo {
+    vertical-align: baseline;
+}
+
+.match_table .submit_box {
+    vertical-align: super;
 }
 
 .losing_team {
@@ -491,6 +507,8 @@ select option {
 /* slider style */
 .prediction_slider {
     -webkit-appearance: none;
+    vertical-align: super;
+    width: 120px;
 }
 /* end slider style*/
 
