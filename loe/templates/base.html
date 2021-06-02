@@ -72,8 +72,6 @@ var all_regions = ['NA', 'EU', 'KR', 'CN', 'INT'];
 
 $(document).ready(function() {
   updateMatchTables();
-  updateVisibleRegions();
-  setUnsavedAlert(unsavedMatchesExist());
 
   $('.region_filter').each(function() {
     var region = $(this).prop("id").split("_")[0];
@@ -100,6 +98,7 @@ function updateMatchTables() {
   }).done(function (data) {
     $('#upcoming_match_table').html(data);
     mobileTooltipPosition();
+    setUnsavedAlert(unsavedMatchesExist());
   }).fail(function (error) {
     console.log(error);
   });
@@ -175,8 +174,8 @@ function submitPredictionSlider(slider) {
     setTimeout(function() {
       checkbox.tooltip('hide');
     }, 1000);
+    setUnsavedAlert(unsavedMatchesExist());
   });
-  setUnsavedAlert(unsavedMatchesExist());
 }
 
 function submitPrediction(checkbox) {
@@ -187,18 +186,8 @@ function submitPrediction(checkbox) {
     setTimeout(function() {
       $(checkbox).tooltip('hide');
     }, 1000);
+    setUnsavedAlert(unsavedMatchesExist());
   });
-  setUnsavedAlert(unsavedMatchesExist());
-}
-
-function updateVisibleRegions() {
-  all_regions.forEach(function(region) {
-    if (selected_regions.has(region)) {
-      $('.disp_'+region).show();
-    } else {
-      $('.disp_'+region).hide();
-    }
-  })
 }
 
 // On event functions //-----------------------------------------------------------------
@@ -214,7 +203,6 @@ $(document).on('click', '.region_filter', function (e) {
   }
 
   localStorage.setItem('regions', Array.from(selected_regions));
-  updateVisibleRegions();
   updateMatchTables();
 });
 
