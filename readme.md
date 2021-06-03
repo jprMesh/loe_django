@@ -5,12 +5,12 @@ Site is live: https://leagueofelo.com
 ## Screenshots
 
 ### Mobile site dark and light modes
-![Mobile site - dark theme](screenshots/mobile_dark.jpg)
-![Mobile site - light theme](screenshots/mobile_light.jpg)
+<img src="screenshots/mobile_dark.jpg" width=300px title="Mobile site - dark theme">
+<img src="screenshots/mobile_light.jpg" width=300px title="Mobile site - light theme">
 
 ### Desktop site showing region filter
-![Main page - all regions enabled](screenshots/site.png)
-![Main page - EU, KR, and INT regions enabled](screenshots/region_filter.png)
+<img src="screenshots/site.png" width=600px title="Main page - all regions enabled">
+<img src="screenshots/region_filter.png" width=600px title="Main page - EU, KR, and INT regions enabled">
 
 ## Setup
 ```
