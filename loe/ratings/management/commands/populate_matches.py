@@ -2,7 +2,7 @@ import datetime
 import pytz
 from math import ceil
 from django.core.management.base import BaseCommand
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from ratings.models import LEAGUE_REGIONS, Team, Match, Prediction
 from ratings.management.LeagueOfElo.league_of_elo.get_league_data import Leaguepedia_DB
 
@@ -53,6 +53,9 @@ class Command(BaseCommand):
                 team = Team.objects.get(short_name=team_name)
             except ObjectDoesNotExist:
                 print(f'\nUNKNOWN TEAM: {team_name}', end='')
+                return ''
+            except MultipleObjectsReturned:
+                print(f'\nSHORT_NAME CONFLICT: {team_name}', end='')
                 return ''
         return team
 

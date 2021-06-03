@@ -59,14 +59,14 @@ class Command(BaseCommand):
         if match.match_info == 'inter_season_reset':
             return
         try:
-            t1_rating = TeamRating.objects.get(team=match.team1)
+            t1_rating = TeamRating.objects.get(team=match.team1).rating
         except (ObjectDoesNotExist):
             t1_rating = 1500
         try:
-            t2_rating = TeamRating.objects.get(team=match.team2)
+            t2_rating = TeamRating.objects.get(team=match.team2).rating
         except (ObjectDoesNotExist):
             t2_rating = 1500
-        prediction = self.elo_model.predict(t1_rating.rating, t2_rating.rating)
+        prediction = self.elo_model.predict(t1_rating, t2_rating)
         Prediction.objects.update_or_create(user=self.elo_user, match=match, defaults={'predicted_t1_win_prob': prediction})
 
     def _process_match(self, match):
