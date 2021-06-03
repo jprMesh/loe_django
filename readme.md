@@ -2,6 +2,16 @@
 
 Site is live: https://leagueofelo.com
 
+## Screenshots
+
+### Mobile site dark and light modes
+![Mobile site - dark theme](screenshots/mobile_dark.jpg)
+![Mobile site - light theme](screenshots/mobile_light.jpg)
+
+### Desktop site showing region filter
+![Main page - all regions enabled](screenshots/site.png)
+![Main page - EU, KR, and INT regions enabled](screenshots/region_filter.png)
+
 ## Setup
 ```
 sudo apt install python3-venv postgresql libpq-dev
