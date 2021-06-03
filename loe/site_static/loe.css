@@ -178,18 +178,6 @@ button.menu_button:focus {
     display: none;
 }
 
-@media (max-width: 580px) {
-    .mobile_menu {
-        display: inline-block;
-    }
-    .desktop_menu {
-        display: none;
-    }
-    .navlink {
-        padding-right: 1rem;
-    }
-}
-
 #header_title {
     flex: auto;
     margin: 0;
@@ -285,10 +273,22 @@ button.menu_button:focus {
         grid-template-columns: 1fr 0.5fr;
         grid-template-rows: auto auto auto;
     }
+    .about_grid {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 @media (max-width: 860px) {
     .dataTables_wrapper {
         overflow-x: scroll;
+    }
+}
+
+@media (max-width: 650px) {
+    .about_grid {
+        grid-template-columns: 1fr;
+    }
+    .about_content {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -303,8 +303,14 @@ button.menu_button:focus {
     .team_ratings {
         grid-row: span 1;
     }
-    .about_content {
-        grid-template-columns: 1fr;
+    .mobile_menu {
+        display: inline-block;
+    }
+    .desktop_menu {
+        display: none;
+    }
+    .navlink {
+        padding-right: 1rem;
     }
 }
 
