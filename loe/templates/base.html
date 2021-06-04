@@ -71,8 +71,6 @@ var all_regions = ['NA', 'EU', 'KR', 'CN', 'INT'];
 })();
 
 $(document).ready(function() {
-  updateMatchTables();
-
   $('.region_filter').each(function() {
     var region = $(this).prop("id").split("_")[0];
     if (selected_regions.has(region)) {
