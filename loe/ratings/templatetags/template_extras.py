@@ -2,7 +2,7 @@ from math import log10
 from datetime import timedelta
 from django import template
 from django.utils import timezone
-from django.db.models import Avg
+from django.db.models import Avg, Q
 from django.contrib.auth import get_user_model
 from ratings.models import Prediction, Match, Team, TeamRating
 
@@ -83,6 +83,32 @@ def user_stats(active_user, page_user):
     if active_user.is_authenticated:
         get_stats(active_user, context['active_user_stats'])
 
+    return context
+
+
+@register.inclusion_tag('accuracy_plot.html')
+def accuracy_plot(page_user):
+    context = dict()
+    context['bins'] = []
+    user_preds = Prediction.objects.filter(user__username=page_user).exclude(brier__isnull=True).exclude(brier=0.25)
+
+    BIN_SIZE = 5
+    HALF_BIN = BIN_SIZE / 2.0
+    bins = range(50, 101, BIN_SIZE)
+    for center in bins:
+        bin_upper = (center+HALF_BIN)/100.0
+        bin_lower = (center-HALF_BIN)/100.0
+        ibin_upper = 1.0 - bin_lower
+        ibin_lower = 1.0 - bin_upper
+        bin_preds = user_preds.filter((Q(predicted_t1_win_prob__gte=bin_lower) & Q(predicted_t1_win_prob__lt=bin_upper))
+                                    | (Q(predicted_t1_win_prob__gte=ibin_lower) & Q(predicted_t1_win_prob__lt=ibin_upper)))
+        correct = bin_preds.filter(brier__lt=0.25).count()
+        bin_count = bin_preds.count()
+        if not bin_count:
+            context['bins'].append((center, 0, bin_count))
+            continue
+        bin_rate = correct / bin_count
+        context['bins'].append((center, bin_rate, bin_count))
     return context
 
 

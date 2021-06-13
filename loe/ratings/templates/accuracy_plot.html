@@ -1,0 +1,24 @@
+{% load template_extras %}
+
+
+<p>
+  <h3 class="accuracy_plot">{{ page_user }} Accuracy Plot</h3>
+  <table class="accuracy_table">
+    <thead>
+      <tr>
+        <th>Bin</th>
+        <th>Correct</th>
+        <th>Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for center, rate, count in bins %}
+        <tr>
+          <td>{{ center }}</td>
+          <td>{{ rate }}</td>
+          <td>{{ count }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</p>
