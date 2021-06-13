@@ -17,7 +17,7 @@
            onerror="$(this).replaceWith(function() {return $(this).prop('alt'); });">
       </div>
       {% if match_started and not prediction_exists %}
-        <div class="match_prediction_cell match_info_td no_pred">No Prediction</div>
+        <div class="match_prediction_cell match_info_td super">No Prediction</div>
       {% else %}
         <div class="match_prediction_cell">
           <input type="range" class="slider prediction_slider" name="predicted_t1_win_prob" min="0" max="100"
@@ -49,11 +49,11 @@
       </div>
       {% if user.is_authenticated and user.get_username == prediction_user and not match_started %}
         <input type="hidden" name="username" value="{{ user.get_username }}">
-        <div class="match_prediction_cell"><input class="submit_box" type="checkbox" onchange="submitPrediction(this)"
+        <div class="match_prediction_cell"><input class="submit_box super" type="checkbox" onchange="submitPrediction(this)"
           title='Saved!' data-placement='right' data-trigger='manual'
           {% if prediction_exists %}checked{% endif %}></div>
       {% else %}
-        <div class="match_prediction_cell match_info_td"><strong>{{ analyst_rating }}</strong></div>
+        <div class="match_prediction_cell match_info_td super"><strong>{{ analyst_rating }}</strong></div>
       {% endif %}
     </form>
   </td>

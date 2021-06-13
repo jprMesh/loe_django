@@ -371,7 +371,7 @@ input[type="checkbox" i] {
     text-align: center;
 }
 
-.match_table .no_pred {
+.match_table .super {
     vertical-align: super;
 }
 
@@ -381,10 +381,6 @@ input[type="checkbox" i] {
 
 .match_table .match_logo {
     vertical-align: baseline;
-}
-
-.match_table .submit_box {
-    vertical-align: super;
 }
 
 .losing_team {
