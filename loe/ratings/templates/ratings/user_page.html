@@ -9,7 +9,8 @@
   <div class="section_div col">
     <h2 class="section_header">Stats</h2>
     {% user_stats user prediction_user %}
-    {% accuracy_plot prediction_user %}
+    <h2 class="section_header">Accuracy Plot</h2>
+    <div class="accuracy_plot"></div>
   </div>
 
   <div class="section_div col">
@@ -35,4 +36,18 @@
     </table>
   </div>
 </div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+
+function getAccuracy() {
+  $.get(window.location.href + '/accuracy_plot').done(function (data) {
+    console.log(data);
+  }).fail(function (error) {
+    console.log(error);
+  });
+}
+
+</script>
 {% endblock %}

@@ -3,7 +3,7 @@ import logging
 from math import log10
 from django.http import HttpResponse
 from django.template import loader
-from django.db.models import Avg, Max
+from django.db.models import Avg, Max, Q
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
@@ -216,3 +216,29 @@ class MatchTable(APIView):
             'user': request.user,
         }
         return Response(context, template_name='match_table.html')
+
+
+class AccuracyPlot(APIView):
+    def get(self, request, prediction_user):
+        accuracy = []
+        BIN_SIZE = 5
+        HALF_BIN = BIN_SIZE / 2.0
+        bins = range(50, 101, BIN_SIZE)
+        user_preds = Prediction.objects.filter(user__username=prediction_user).exclude(brier__isnull=True).exclude(brier=0.25)
+
+        for center in bins:
+            bin_upper = (center+HALF_BIN)/100.0
+            bin_lower = (center-HALF_BIN)/100.0
+            ibin_upper = 1.0 - bin_lower
+            ibin_lower = 1.0 - bin_upper
+            bin_preds = user_preds.filter((Q(predicted_t1_win_prob__gte=bin_lower) & Q(predicted_t1_win_prob__lt=bin_upper))
+                                        | (Q(predicted_t1_win_prob__gte=ibin_lower) & Q(predicted_t1_win_prob__lt=ibin_upper)))
+            correct = bin_preds.filter(brier__lt=0.25).count()
+            bin_count = bin_preds.count()
+            if not bin_count:
+                accuracy.append((center, 0, bin_count))
+                continue
+            bin_rate = correct / bin_count
+            accuracy.append((center, bin_rate, bin_count))
+        print(accuracy)
+        return Response(accuracy)
