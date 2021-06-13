@@ -29,11 +29,13 @@
 
 $(document).ready(function() {
   updateMatchTables();
+  getAccuracy();
 });
 
 function getAccuracy() {
   $.get(window.location.href.replace(/\/+$/, "") + '/accuracy_plot').done(function (data) {
     console.log(data);
+    // Call D3 fn here
   }).fail(function (error) {
     console.log(error);
   });
