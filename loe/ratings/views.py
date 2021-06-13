@@ -3,7 +3,7 @@ import logging
 from math import log10
 from django.http import HttpResponse
 from django.template import loader
-from django.db.models import Avg, Max, Q
+from django.db.models import Avg, Max, Q, Exists, OuterRef
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
@@ -93,16 +93,8 @@ def about(request):
 
 
 def user_page(request, prediction_user):
-    user_predictions = Prediction.objects.filter(user__username=prediction_user)
-    past_matches = (user_predictions.filter(match__start_timestamp__lte=timezone.now())
-            .values('match__pk').order_by('-match__start_timestamp'))[:50]
-    future_matches = (user_predictions.filter(match__start_timestamp__gte=timezone.now())
-            .values('match__pk').order_by('-match__start_timestamp'))
-
     context = {
         'prediction_user': prediction_user,
-        'past_matches': past_matches,
-        'future_matches': future_matches
     }
     return render(request, 'ratings/user_page.html', context)
 
@@ -191,7 +183,7 @@ class Stats(APIView):
 class MatchTable(APIView):
     renderer_classes = [TemplateHTMLRenderer]
 
-    def get(self, request):
+    def get(self, request, prediction_user=None):
         requested_regions = request.GET.get('regions', '')[:20].split(',')
         all_regions = [abbr for abbr, full in LEAGUE_REGIONS]
         regions = [r for r in requested_regions if r in all_regions]
@@ -207,13 +199,17 @@ class MatchTable(APIView):
         else:
             matches = (Match.objects
                     .filter(region__in=regions)
-                    .filter(start_timestamp__lte=timezone.now())
+                    .filter(start_timestamp__lte=timezone.now(), start_timestamp__gte=timezone.now() - datetime.timedelta(days=7))
                     .exclude(team1_score__lt=0)
-                    .order_by('-start_timestamp'))[:15]
+                    .order_by('-start_timestamp'))
+
+        if prediction_user:
+            matches = matches.filter(Exists(Prediction.objects.filter(match=OuterRef('pk'), user__username=prediction_user)))
 
         context = {
             'matches': matches,
             'user': request.user,
+            'prediction_user': prediction_user or request.user.username
         }
         return Response(context, template_name='match_table.html')
 

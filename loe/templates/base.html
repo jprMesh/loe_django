@@ -89,7 +89,7 @@ function changeTheme() {
 }
 
 function updateMatchTables() {
-  $.get('match_table', {
+  $.get(window.location.href.replace(/\/+$/, "") + '/match_table', {
     'dataType': 'html',
     'regions': localStorage.getItem("regions"),
     'upcoming': 1,
@@ -101,7 +101,7 @@ function updateMatchTables() {
     console.log(error);
   });
 
-  $.get('match_table', {
+  $.get(window.location.href.replace(/\/+$/, "") + '/match_table', {
     'dataType': 'html',
     'regions': localStorage.getItem("regions"),
   }).done(function (data) {

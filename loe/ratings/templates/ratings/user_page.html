@@ -14,25 +14,11 @@
   </div>
 
   <div class="section_div col">
-    <h2 class="section_header">Match Predictions</h2>
-    <table class="match_table">
-      <tr class="table_sep_header">
-        <th colspan="4">Upcoming Predictions</th>
-      </tr>
-      {% if future_matches %}
-        {% for pred in future_matches %}
-          {% prediction_tr user pred.match__pk prediction_user %}
-        {% endfor %}
-      {% else %}
-        <tr><td colspan="5" style="text-align:center">No Upcoming Predictions</td></tr>
-      {% endif %}
-      <tr class="table_sep_header">
-        <th colspan="4">Past Predictions</th>
-        <th>AR</th>
-      </tr>
-      {% for pred in past_matches %}
-        {% prediction_tr user pred.match__pk prediction_user %}
-      {% endfor %}
+    <h2 class="section_header">Recent Predictions</h2>
+    <table class="match_table" id="recent_match_table">
+    </table>
+    <h2 class="section_header">Upcoming Predictions</h2>
+    <table class="match_table" id="upcoming_match_table">
     </table>
   </div>
 </div>
@@ -41,8 +27,12 @@
 {% block script %}
 <script type="text/javascript">
 
+$(document).ready(function() {
+  updateMatchTables();
+});
+
 function getAccuracy() {
-  $.get(window.location.href + '/accuracy_plot').done(function (data) {
+  $.get(window.location.href.replace(/\/+$/, "") + '/accuracy_plot').done(function (data) {
     console.log(data);
   }).fail(function (error) {
     console.log(error);

@@ -347,6 +347,10 @@ input[type="checkbox" i] {
     text-align: center;
 }
 
+.match_table {
+    margin-bottom: 1rem;
+}
+
 .match_table td {
     padding-left: 0;
     padding-right: 0;
