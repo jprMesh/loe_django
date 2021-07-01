@@ -565,4 +565,22 @@ button.region_filter:focus {
     background-color: var(--int-color);
 }
 
-/* end region filter dropdown */
+/* end region filter buttons */
+
+/* User accuracy plot */
+
+.accuracy_plot .domain,
+.accuracy_plot .range,
+.accuracy_plot .tick > line {
+    stroke: var(--primary-color);
+}
+
+.accuracy_plot .tick {
+    stroke: var(--text-color);
+}
+
+.accuracy_plot circle {
+    fill: var(--secondary-color);
+}
+
+/* end user accuracy plot */

@@ -233,7 +233,9 @@ class AccuracyPlot(APIView):
             bin_count = bin_preds.count()
             if not bin_count:
                 accuracy.append((center, 0, bin_count))
+                accuracy.append((100 - center, 0, bin_count))
                 continue
             bin_rate = correct / bin_count
             accuracy.append((center, bin_rate, bin_count))
+            accuracy.append((100 - center, 1.0 - bin_rate, bin_count))
         return Response(accuracy)
