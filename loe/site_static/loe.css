@@ -260,7 +260,8 @@ button.menu_button:focus {
     grid-column: span 3;
 }
 
-.about_grid {
+.about_grid,
+.user_grid {
     grid-auto-flow: row;
     grid-template-columns: 1fr 1fr;
 }
@@ -275,13 +276,21 @@ button.menu_button:focus {
         grid-template-columns: 1fr 0.5fr;
         grid-template-rows: auto auto auto;
     }
-    .about_grid {
+    .about_grid,
+    .user_grid {
         grid-template-columns: 1fr 1fr;
     }
 }
 @media (max-width: 860px) {
     .dataTables_wrapper {
         overflow-x: scroll;
+    }
+}
+
+@media (max-width: 765px) {
+    .user_grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
     }
 }
 
@@ -573,6 +582,11 @@ button.region_filter:focus {
 
 .accuracy_plot {
     position: relative;
+}
+
+.accuracy_plot svg {
+    display: block;
+    margin: auto;
 }
 
 .accuracy_plot .domain,

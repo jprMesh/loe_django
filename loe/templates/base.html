@@ -56,9 +56,14 @@
 // Global vars
 var selected_regions;
 var all_regions = ['NA', 'EU', 'KR', 'CN', 'INT'];
+var small_plot = false;
 
 // On load functions //--------------------------------------------------------------
 (function(){
+  if (window.matchMedia('(max-width: 927px)').matches) {
+    small_plot = true;
+  }
+
   var theme = localStorage.getItem('theme') || 'dark';
   document.documentElement.setAttribute('data-theme', theme);
   if (localStorage.getItem('regions')) {
