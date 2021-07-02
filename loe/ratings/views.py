@@ -235,7 +235,7 @@ class AccuracyPlot(APIView):
                 accuracy.append((center, 0, bin_count))
                 accuracy.append((100 - center, 0, bin_count))
                 continue
-            bin_rate = correct / bin_count
+            bin_rate = round(100 * correct / bin_count, 1)
             accuracy.append((center, bin_rate, bin_count))
-            accuracy.append((100 - center, 1.0 - bin_rate, bin_count))
+            accuracy.append((100 - center, 100 - bin_rate, bin_count))
         return Response(accuracy)

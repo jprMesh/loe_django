@@ -10,6 +10,7 @@
     --primary-color: var(--dark-purple);
     --primary-hover: var(--light-purple);
     --secondary-color: var(--gold);
+    --secondary-hover: var(--dark-gold);
     --text-color: #000000;
 
     --na-color: #6455F7;
@@ -28,6 +29,7 @@
     --primary-color: var(--gold);
     --primary-hover: var(--dark-gold);
     --secondary-color: var(--light-purple);
+    --secondary-hover: var(--dark-purple);
     --text-color: #ADBAC7;
 
     --kr-color: #EFEFEF;
@@ -569,6 +571,10 @@ button.region_filter:focus {
 
 /* User accuracy plot */
 
+.accuracy_plot {
+    position: relative;
+}
+
 .accuracy_plot .domain,
 .accuracy_plot .range,
 .accuracy_plot .tick > line {
@@ -581,6 +587,18 @@ button.region_filter:focus {
 
 .accuracy_plot circle {
     fill: var(--secondary-color);
+}
+
+.accuracy_plot .accuracy_tooltip {
+    position: absolute;
+    z-index: 10;
+    visibility: hidden;
+    width: 200px;
+    background: var(--bg-color);
+    border: var(--primary-color) 1px solid;
+    border-radius: 0.5rem;
+    padding: 0.3rem 0.5rem;
+    text-align: center;
 }
 
 /* end user accuracy plot */
