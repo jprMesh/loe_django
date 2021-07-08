@@ -603,6 +603,10 @@ button.region_filter:focus {
     fill: var(--secondary-color);
 }
 
+.accuracy_plot .confidence_interval {
+    stroke: var(--secondary-color);
+}
+
 .accuracy_plot .accuracy_tooltip {
     position: absolute;
     z-index: 10;

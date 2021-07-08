@@ -26,6 +26,7 @@
 
 {% block script %}
 <script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
 <script type="text/javascript">
 
 $(document).ready(function() {
@@ -95,11 +96,18 @@ function populate_d3() {
       .attr("class", "accuracy_tooltip");
 
     // Add dots
-    d3_svg.append('g')
+    let dotGroups = d3_svg.append('g')
       .selectAll("dot")
         .data(data)
       .enter()
-      .append("circle")
+      .append("g");
+    dotGroups.append("line")
+        .attr("class", "confidence_interval")
+        .attr("x1", (d) => d3_x(d[0]))
+        .attr("x2", (d) => d3_x(d[0]))
+        .attr("y1", (d) => d3_y(binomial_ppf(.025, d[1] / 100, d[2], true) * 100.0 / d[2]))
+        .attr("y2", (d) => d3_y(binomial_ppf(.975, d[1] / 100, d[2], false) * 100.0 / d[2]));
+    dotGroups.append("circle")
         .attr("cx", function (d) { return d3_x(d[0]); })
         .attr("cy", function (d) { return d3_y(d[1]); })
         .attr("r",  function (d) { if (d[2] === 0) return 0; return Math.max(d[2]*max_dot_size/max_bin_count, min_dot_size); })
@@ -134,5 +142,28 @@ function update_d3() {
   });
 }
 
+function binomial_ppf(q, p, n, round_down) {
+  // The binomial percent point function cannot be expressed in
+  // closed form. Instead, iterate on the CDF to find the inverse.
+  let highest_x = n;
+  let lowest_x = 0;
+  let last_guess = 0;
+  let round_func = round_down ? Math.floor : Math.ceil;
+
+  while (true) {
+    let new_guess = round_func((highest_x - lowest_x) / 2 + lowest_x);
+    let probability = jStat.binomial.cdf(new_guess, n, p);
+
+    // Either we found it or this is as close as we can get.
+    if (probability === q || new_guess === last_guess)
+      return new_guess;
+    else if (probability < q)
+      lowest_x = new_guess;
+    else if (probability > q)
+      highest_x = new_guess;
+
+    last_guess = new_guess;
+  }
+}
 </script>
 {% endblock %}
