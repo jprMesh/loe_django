@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 from django.db.models import Avg
 from django.contrib.auth import get_user_model
-from ratings.models import Team, TeamRating, Match, Prediction
+from ratings.models import Team, TeamRating, TeamRatingHistory, Match, Prediction
 from ratings.management.LeagueOfElo.league_of_elo.elo.rating_system import Elo
 
 
@@ -73,11 +73,11 @@ class Command(BaseCommand):
         if match.start_timestamp > timezone.now():
             self._set_prediction(match)
             print('F', end='', flush=True) # F for future
-            return
+            return False
 
         if match.elo_processed:
             print('A', end='', flush=True) # A for already processed
-            return
+            return False
 
         if match.match_info == 'inter_season_reset':
             # Need to differentiate between spring and summer reset so inactive teams don't get
@@ -88,7 +88,7 @@ class Command(BaseCommand):
                 inactive_cutoff_date = match.start_timestamp - datetime.timedelta(days=120)
             self._inter_season_reset(match.start_timestamp, inactive_cutoff_date)
             Match.objects.filter(pk=match.pk).update(elo_processed=True)
-            return
+            return True
 
         stale_rating_cutoff = match.start_timestamp - datetime.timedelta(days=90)
         for team in [match.team1, match.team2]:
@@ -103,10 +103,10 @@ class Command(BaseCommand):
 
         if match.start_timestamp <= t1_rating.rating_date:
             print('E', end='', flush=True) # Team rating newer than match. We should never see this.
-            return
+            return False
         if match.team1_score == 0 and match.team2_score == 0:
             print('N', end='', flush=True) # Match results not recorded yet.
-            return
+            return False
 
         prediction = self.elo_model.predict(t1_rating.rating, t2_rating.rating)
         if match.team1_score > match.team2_score:
@@ -123,6 +123,20 @@ class Command(BaseCommand):
         TeamRating.objects.filter(team=match.team2).update(rating=t2_rating.rating + t2_adj, rating_date=match.start_timestamp)
         Match.objects.filter(pk=match.pk).update(elo_processed=True)
         print('.', end='', flush=True)
+        return True
+
+    def _update_rating_history(self, match):
+        if match.team1 == Team.objects.get(short_name='NUL'):
+            teams = Team.objects.exclude(short_name='NUL')
+        else:
+            teams = [match.team1, match.team2]
+        for team in teams:
+            try:
+                team_rating = TeamRating.objects.get(team=team)
+            except ObjectDoesNotExist:
+                continue
+            if not TeamRatingHistory.objects.filter(team=team, rating_date=team_rating.rating_date).exists():
+                TeamRatingHistory(team=team, match=match, rating_date=team_rating.rating_date, rating=team_rating.rating).save()
 
     def _calculate_ratings(self):
         docstring = '''
@@ -135,7 +149,9 @@ N : no results yet
         print(docstring)
         ordered_matches = Match.objects.all().order_by('start_timestamp')
         for match in ordered_matches.iterator():
-            self._process_match(match)
+            rating_changed = self._process_match(match)
+            if rating_changed:
+                self._update_rating_history(match)
         print(f'\nProcessed {ordered_matches.count()} matches')
 
     def handle(self, *args, **options):
