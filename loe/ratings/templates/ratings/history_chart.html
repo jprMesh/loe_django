@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}League of Elo History{% endblock %}
+
+{% block content %}
+<div class="d3_plot" id="history_chart"></div>
+{% endblock %}
+
+{% block script %}
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+  setup_d3();
+});
+
+function setup_d3() {
+  // set the dimensions and margins of the graph
+  var margin = {top: 10, right: 50, bottom: 30, left: 50};
+  var width = 800 - margin.left - margin.right;
+  var height = 400 - margin.top - margin.bottom;
+  if (small_plot) {
+    width = 400 - margin.left - margin.right;
+    height = 250 - margin.top - margin.bottom;
+  }
+
+  // append the svg object to the body of the page
+  var d3_svg = d3.select("#history_chart")
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+  var team_history_url = window.location.href.replace(/\/+$/, "") + '/C9';
+  d3.json(team_history_url, function(data) {
+    rating_data = data.team_rating_history;
+
+    console.log(d3.extent(rating_data, function(d) { return d.rating_date; }));
+
+    // Add X axis
+    var d3_x = d3.scaleTime()
+      .domain(d3.extent(rating_data, function(d) { return new Date(d.rating_date); }))
+      .range([ 0, width ]);
+    d3_svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(d3_x));
+
+    // Add Y axis
+    var d3_y = d3.scaleLinear()
+      .domain([1200, 2000])
+      .range([ height, 0]);
+    d3_svg.append("g")
+      .call(d3.axisLeft(d3_y));
+
+    // Add data
+    d3_svg.append("path")
+      .datum(rating_data)
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", 1.5)
+      .attr("d", d3.line()
+        .x(function(d) { return d3_x(new Date(d.rating_date)) })
+        .y(function(d) { return d3_y(d.rating) })
+        )
+  });
+}
+
+</script>
+{% endblock %}

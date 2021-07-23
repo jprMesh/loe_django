@@ -13,8 +13,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.renderers import TemplateHTMLRenderer
 
-from .models import Prediction, Match, Team, TeamRating, LEAGUE_REGIONS
-from .serializers import PredictionSerializer
+from .models import Prediction, Match, Team, TeamRating, TeamRatingHistory, LEAGUE_REGIONS
+from .serializers import PredictionSerializer, TeamRatingHistorySerializer
 
 
 SPRING_RESET = -1
@@ -92,11 +92,12 @@ def about(request):
     return render(request, 'ratings/about.html')
 
 
+def history(request):
+    return render(request, 'ratings/history_chart.html')
+
+
 def user_page(request, prediction_user):
-    context = {
-        'prediction_user': prediction_user,
-    }
-    return render(request, 'ratings/user_page.html', context)
+    return render(request, 'ratings/user_page.html', {'prediction_user': prediction_user})
 
 
 # REST API Views
@@ -241,3 +242,23 @@ class AccuracyPlot(APIView):
                 continue
             accuracy.append((100 - center, 100 - bin_rate, bin_count))
         return Response(accuracy)
+
+
+class EloHistory(APIView):
+    def get(self, request, team):
+        ratings = TeamRatingHistory.objects.filter(team__short_name=team)
+        if not ratings.exists():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        serialized_ratings = TeamRatingHistorySerializer(ratings, many=True)
+        context = {
+            'team': team,
+            'team_rating_history': serialized_ratings.data
+        }
+        return Response(context)
+
+'''
+class GetRecentMovers(APIView):
+    def get(self, request):
+        for TeamRating
+        return Response(recent_movers)
+'''

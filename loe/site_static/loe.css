@@ -580,34 +580,34 @@ button.region_filter:focus {
 
 /* User accuracy plot */
 
-.accuracy_plot {
+.d3_plot {
     position: relative;
 }
 
-.accuracy_plot svg {
+.d3_plot svg {
     display: block;
     margin: auto;
 }
 
-.accuracy_plot .domain,
-.accuracy_plot .range,
-.accuracy_plot .tick > line {
+.d3_plot .domain,
+.d3_plot .range,
+.d3_plot .tick > line {
     stroke: var(--primary-color);
 }
 
-.accuracy_plot .tick {
+.d3_plot .tick {
     stroke: var(--text-color);
 }
 
-.accuracy_plot circle {
+.d3_plot circle {
     fill: var(--secondary-color);
 }
 
-.accuracy_plot .confidence_interval {
+.d3_plot .confidence_interval {
     stroke: var(--secondary-color);
 }
 
-.accuracy_plot .accuracy_tooltip {
+.d3_plot .accuracy_tooltip {
     position: absolute;
     z-index: 10;
     visibility: hidden;
