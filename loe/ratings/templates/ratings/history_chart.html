@@ -37,8 +37,7 @@ function setup_d3() {
   var team_history_url = window.location.href.replace(/\/+$/, "") + '/C9';
   d3.json(team_history_url, function(data) {
     rating_data = data.team_rating_history;
-
-    console.log(d3.extent(rating_data, function(d) { return d.rating_date; }));
+    console.log(rating_data);
 
     // Add X axis
     var d3_x = d3.scaleTime()

@@ -23,6 +23,9 @@ class Command(BaseCommand):
         self.elo_model = Elo(K=30, score_mult=True)
         self.elo_user = get_user_model().objects.get(username='LeagueOfElo')
 
+    def add_arguments(self, parser):
+        parser.add_argument('--clear_ratings', action='store_true', help='Deletes all Team Ratings from database.')
+
     def _inter_season_reset(self, reset_date, inactive_cutoff_date):
         print(f'\nSeason reset: {reset_date}')
         regional_averages = {
@@ -45,8 +48,9 @@ class Command(BaseCommand):
     def _continuity_check(self, team, match_date):
         continuity_teams = Team.objects.filter(team_continuity_id=team.team_continuity_id)
         if not TeamRating.objects.filter(team__in=continuity_teams).exists():
-            new_team = TeamRating(team=team, rating=1500, rating_date=match_date - datetime.timedelta(hours=1))
+            new_team = TeamRating(team=team, rating=1500, rating_date=match_date - datetime.timedelta(days=1))
             new_team.save()
+            TeamRatingHistory(team=team, match=None, rating_date=new_team.rating_date, rating=new_team.rating).save()
             print(f'\nCreated {new_team}')
         else:
             most_recent_rating = TeamRating.objects.filter(team__in=continuity_teams).order_by('-rating_date')[0]
@@ -154,5 +158,13 @@ N : no results yet
                 self._update_rating_history(match)
         print(f'\nProcessed {ordered_matches.count()} matches')
 
+    def _clear_ratings(self):
+        print('Clearing Team Ratings...')
+        TeamRating.objects.all().delete()
+        TeamRatingHistory.objects.all().delete()
+        Match.objects.all().update(elo_processed=False)
+
     def handle(self, *args, **options):
+        if options['clear_ratings']:
+            self._clear_ratings()
         self._calculate_ratings()
