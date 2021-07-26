@@ -257,22 +257,24 @@ class EloHistory(APIView):
         return Response(context)
 
 
-class HistoryGaps(APIView):
-    gaps = []
+class EloHistoryAll(APIView):
     def get(self, request):
-        last_rating = TeamRating.objects.all().order_by('-rating_date')[0].rating_date
-        if HistoryGaps.gaps:
-            return Response(HistoryGaps.gaps + [last_rating])
-
-        matches = Match.objects.all().order_by('start_timestamp')
-        last_match_date = matches[0].start_timestamp
-        HistoryGaps.gaps.append((last_match_date))
-        for match in matches:
-            if match.start_timestamp > last_match_date + datetime.timedelta(days=7):
-                HistoryGaps.gaps.append((last_match_date, match.start_timestamp))
-            last_match_date = match.start_timestamp
-        return Response(HistoryGaps.gaps + [last_rating])
-
+        context = {
+            'teams': [],
+            'max_index': TeamRatingHistory.objects.all().order_by('-rating_index').first().rating_index
+        }
+        teams = Team.objects.all().order_by('teamrating__rating')
+        for team in teams:
+            ratings = TeamRatingHistory.objects.filter(team=team).order_by('rating_index')
+            if not ratings.exists():
+                continue
+            serialized_ratings = TeamRatingHistorySerializer(ratings, many=True)
+            context['teams'].append({
+                'team': team.short_name,
+                'color': team.color1,
+                'team_rating_history': serialized_ratings.data
+            })
+        return Response(context)
 
 '''
 class GetRecentMovers(APIView):

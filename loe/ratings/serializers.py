@@ -12,5 +12,5 @@ class PredictionSerializer(serializers.ModelSerializer):
 class TeamRatingHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = TeamRatingHistory
-        fields = ['rating', 'rating_date']
-        read_only_fields = ['rating', 'rating_date']
+        fields = ['rating', 'rating_index']
+        read_only_fields = ['rating', 'rating_index']

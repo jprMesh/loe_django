@@ -62,7 +62,7 @@ class TeamRating(models.Model):
 class TeamRatingHistory(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     match = models.ForeignKey(Match, on_delete=models.CASCADE, null=True)
-    rating_date = models.DateTimeField()
+    rating_index = models.IntegerField()
     rating = models.FloatField()
 
     def __str__(self):

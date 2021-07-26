@@ -8,7 +8,6 @@
 
 {% block script %}
 <script src="https://d3js.org/d3.v4.js"></script>
-<script src="https://unpkg.com/d3fc"></script>
 <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
 <script type="text/javascript">
 
@@ -28,8 +27,7 @@ function setup_d3() {
   var d3_x;
   var d3_y;
   var x_axis;
-  var x_start;
-  var x_end;
+  var x_max;
 
   // append the svg object to the body of the page
   var d3_svg = d3.select("#history_chart")
@@ -59,22 +57,18 @@ function setup_d3() {
       .attr("class", "brush")
       .call(brush);
 
-  // Get time gaps and set axes
-  var gaps_url = window.location.href.replace(/\/+$/, "") + '/gaps';
+  // Get data and set axes
+  var gaps_url = window.location.href.replace(/\/+$/, "") + '/all_teams';
   d3.json(gaps_url, function(data) {
-    x_start = new Date(data.shift());
-    x_end = new Date(data.pop());
-    let gap_dates = data.map(d => [new Date(d[0]), new Date(d[1])]);
-    console.log(gap_dates);
+    x_max = data.max_index;
 
     // Add X axis
-    d3_x = fc.scaleDiscontinuous(d3.scaleTime())
-      .discontinuityProvider(fc.discontinuityRange(...gap_dates))
-      .domain([x_start, x_end])
+    d3_x = d3.scaleLinear()
+      .domain([0, x_max])
       .range([ 0, width ]);
     x_axis = d3_svg.append("g")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(d3_x).tickFormat(d3.timeFormat('%Y')));
+      .call(d3.axisBottom(d3_x));
 
     // Add Y axis
     d3_y = d3.scaleLinear()
@@ -84,6 +78,7 @@ function setup_d3() {
       .call(d3.axisLeft(d3_y));
 
     // Show time gaps
+    /*
     plot_area.selectAll('.time-span-rect')
       .data(gap_dates)
     .enter().append('rect')
@@ -92,6 +87,20 @@ function setup_d3() {
       .attr('y', 0)
       .attr('width', function(d) { return d3_x(d[1]) - d3_x(d[0]) + 2; })
       .attr('height', height);
+    */
+
+    data.teams.forEach(function (t) {
+      // Add line for each team
+      plot_area.append("path")
+        .datum(t.team_rating_history)
+        .attr("fill", "none")
+        .attr("stroke", t.color)
+        .attr("stroke-width", 1.5)
+        .attr("d", d3.line()
+          .x(function(d) { return d3_x(d.rating_index) })
+          .y(function(d) { return d3_y(d.rating) })
+          );
+    });
   });
 
   // Set up chart zooming
@@ -103,7 +112,7 @@ function setup_d3() {
     // If no selection, back to initial coordinate. Otherwise, update X axis domain
     if (!extent) {
       if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // Wait a little bit
-      d3_x.domain([x_start, x_end]);
+      d3_x.domain([0, x_max]);
     } else {
       d3_x.domain([ d3_x.invert(extent[0]), d3_x.invert(extent[1]) ])
       plot_area.select(".brush").call(brush.move, null) // Remove the grey brush area as soon as the selection has been done
@@ -114,41 +123,10 @@ function setup_d3() {
     plot_area.selectAll("path")
       .transition().duration(1000)
       .attr("d", d3.line()
-        .x(function(d) { return d3_x(new Date(d.rating_date)) })
+        .x(function(d) { return d3_x(d.rating_index) })
         .y(function(d) { return d3_y(d.rating) })
         )
   }
-
-/*
-  // Show season resets
-  var gaps_url = window.location.href.replace(/\/+$/, "") + '/resets';
-  d3.json(gaps_url, function(data) {
-    d3_svg.selectAll('.time-span-rect')
-      .data(data)
-    .enter().append('rect')
-      .attr('class', 'time-span-rect')
-      .attr('x', function(d) { return d3_x(d.start_dt); })
-      .attr('y', 0)
-      .attr('width', function(d) { return d3_x(d.end_dt) - d3_x(d.start_dt); })
-      .attr('height', height);
-  });
-*/
-  var team_history_url = window.location.href.replace(/\/+$/, "") + '/team/C9';
-  d3.json(team_history_url, function(data) {
-    rating_data = data.team_rating_history;
-    console.log(rating_data);
-
-    // Add data
-    plot_area.append("path")
-      .datum(rating_data)
-      .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("stroke-width", 1.5)
-      .attr("d", d3.line()
-        .x(function(d) { return d3_x(new Date(d.rating_date)) })
-        .y(function(d) { return d3_y(d.rating) })
-        )
-  });
 }
 
 </script>

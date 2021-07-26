@@ -22,6 +22,7 @@ class Command(BaseCommand):
         super().__init__(*args, **kwargs)
         self.elo_model = Elo(K=30, score_mult=True)
         self.elo_user = get_user_model().objects.get(username='LeagueOfElo')
+        self.prev_match_region = None
 
     def add_arguments(self, parser):
         parser.add_argument('--clear_ratings', action='store_true', help='Deletes all Team Ratings from database.')
@@ -50,13 +51,16 @@ class Command(BaseCommand):
         if not TeamRating.objects.filter(team__in=continuity_teams).exists():
             new_team = TeamRating(team=team, rating=1500, rating_date=match_date - datetime.timedelta(days=1))
             new_team.save()
-            TeamRatingHistory(team=team, match=None, rating_date=new_team.rating_date, rating=new_team.rating).save()
+            max_current_rating_index = TeamRatingHistory.objects.all().order_by('-rating_index').first().rating_index if TeamRatingHistory.objects.all().exists() else 0
+            TeamRatingHistory(team=team, match=None, rating_index=max_current_rating_index, rating=new_team.rating).save()
             print(f'\nCreated {new_team}')
         else:
             most_recent_rating = TeamRating.objects.filter(team__in=continuity_teams).order_by('-rating_date')[0]
             Team.objects.filter(pk=most_recent_rating.team.pk).update(is_active=False)
             updated_rating, _ = TeamRating.objects.update_or_create(team=team,
                     defaults={'rating':most_recent_rating.rating, 'rating_date':most_recent_rating.rating_date})
+            rating_index = TeamRatingHistory.objects.filter(team__in=continuity_teams).order_by('-rating_index').first().rating_index
+            TeamRatingHistory(team=team, match=None, rating_index=rating_index, rating=updated_rating.rating).save()
             print(f'\nSet {updated_rating} from {most_recent_rating}')
 
     def _set_prediction(self, match):
@@ -129,18 +133,27 @@ class Command(BaseCommand):
         print('.', end='', flush=True)
         return True
 
-    def _update_rating_history(self, match):
-        if match.team1 == Team.objects.get(short_name='NUL'):
+    def _update_rating_history(self, match, prev_match_region):
+        if match.region == 'INT' and (self.prev_match_region != 'INT' or match.team1_score < 0):
             teams = Team.objects.exclude(short_name='NUL')
+            rating_index = TeamRatingHistory.objects.all().order_by('-rating_index').first().rating_index + 1 if TeamRatingHistory.objects.all().exists() else 0
+            sync = True
         else:
             teams = [match.team1, match.team2]
+            sync = False
+
         for team in teams:
             try:
                 team_rating = TeamRating.objects.get(team=team)
             except ObjectDoesNotExist:
-                continue
-            if not TeamRatingHistory.objects.filter(team=team, rating_date=team_rating.rating_date).exists():
-                TeamRatingHistory(team=team, match=match, rating_date=team_rating.rating_date, rating=team_rating.rating).save()
+                continue # Team doesn't exist yet
+            if not sync:
+                rating_index = TeamRatingHistory.objects.filter(team=team).order_by('-rating_index').first().rating_index + 1
+            if not TeamRatingHistory.objects.filter(team=team, match=match).exists():
+                prev = TeamRatingHistory.objects.filter(team=team).order_by('-rating_index').first()
+                if prev.rating == team_rating.rating and prev.match.team1_score < 0:
+                    continue # inactive team
+                TeamRatingHistory(team=team, match=match, rating_index=rating_index, rating=team_rating.rating).save()
 
     def _calculate_ratings(self):
         docstring = '''
@@ -155,7 +168,8 @@ N : no results yet
         for match in ordered_matches.iterator():
             rating_changed = self._process_match(match)
             if rating_changed:
-                self._update_rating_history(match)
+                self._update_rating_history(match, self.prev_match_region)
+            self.prev_match_region = match.region
         print(f'\nProcessed {ordered_matches.count()} matches')
 
     def _clear_ratings(self):
