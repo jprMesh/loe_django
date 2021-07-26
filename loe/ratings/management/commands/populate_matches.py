@@ -80,11 +80,11 @@ class Command(BaseCommand):
             print('X', end='', flush=True) # X for eXists
             return
 
-        # Update match if time slot change within day
+        # Update match if time slot change within week
         m = Match.objects.filter(team1=team1, team2=team2,
             team1_score=t1s, team2_score=t2s,
-            start_timestamp__gte=(tz_match_ts - datetime.timedelta(hours=12)),
-            start_timestamp__lte=(tz_match_ts + datetime.timedelta(hours=12)),
+            start_timestamp__gte=(tz_match_ts - datetime.timedelta(days=8)),
+            start_timestamp__lte=(tz_match_ts + datetime.timedelta(days=8)),
             best_of=bestof, match_info=tab, region=region)
         if m.exists():
             print('U', end='', flush=True) # X for eXists
