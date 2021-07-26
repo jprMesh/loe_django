@@ -8,6 +8,7 @@
 
 {% block script %}
 <script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://unpkg.com/d3fc"></script>
 <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
 <script type="text/javascript">
 
@@ -21,9 +22,14 @@ function setup_d3() {
   var width = 800 - margin.left - margin.right;
   var height = 400 - margin.top - margin.bottom;
   if (small_plot) {
-    width = 400 - margin.left - margin.right;
+    width = 360 - margin.left - margin.right;
     height = 250 - margin.top - margin.bottom;
   }
+  var d3_x;
+  var d3_y;
+  var x_axis;
+  var x_start;
+  var x_end;
 
   // append the svg object to the body of the page
   var d3_svg = d3.select("#history_chart")
@@ -34,28 +40,106 @@ function setup_d3() {
       .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
-  var team_history_url = window.location.href.replace(/\/+$/, "") + '/C9';
-  d3.json(team_history_url, function(data) {
-    rating_data = data.team_rating_history;
-    console.log(rating_data);
+  // Clip rect to only show data in the plot
+  d3_svg.append("defs").append("svg:clipPath")
+    .attr("id", "clip")
+    .append("svg:rect")
+    .attr("width", width )
+    .attr("height", height )
+    .attr("x", 0)
+    .attr("y", 0);
+  var plot_area = d3_svg.append('g')
+    .attr("clip-path", "url(#clip)");
+
+  // Add brushing
+  var brush = d3.brushX()
+    .extent( [ [0,0], [width,height] ] )
+    .on("end", updateChart);
+  plot_area.append("g")
+      .attr("class", "brush")
+      .call(brush);
+
+  // Get time gaps and set axes
+  var gaps_url = window.location.href.replace(/\/+$/, "") + '/gaps';
+  d3.json(gaps_url, function(data) {
+    x_start = new Date(data.shift());
+    x_end = new Date(data.pop());
+    let gap_dates = data.map(d => [new Date(d[0]), new Date(d[1])]);
+    console.log(gap_dates);
 
     // Add X axis
-    var d3_x = d3.scaleTime()
-      .domain(d3.extent(rating_data, function(d) { return new Date(d.rating_date); }))
+    d3_x = fc.scaleDiscontinuous(d3.scaleTime())
+      .discontinuityProvider(fc.discontinuityRange(...gap_dates))
+      .domain([x_start, x_end])
       .range([ 0, width ]);
-    d3_svg.append("g")
+    x_axis = d3_svg.append("g")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(d3_x));
+      .call(d3.axisBottom(d3_x).tickFormat(d3.timeFormat('%Y')));
 
     // Add Y axis
-    var d3_y = d3.scaleLinear()
+    d3_y = d3.scaleLinear()
       .domain([1200, 2000])
       .range([ height, 0]);
     d3_svg.append("g")
       .call(d3.axisLeft(d3_y));
 
+    // Show time gaps
+    plot_area.selectAll('.time-span-rect')
+      .data(gap_dates)
+    .enter().append('rect')
+      .attr('class', 'time-span-rect')
+      .attr('x', function(d) { return d3_x(d[0]) - 1; })
+      .attr('y', 0)
+      .attr('width', function(d) { return d3_x(d[1]) - d3_x(d[0]) + 2; })
+      .attr('height', height);
+  });
+
+  // Set up chart zooming
+  var idleTimeout;
+  function idled() { idleTimeout = null; }
+
+  function updateChart() {
+    extent = d3.event.selection
+    // If no selection, back to initial coordinate. Otherwise, update X axis domain
+    if (!extent) {
+      if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // Wait a little bit
+      d3_x.domain([x_start, x_end]);
+    } else {
+      d3_x.domain([ d3_x.invert(extent[0]), d3_x.invert(extent[1]) ])
+      plot_area.select(".brush").call(brush.move, null) // Remove the grey brush area as soon as the selection has been done
+    }
+
+    // Update axis and line position
+    x_axis.transition().duration(1000).call(d3.axisBottom(d3_x))
+    plot_area.selectAll("path")
+      .transition().duration(1000)
+      .attr("d", d3.line()
+        .x(function(d) { return d3_x(new Date(d.rating_date)) })
+        .y(function(d) { return d3_y(d.rating) })
+        )
+  }
+
+/*
+  // Show season resets
+  var gaps_url = window.location.href.replace(/\/+$/, "") + '/resets';
+  d3.json(gaps_url, function(data) {
+    d3_svg.selectAll('.time-span-rect')
+      .data(data)
+    .enter().append('rect')
+      .attr('class', 'time-span-rect')
+      .attr('x', function(d) { return d3_x(d.start_dt); })
+      .attr('y', 0)
+      .attr('width', function(d) { return d3_x(d.end_dt) - d3_x(d.start_dt); })
+      .attr('height', height);
+  });
+*/
+  var team_history_url = window.location.href.replace(/\/+$/, "") + '/team/C9';
+  d3.json(team_history_url, function(data) {
+    rating_data = data.team_rating_history;
+    console.log(rating_data);
+
     // Add data
-    d3_svg.append("path")
+    plot_area.append("path")
       .datum(rating_data)
       .attr("fill", "none")
       .attr("stroke", "steelblue")

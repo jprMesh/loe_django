@@ -245,6 +245,7 @@ $(document).on('click', '.menu_button', function(e) {
           <button class="region_filter" id="CN_select">CN</button>
           <button class="region_filter" id="INT_select">INT</button>
         </div>
+        <h3 class="navlink desktop_menu"><a href="{% url 'history' %}">History</a></h3>
         <h3 class="navlink desktop_menu"><a href="{% url 'leaderboard' %}">Leaderboard</a></h3>
         <h3 class="navlink desktop_menu"><a href="{% url 'about' %}">About</a></h3>
         {% if user.is_authenticated %}
@@ -255,6 +256,7 @@ $(document).on('click', '.menu_button', function(e) {
       </div>
       <div class="collapse" id="mobile_menu_items">
         <ul>
+          <li><h3><a href="{% url 'history' %}">➤ History</a></h3></li>
           <li><h3><a href="{% url 'leaderboard' %}">➤ Leaderboard</a></h3></li>
           <li><h3><a href="{% url 'about' %}">➤ About</a></h3></li>
         </ul>

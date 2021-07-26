@@ -12,6 +12,7 @@ urlpatterns = [
     path('user/<str:prediction_user>/accuracy_plot', views.AccuracyPlot.as_view()),
     path('match_table', views.MatchTable.as_view()),
     path('user/<str:prediction_user>/match_table', views.MatchTable.as_view()),
-    path('history/<str:team>', views.EloHistory.as_view()),
+    path('history/team/<str:team>', views.EloHistory.as_view()),
+    path('history/gaps', views.HistoryGaps.as_view()),
     path('history', views.history, name='history'),
 ]
