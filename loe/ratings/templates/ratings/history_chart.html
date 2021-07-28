@@ -8,7 +8,6 @@
 
 {% block script %}
 <script src="https://d3js.org/d3.v4.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
 <script type="text/javascript">
 
 $(document).ready(function() {
@@ -57,50 +56,59 @@ function setup_d3() {
       .attr("class", "brush")
       .call(brush);
 
+  // Add Y axis
+  d3_y = d3.scaleLinear()
+    .domain([1200, 2000]) // Reasonable elo rating range
+    .range([height, 0]);
+  d3_svg.append("g")
+    .call(d3.axisLeft(d3_y));
+
+  // Initial X axis
+  d3_x = d3.scaleLinear()
+    .domain([0, 1])
+    .range([0, width]);
+  x_axis = d3_svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(d3_x).tickValues([]));
+
   // Get data and set axes
-  var gaps_url = window.location.href.replace(/\/+$/, "") + '/all_teams';
-  d3.json(gaps_url, function(data) {
+  var ratings_url = window.location.href.replace(/\/+$/, "") + '/all_teams';
+  d3.json(ratings_url, function(data) {
     x_max = data.max_index;
 
-    // Add X axis
+    // Scale X axis
     d3_x = d3.scaleLinear()
       .domain([0, x_max])
-      .range([ 0, width ]);
-    x_axis = d3_svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(d3_x));
+      .range([0, width]);
+    x_axis.call(d3.axisBottom(d3_x).tickValues([]));
 
-    // Add Y axis
-    d3_y = d3.scaleLinear()
-      .domain([1200, 2000])
-      .range([ height, 0]);
-    d3_svg.append("g")
-      .call(d3.axisLeft(d3_y));
-
-    // Show time gaps
-    /*
-    plot_area.selectAll('.time-span-rect')
-      .data(gap_dates)
+    // Show season boundaries
+    plot_area.selectAll('.season_gap_rect')
+      .data(data.season_start_indices)
     .enter().append('rect')
-      .attr('class', 'time-span-rect')
-      .attr('x', function(d) { return d3_x(d[0]) - 1; })
+      .attr('class', 'season_gap_rect')
+      .attr('x', d => d3_x(d - 1) )
       .attr('y', 0)
-      .attr('width', function(d) { return d3_x(d[1]) - d3_x(d[0]) + 2; })
+      .attr('width', d3_x(1) - d3_x(0) )
       .attr('height', height);
-    */
 
+    // Add line for each team
     data.teams.forEach(function (t) {
-      // Add line for each team
-      plot_area.append("path")
-        .datum(t.team_rating_history)
+      //console.log(t);
+      plot_area.selectAll(".line")
+        .data(t.team_rating_history)
+      .enter().append("path")
+        .attr('class', t.team_name + '_line')
         .attr("fill", "none")
         .attr("stroke", t.color)
         .attr("stroke-width", 1.5)
         .attr("d", d3.line()
           .x(function(d) { return d3_x(d.rating_index) })
           .y(function(d) { return d3_y(d.rating) })
-          );
+        );
     });
+
+    // Highlight lines
   });
 
   // Set up chart zooming
@@ -119,13 +127,17 @@ function setup_d3() {
     }
 
     // Update axis and line position
-    x_axis.transition().duration(1000).call(d3.axisBottom(d3_x))
+    x_axis.transition().duration(1000).call(d3.axisBottom(d3_x).tickValues([]));
     plot_area.selectAll("path")
       .transition().duration(1000)
       .attr("d", d3.line()
         .x(function(d) { return d3_x(d.rating_index) })
         .y(function(d) { return d3_y(d.rating) })
-        )
+      );
+    plot_area.selectAll(".season_gap_rect")
+      .transition().duration(1000)
+      .attr('x', d => d3_x(d - 1) )
+      .attr('width', d3_x(1) - d3_x(0) );
   }
 }
 

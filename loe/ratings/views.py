@@ -244,36 +244,40 @@ class AccuracyPlot(APIView):
         return Response(accuracy)
 
 
-class EloHistory(APIView):
-    def get(self, request, team):
-        ratings = TeamRatingHistory.objects.filter(team__short_name=team)
-        if not ratings.exists():
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        serialized_ratings = TeamRatingHistorySerializer(ratings, many=True)
-        context = {
-            'team': team,
-            'team_rating_history': serialized_ratings.data
-        }
-        return Response(context)
-
-
 class EloHistoryAll(APIView):
     def get(self, request):
+        season_start_indices = TeamRatingHistory.objects.filter(team__short_name='NUL').values_list('rating_index', flat=True)
+        max_index = TeamRatingHistory.objects.all().order_by('-rating_index').first().rating_index
         context = {
             'teams': [],
-            'max_index': TeamRatingHistory.objects.all().order_by('-rating_index').first().rating_index
+            'season_start_indices': season_start_indices,
+            'max_index': max_index,
         }
-        teams = Team.objects.all().order_by('teamrating__rating')
-        for team in teams:
-            ratings = TeamRatingHistory.objects.filter(team=team).order_by('rating_index')
-            if not ratings.exists():
+
+        teams = Team.objects.exclude(short_name='NUL').values('team_continuity_id').annotate(max_rating=Max('teamrating__rating')).order_by('max_rating')
+        for _team in teams:
+            team_id = _team['team_continuity_id']
+            team_ratings = TeamRatingHistory.objects.filter(team__team_continuity_id=team_id).order_by('rating_index')
+            team_rating_history = []
+            last_ssi = 0
+            for ssi in list(season_start_indices) + [max_index+1]:
+                ratings = team_ratings.filter(rating_index__lt=ssi, rating_index__gte=last_ssi)
+                last_ssi = ssi
+                if ratings.count() <= 2: # No real ratings in this segment
+                    continue
+                serialized_ratings = TeamRatingHistorySerializer(ratings, many=True)
+                team_rating_history.append(serialized_ratings.data)
+            if not team_rating_history:
                 continue
-            serialized_ratings = TeamRatingHistorySerializer(ratings, many=True)
+
+            current_team = team_ratings.last().team
+
             context['teams'].append({
-                'team': team.short_name,
-                'color': team.color1,
-                'team_rating_history': serialized_ratings.data
+                'team_rating_history': team_rating_history,
+                'team_name': current_team.short_name,
+                'color': current_team.color1,
             })
+            #break
         return Response(context)
 
 '''

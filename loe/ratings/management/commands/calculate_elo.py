@@ -134,25 +134,31 @@ class Command(BaseCommand):
         return True
 
     def _update_rating_history(self, match, prev_match_region):
-        if match.region == 'INT' and (self.prev_match_region != 'INT' or match.team1_score < 0):
-            teams = Team.objects.exclude(short_name='NUL')
+        if match.match_info == 'inter_season_reset' or (match.region == 'INT' and self.prev_match_region != 'INT'):
+            # Season sync
             rating_index = TeamRatingHistory.objects.all().order_by('-rating_index').first().rating_index + 1 if TeamRatingHistory.objects.all().exists() else 0
-            sync = True
-        else:
-            teams = [match.team1, match.team2]
-            sync = False
+            end_season_rating_index = rating_index - 1
+            # Save marker for season transition rating index
+            TeamRatingHistory(team=Team.objects.get(short_name='NUL'), rating=0, match=match, rating_index=rating_index).save()
 
-        for team in teams:
-            try:
-                team_rating = TeamRating.objects.get(team=team)
-            except ObjectDoesNotExist:
-                continue # Team doesn't exist yet
-            if not sync:
-                rating_index = TeamRatingHistory.objects.filter(team=team).order_by('-rating_index').first().rating_index + 1
-            if not TeamRatingHistory.objects.filter(team=team, match=match).exists():
+            for team in Team.objects.exclude(short_name='NUL'):
+                try:
+                    team_rating = TeamRating.objects.get(team=team)
+                except ObjectDoesNotExist:
+                    continue # Team doesn't exist yet
+
                 prev = TeamRatingHistory.objects.filter(team=team).order_by('-rating_index').first()
-                if prev.rating == team_rating.rating and prev.match.team1_score < 0:
+                if prev.rating == team_rating.rating and prev.match.match_info == 'inter_season_reset':
                     continue # inactive team
+                if prev.rating_index != end_season_rating_index:
+                    TeamRatingHistory(team=team, match=match, rating_index=end_season_rating_index, rating=prev.rating).save()
+                TeamRatingHistory(team=team, match=match, rating_index=rating_index, rating=team_rating.rating).save()
+
+        else:
+            # Normal match
+            for team in [match.team1, match.team2]:
+                team_rating = TeamRating.objects.get(team=team)
+                rating_index = TeamRatingHistory.objects.filter(team=team).order_by('-rating_index').first().rating_index + 1
                 TeamRatingHistory(team=team, match=match, rating_index=rating_index, rating=team_rating.rating).save()
 
     def _calculate_ratings(self):

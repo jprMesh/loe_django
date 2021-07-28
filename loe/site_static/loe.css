@@ -578,7 +578,7 @@ button.region_filter:focus {
 
 /* end region filter buttons */
 
-/* User accuracy plot */
+/* D3 plots */
 
 .d3_plot {
     position: relative;
@@ -619,4 +619,8 @@ button.region_filter:focus {
     text-align: center;
 }
 
-/* end user accuracy plot */
+.d3_plot .season_gap_rect {
+    fill: #222222;
+}
+
+/* end D3 plots */
