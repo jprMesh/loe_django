@@ -51,8 +51,8 @@ class Command(BaseCommand):
         if not TeamRating.objects.filter(team__in=continuity_teams).exists():
             new_team = TeamRating(team=team, rating=1500, rating_date=match_date - datetime.timedelta(days=1))
             new_team.save()
-            max_current_rating_index = TeamRatingHistory.objects.all().order_by('-rating_index').first().rating_index if TeamRatingHistory.objects.all().exists() else 0
-            TeamRatingHistory(team=team, match=None, rating_index=max_current_rating_index, rating=new_team.rating).save()
+            last_reset_index = TeamRatingHistory.objects.filter(team__short_name='NUL').order_by('-rating_index').first().rating_index if TeamRatingHistory.objects.all().exists() else 0
+            TeamRatingHistory(team=team, match=None, rating_index=last_reset_index, rating=new_team.rating).save()
             print(f'\nCreated {new_team}')
         else:
             most_recent_rating = TeamRating.objects.filter(team__in=continuity_teams).order_by('-rating_date')[0]

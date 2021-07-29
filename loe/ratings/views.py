@@ -275,7 +275,7 @@ class EloHistoryAll(APIView):
             context['teams'].append({
                 'team_rating_history': team_rating_history,
                 'team_name': current_team.short_name,
-                'color': current_team.color1,
+                'color': current_team.color1 or "#555555",
             })
             #break
         return Response(context)

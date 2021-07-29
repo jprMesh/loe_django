@@ -16,8 +16,8 @@ $(document).ready(function() {
 
 function setup_d3() {
   // set the dimensions and margins of the graph
-  var margin = {top: 10, right: 50, bottom: 30, left: 50};
-  var width = 800 - margin.left - margin.right;
+  var margin = {top: 10, right: 20, bottom: 30, left: 50};
+  var width = 1000 - margin.left - margin.right;
   var height = 400 - margin.top - margin.bottom;
   if (small_plot) {
     width = 360 - margin.left - margin.right;
@@ -52,9 +52,6 @@ function setup_d3() {
   var brush = d3.brushX()
     .extent( [ [0,0], [width,height] ] )
     .on("end", updateChart);
-  plot_area.append("g")
-      .attr("class", "brush")
-      .call(brush);
 
   // Add Y axis
   d3_y = d3.scaleLinear()
@@ -112,6 +109,10 @@ function setup_d3() {
   });
 
   // Set up chart zooming
+  plot_area.append("g")
+      .attr("class", "brush")
+      .call(brush);
+
   var idleTimeout;
   function idled() { idleTimeout = null; }
 
