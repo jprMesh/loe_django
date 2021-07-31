@@ -301,6 +301,12 @@ button.menu_button:focus {
     .about_content {
         grid-template-columns: 1fr;
     }
+    .mobile_menu {
+        display: inline-block;
+    }
+    .desktop_menu {
+        display: none;
+    }
 }
 
 @media (max-width: 585px) {
@@ -313,12 +319,6 @@ button.menu_button:focus {
     }
     .team_ratings {
         grid-row: span 1;
-    }
-    .mobile_menu {
-        display: inline-block;
-    }
-    .desktop_menu {
-        display: none;
     }
     .navlink {
         padding-right: 1rem;

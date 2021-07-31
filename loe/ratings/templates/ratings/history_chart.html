@@ -16,11 +16,11 @@ $(document).ready(function() {
 
 function setup_d3() {
   // set the dimensions and margins of the graph
+  var root_width = Math.min(1000, $(window).width() - 10);
   var margin = {top: 10, right: 20, bottom: 30, left: 50};
-  var width = 1000 - margin.left - margin.right;
+  var width = root_width - margin.left - margin.right;
   var height = 400 - margin.top - margin.bottom;
-  if (small_plot) {
-    width = 360 - margin.left - margin.right;
+  if ($(window).width() < 650) {
     height = 250 - margin.top - margin.bottom;
   }
   var d3_x;
