@@ -16,8 +16,8 @@ $(document).ready(function() {
 
 function setup_d3() {
   // set the dimensions and margins of the graph
-  var root_width = Math.min(1000, $(window).width() - 10);
-  var margin = {top: 10, right: 20, bottom: 30, left: 50};
+  var root_width = Math.min(1024, $(window).width() - 10);
+  var margin = {top: 10, right: 80, bottom: 30, left: 50};
   var width = root_width - margin.left - margin.right;
   var height = 400 - margin.top - margin.bottom;
   if ($(window).width() < 650) {
@@ -46,12 +46,20 @@ function setup_d3() {
     .attr("x", 0)
     .attr("y", 0);
   var plot_area = d3_svg.append('g')
+    .attr('id', 'plot_area')
     .attr("clip-path", "url(#clip)");
 
   // Add brushing
   var brush = d3.brushX()
     .extent( [ [0,0], [width,height] ] )
     .on("end", updateChart);
+
+  // legend div
+  var legend = d3.select("#history_chart")
+    .append("div")
+    .attr("class", "history_legend")
+    .style("top", "5px")
+    .style("left", (root_width - margin.right) + "px");
 
   // Add Y axis
   d3_y = d3.scaleLinear()
@@ -96,13 +104,38 @@ function setup_d3() {
         .data(t.team_rating_history)
       .enter().append("path")
         .attr('class', t.team_name + '_line')
+        .attr('team_name', t.team_name)
         .attr("fill", "none")
         .attr("stroke", t.color)
         .attr("stroke-width", 1.5)
         .attr("d", d3.line()
           .x(function(d) { return d3_x(d.rating_index) })
           .y(function(d) { return d3_y(d.rating) })
-        );
+        )
+        .on("mouseover", function(d) {
+          let team_class = this.getAttribute('team_name') + '_line';
+          let lines = $('[class~="'+team_class+'"]');
+          lines
+            .attr('stroke-width', 4)
+            .attr('class', team_class + ' dropshadow')
+            .appendTo(lines.parent());
+          return legend.style("visibility", "visible");
+        })
+        .on("mousemove", function(d) {
+          let goal = d3_x.invert(d3.mouse($('#plot_area')[0])[0]);
+          closest_rating = d.reduce(function(prev, curr) {
+            return (Math.abs(curr.rating_index - goal) < Math.abs(prev.rating_index - goal) ? curr : prev);
+          });
+          let hover_text = this.getAttribute('team_name') + '\u00A0\u00A0\n' + Math.round(closest_rating.rating);
+          legend.text(hover_text);
+        })
+        .on("mouseout", function() {
+          let team_class = this.getAttribute('team_name') + '_line';
+          $('[class~="'+team_class+'"]')
+            .attr('stroke-width', 1.5)
+            .attr('class', team_class);
+          return legend.style("visibility", "hidden");
+        });
     });
 
     // Highlight lines

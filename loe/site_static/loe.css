@@ -623,4 +623,21 @@ button.region_filter:focus {
     fill: #222222;
 }
 
+.d3_plot .dropshadow {
+    -webkit-filter: drop-shadow( 0 0 0.5rem #AAA8);
+    filter: drop-shadow( 0 0 0.5rem #AAA8);
+}
+
+.d3_plot .history_legend {
+    position: absolute;
+    z-index: 10;
+    visibility: hidden;
+    width: 75px;
+    background: var(--bg-color);
+    border: var(--primary-color) 1px solid;
+    padding: 0.3rem 0.5rem;
+    margin-left: 5px;
+    text-align: left;
+}
+
 /* end D3 plots */
