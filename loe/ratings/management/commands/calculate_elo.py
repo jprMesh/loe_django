@@ -186,6 +186,7 @@ N : no results yet
         TeamRating.objects.all().delete()
         TeamRatingHistory.objects.all().delete()
         Match.objects.all().update(elo_processed=False)
+        Prediction.objects.filter(user=self.elo_user).delete()
 
     def handle(self, *args, **options):
         if options['clear_ratings']:
