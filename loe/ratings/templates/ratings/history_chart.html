@@ -96,6 +96,13 @@ function setup_d3() {
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(d3_x).tickValues([]));
 
+  var loading_text = d3_svg
+    .append('text')
+      .attr('id', 'loading_text')
+      .attr('x', width/2 - 100)
+      .attr('y', height/2 - 10)
+      .text('Loading Data');
+
   // Get data and set axes
   var ratings_url = window.location.href.replace(/\/+$/, "") + '/all_teams';
   d3.json(ratings_url, function(data) {
@@ -173,6 +180,7 @@ function setup_d3() {
           return legend.style("visibility", "hidden");
         });
     });
+    loading_text.remove();
     update_d3_regions();
   });
 

@@ -640,4 +640,9 @@ button.region_filter:focus {
     text-align: left;
 }
 
+.d3_plot #loading_text {
+    fill: var(--text-color);
+    font-size: 2rem;
+}
+
 /* end D3 plots */
