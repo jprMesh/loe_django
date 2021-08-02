@@ -13,8 +13,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.renderers import TemplateHTMLRenderer
 
-from .models import Prediction, Match, Team, TeamRating, LEAGUE_REGIONS
-from .serializers import PredictionSerializer
+from .models import Prediction, Match, Team, TeamRating, TeamRatingHistory, LEAGUE_REGIONS
+from .serializers import PredictionSerializer, TeamRatingHistorySerializer
 
 
 SPRING_RESET = -1
@@ -92,11 +92,12 @@ def about(request):
     return render(request, 'ratings/about.html')
 
 
+def history(request):
+    return render(request, 'ratings/history_chart.html')
+
+
 def user_page(request, prediction_user):
-    context = {
-        'prediction_user': prediction_user,
-    }
-    return render(request, 'ratings/user_page.html', context)
+    return render(request, 'ratings/user_page.html', {'prediction_user': prediction_user})
 
 
 # REST API Views
@@ -241,3 +242,48 @@ class AccuracyPlot(APIView):
                 continue
             accuracy.append((100 - center, 100 - bin_rate, bin_count))
         return Response(accuracy)
+
+
+class EloHistoryAll(APIView):
+    def get(self, request):
+        season_start_indices = TeamRatingHistory.objects.filter(team__short_name='NUL').values_list('rating_index', flat=True)
+        max_index = TeamRatingHistory.objects.all().order_by('-rating_index').first().rating_index
+        context = {
+            'teams': [],
+            'season_start_indices': season_start_indices,
+            'max_index': max_index,
+        }
+
+        teams = Team.objects.exclude(short_name='NUL').values('team_continuity_id').annotate(max_rating=Max('teamrating__rating')).order_by('max_rating')
+        for _team in teams:
+            team_id = _team['team_continuity_id']
+            team_ratings = TeamRatingHistory.objects.filter(team__team_continuity_id=team_id).order_by('rating_index')
+            team_rating_history = []
+            last_ssi = 0
+            for ssi in list(season_start_indices) + [max_index+1]:
+                ratings = team_ratings.filter(rating_index__lt=ssi, rating_index__gte=last_ssi)
+                last_ssi = ssi
+                if ratings.count() <= 2: # No real ratings in this segment
+                    continue
+                serialized_ratings = TeamRatingHistorySerializer(ratings, many=True)
+                team_rating_history.append(serialized_ratings.data)
+            if not team_rating_history:
+                continue
+
+            current_team = team_ratings.last().team
+
+            context['teams'].append({
+                'team_rating_history': team_rating_history,
+                'team_name': current_team.short_name,
+                'color': current_team.color1 or "#555555",
+                'region': current_team.region,
+            })
+            #break
+        return Response(context)
+
+'''
+class GetRecentMovers(APIView):
+    def get(self, request):
+        for TeamRating
+        return Response(recent_movers)
+'''

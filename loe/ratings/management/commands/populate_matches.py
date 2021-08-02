@@ -87,7 +87,7 @@ class Command(BaseCommand):
             start_timestamp__lte=(tz_match_ts + datetime.timedelta(days=14)),
             best_of=bestof, match_info=tab, region=region)
         if m.exists():
-            print('U', end='', flush=True) # X for eXists
+            print('U', end='', flush=True) # U for Update time
             m.update(start_timestamp=tz_match_ts)
             return
 

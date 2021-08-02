@@ -193,6 +193,9 @@ function submitPrediction(checkbox) {
   });
 }
 
+function update_d3_regions() {
+}
+
 // On event functions //-----------------------------------------------------------------
 $(document).on('click', '.region_filter', function (e) {
   e.stopPropagation();
@@ -207,7 +210,7 @@ $(document).on('click', '.region_filter', function (e) {
 
   localStorage.setItem('regions', Array.from(selected_regions));
   updateMatchTables();
-  //update_d3();
+  update_d3_regions();
 });
 
 $(document).on('click', '.menu_button', function(e) {
@@ -245,6 +248,7 @@ $(document).on('click', '.menu_button', function(e) {
           <button class="region_filter" id="CN_select">CN</button>
           <button class="region_filter" id="INT_select">INT</button>
         </div>
+        <h3 class="navlink desktop_menu"><a href="{% url 'history' %}">History</a></h3>
         <h3 class="navlink desktop_menu"><a href="{% url 'leaderboard' %}">Leaderboard</a></h3>
         <h3 class="navlink desktop_menu"><a href="{% url 'about' %}">About</a></h3>
         {% if user.is_authenticated %}
@@ -255,6 +259,7 @@ $(document).on('click', '.menu_button', function(e) {
       </div>
       <div class="collapse" id="mobile_menu_items">
         <ul>
+          <li><h3><a href="{% url 'history' %}">➤ History</a></h3></li>
           <li><h3><a href="{% url 'leaderboard' %}">➤ Leaderboard</a></h3></li>
           <li><h3><a href="{% url 'about' %}">➤ About</a></h3></li>
         </ul>

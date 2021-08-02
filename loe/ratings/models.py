@@ -59,6 +59,16 @@ class TeamRating(models.Model):
         return f'{self.rating:.2f} -- {self.team}: {self.rating_date}'
 
 
+class TeamRatingHistory(models.Model):
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    match = models.ForeignKey(Match, on_delete=models.CASCADE, null=True)
+    rating_index = models.IntegerField()
+    rating = models.FloatField()
+
+    def __str__(self):
+        return f'{self.team.short_name} -- {self.rating:.2f}'
+
+
 class Prediction(models.Model):
     # prediction_id pk
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
