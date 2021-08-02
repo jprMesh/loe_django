@@ -276,6 +276,7 @@ class EloHistoryAll(APIView):
                 'team_rating_history': team_rating_history,
                 'team_name': current_team.short_name,
                 'color': current_team.color1 or "#555555",
+                'region': current_team.region,
             })
             #break
         return Response(context)

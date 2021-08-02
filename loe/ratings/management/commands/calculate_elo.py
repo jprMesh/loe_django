@@ -146,9 +146,12 @@ class Command(BaseCommand):
                     team_rating = TeamRating.objects.get(team=team)
                 except ObjectDoesNotExist:
                     continue # Team doesn't exist yet
+                if team != TeamRating.objects.filter(team__team_continuity_id=team.team_continuity_id).order_by('-rating_date').first().team:
+                    continue # Old version of team
 
                 prev = TeamRatingHistory.objects.filter(team=team).order_by('-rating_index').first()
                 if prev.rating == team_rating.rating and prev.match.match_info == 'inter_season_reset':
+                    TeamRatingHistory(team=team, match=match, rating_index=rating_index, rating=team_rating.rating).save()
                     continue # inactive team
                 if prev.rating_index != end_season_rating_index:
                     TeamRatingHistory(team=team, match=match, rating_index=end_season_rating_index, rating=prev.rating).save()

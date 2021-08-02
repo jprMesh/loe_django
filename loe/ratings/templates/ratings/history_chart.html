@@ -14,6 +14,19 @@ $(document).ready(function() {
   setup_d3();
 });
 
+function update_d3_regions() {
+  all_regions.forEach(function (r) {
+    if (selected_regions.has(r)) {
+      $('[region=' + r + ']').attr('visibility', 'visible');
+    } else {
+      $('[region=' + r + ']').attr('visibility', 'hidden');
+    }
+  })
+}
+
+function updateMatchTables() {
+}
+
 function setup_d3() {
   // set the dimensions and margins of the graph
   var root_width = Math.min(1024, $(window).width() - 10);
@@ -26,7 +39,11 @@ function setup_d3() {
   var d3_x;
   var d3_y;
   var x_axis;
+  var x_axis_labels;
   var x_max;
+  var x_season_gaps;
+  var x_season_labels = [];
+  var axis_titles = [' Spring', 'MSI', ' Summer', 'Worlds'];
 
   // append the svg object to the body of the page
   var d3_svg = d3.select("#history_chart")
@@ -53,6 +70,9 @@ function setup_d3() {
   var brush = d3.brushX()
     .extent( [ [0,0], [width,height] ] )
     .on("end", updateChart);
+  plot_area.append("g")
+    .attr("class", "brush")
+    .call(brush);
 
   // legend div
   var legend = d3.select("#history_chart")
@@ -80,16 +100,31 @@ function setup_d3() {
   var ratings_url = window.location.href.replace(/\/+$/, "") + '/all_teams';
   d3.json(ratings_url, function(data) {
     x_max = data.max_index;
+    x_season_gaps = data.season_start_indices;
+    for (var i = 0; i < x_season_gaps.length - 1; i++) {
+      x_season_labels.push(Math.round(x_season_gaps[i] + (x_season_gaps[i+1] - x_season_gaps[i]) / 2));
+    }
 
+    var axis_year = 2014;
     // Scale X axis
     d3_x = d3.scaleLinear()
       .domain([0, x_max])
       .range([0, width]);
-    x_axis.call(d3.axisBottom(d3_x).tickValues([]));
+    x_axis.call(
+      d3.axisBottom(d3_x)
+        .tickValues(x_season_labels)
+        .tickSize(0)
+        .tickFormat(function (d, i) {
+          if (i%4 == 0) axis_year++;
+          if (small_plot) return (i%4 ? "" : axis_year);
+          if (i%3) return "";
+          if (i%2 == 0) return axis_year + axis_titles[i%4];
+          return axis_titles[i%4];
+        }));
 
     // Show season boundaries
     plot_area.selectAll('.season_gap_rect')
-      .data(data.season_start_indices)
+      .data(x_season_gaps)
     .enter().append('rect')
       .attr('class', 'season_gap_rect')
       .attr('x', d => d3_x(d - 1) )
@@ -105,6 +140,7 @@ function setup_d3() {
       .enter().append("path")
         .attr('class', t.team_name + '_line')
         .attr('team_name', t.team_name)
+        .attr('region', t.region)
         .attr("fill", "none")
         .attr("stroke", t.color)
         .attr("stroke-width", 1.5)
@@ -126,7 +162,7 @@ function setup_d3() {
           closest_rating = d.reduce(function(prev, curr) {
             return (Math.abs(curr.rating_index - goal) < Math.abs(prev.rating_index - goal) ? curr : prev);
           });
-          let hover_text = this.getAttribute('team_name') + '\u00A0\u00A0\n' + Math.round(closest_rating.rating);
+          let hover_text = this.getAttribute('team_name') + ' ' + this.getAttribute('region') + '\n' + Math.round(closest_rating.rating);
           legend.text(hover_text);
         })
         .on("mouseout", function() {
@@ -137,15 +173,10 @@ function setup_d3() {
           return legend.style("visibility", "hidden");
         });
     });
-
-    // Highlight lines
+    update_d3_regions();
   });
 
   // Set up chart zooming
-  plot_area.append("g")
-      .attr("class", "brush")
-      .call(brush);
-
   var idleTimeout;
   function idled() { idleTimeout = null; }
 
@@ -161,7 +192,6 @@ function setup_d3() {
     }
 
     // Update axis and line position
-    x_axis.transition().duration(1000).call(d3.axisBottom(d3_x).tickValues([]));
     plot_area.selectAll("path")
       .transition().duration(1000)
       .attr("d", d3.line()
@@ -172,6 +202,17 @@ function setup_d3() {
       .transition().duration(1000)
       .attr('x', d => d3_x(d - 1) )
       .attr('width', d3_x(1) - d3_x(0) );
+    var axis_year = 2014;
+    x_axis.transition().duration(1000).call(
+      d3.axisBottom(d3_x)
+        .tickValues(x_season_labels)
+        .tickSize(0)
+        .tickFormat(function (d, i) {
+          if (i%4 == 0) axis_year++;
+          if (i%3 || (small_plot && i%2)) return;
+          if (i%2 == 0) return axis_year + axis_titles[i%4];
+          return axis_titles[i%4];
+        }) );
   }
 }
 
