@@ -106,6 +106,7 @@ class Command(BaseCommand):
                     raise StaleRatingWarning
             except (ObjectDoesNotExist, StaleRatingWarning):
                 self._continuity_check(team, match.start_timestamp)
+            Team.objects.filter(pk=team.pk).update(is_active=True)
         t1_rating = TeamRating.objects.get(team=match.team1)
         t2_rating = TeamRating.objects.get(team=match.team2)
 
