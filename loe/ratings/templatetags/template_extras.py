@@ -101,6 +101,11 @@ def team_ratings():
     return context
 
 
+@register.inclusion_tag('history_chart.html')
+def history_chart(time_span):
+    return {'time_span': time_span}
+
+
 @register.filter
 def keyvalue(dict, key):
     return dict.get(key, 0)

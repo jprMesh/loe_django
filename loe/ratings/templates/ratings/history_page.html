@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% load template_extras %}
+
+{% block title %}League of Elo History{% endblock %}
+
+{% block content %}
+{% history_chart 'all' %}
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+function updateMatchTables() {
+}
+</script>
+{% endblock %}

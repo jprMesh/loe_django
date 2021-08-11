@@ -1,14 +1,6 @@
-{% extends 'base.html' %}
-
-{% block title %}League of Elo History{% endblock %}
-
-{% block content %}
 <div class="d3_plot" id="history_chart"></div>
-{% endblock %}
-
-{% block script %}
 <script src="https://d3js.org/d3.v4.js"></script>
-<script type="text/javascript">
+<script id='d3_history_chart' type="text/javascript">
 
 $(document).ready(function() {
   setup_d3();
@@ -24,26 +16,53 @@ function update_d3_regions() {
   })
 }
 
-function updateMatchTables() {
-}
-
 function setup_d3() {
   // set the dimensions and margins of the graph
-  var root_width = Math.min(1024, $(window).width() - 10);
-  var margin = {top: 10, right: 80, bottom: 30, left: 50};
-  var width = root_width - margin.left - margin.right;
-  var height = 400 - margin.top - margin.bottom;
-  if ($(window).width() < 650) {
-    height = 250 - margin.top - margin.bottom;
+  var rating_span = '{{ time_span }}';
+  var root_width;
+  var margin;
+  var width;
+  var height;
+  if (rating_span === 'all') {
+    root_width = $('.site_wrapper').width();
+    margin = {top: 10, right: 80, bottom: 30, left: 50};
+    width = root_width - margin.left - margin.right;
+    height = 400 - margin.top - margin.bottom;
+    if ($(window).width() < 650) {
+      height = 250 - margin.top - margin.bottom;
+    }
+  }
+  else {
+    root_width = $('.site_intro').width();
+    margin = {top: 10, right: 80, bottom: 30, left: 50};
+    width = root_width - margin.left - margin.right;
+    height = 300 - margin.top - margin.bottom;
+    if ($(window).width() < 650) {
+      height = 200 - margin.top - margin.bottom;
+    }
   }
   var d3_x;
   var d3_y;
   var x_axis;
-  var x_axis_labels;
+  var x_min;
   var x_max;
   var x_season_gaps;
-  var x_season_labels = [];
-  var axis_titles = [' Spring', 'MSI', ' Summer', 'Worlds'];
+  
+  var axis_year = 2014;
+  var axis_labels = [' Spring', 'MSI', ' Summer', 'Worlds'];
+  var x_axis_ticks = [];
+  var x_axis_labels = [];
+  var x_axis_labels_mobile = [];
+  for (var i = 0; i < 100; i++) {
+    if (i%4 == 0) ++axis_year;
+    x_axis_labels_mobile.push(axis_year);
+    if (i%2 == 0) {
+      x_axis_labels.push(axis_year + axis_labels[i%4]);
+      continue;
+    }
+    x_axis_labels.push(axis_labels[i%4]);
+  }
+
 
   // append the svg object to the body of the page
   var d3_svg = d3.select("#history_chart")
@@ -104,29 +123,26 @@ function setup_d3() {
       .text('Loading Data');
 
   // Get data and set axes
-  var ratings_url = window.location.href.replace(/\/+$/, "") + '/all_teams';
+  var ratings_url = '/history/all_teams/{{ time_span|safe }}';
   d3.json(ratings_url, function(data) {
+    x_min = data.season_start_indices[0];
     x_max = data.max_index;
     x_season_gaps = data.season_start_indices;
     for (var i = 0; i < x_season_gaps.length - 1; i++) {
-      x_season_labels.push(Math.round(x_season_gaps[i] + (x_season_gaps[i+1] - x_season_gaps[i]) / 2));
+      x_axis_ticks.push(Math.round(x_season_gaps[i] + (x_season_gaps[i+1] - x_season_gaps[i]) / 2));
     }
 
-    var axis_year = 2014;
     // Scale X axis
     d3_x = d3.scaleLinear()
-      .domain([0, x_max])
+      .domain([x_min, x_max])
       .range([0, width]);
     x_axis.call(
       d3.axisBottom(d3_x)
-        .tickValues(x_season_labels)
+        .tickValues(x_axis_ticks)
         .tickSize(0)
         .tickFormat(function (d, i) {
-          if (i%4 == 0) axis_year++;
-          if (small_plot) return (i%4 ? "" : axis_year);
-          if (i%3) return "";
-          if (i%2 == 0) return axis_year + axis_titles[i%4];
-          return axis_titles[i%4];
+          if (small_plot) return (i%4 ? "" : x_axis_labels_mobile[i]);
+          return (i%3 ? "" : x_axis_labels[i]);
         }));
 
     // Show season boundaries
@@ -193,7 +209,7 @@ function setup_d3() {
     // If no selection, back to initial coordinate. Otherwise, update X axis domain
     if (!extent) {
       if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // Wait a little bit
-      d3_x.domain([0, x_max]);
+      d3_x.domain([x_min, x_max]);
     } else {
       d3_x.domain([ d3_x.invert(extent[0]), d3_x.invert(extent[1]) ])
       plot_area.select(".brush").call(brush.move, null) // Remove the grey brush area as soon as the selection has been done
@@ -210,19 +226,15 @@ function setup_d3() {
       .transition().duration(1000)
       .attr('x', d => d3_x(d - 1) )
       .attr('width', d3_x(1) - d3_x(0) );
-    var axis_year = 2014;
     x_axis.transition().duration(1000).call(
       d3.axisBottom(d3_x)
-        .tickValues(x_season_labels)
+        .tickValues(x_axis_ticks)
         .tickSize(0)
         .tickFormat(function (d, i) {
-          if (i%4 == 0) axis_year++;
-          if (i%3 || (small_plot && i%2)) return;
-          if (i%2 == 0) return axis_year + axis_titles[i%4];
-          return axis_titles[i%4];
+          if (small_plot) return (i%4 ? "" : x_axis_labels_mobile[i]);
+          return (i%3 ? "" : x_axis_labels[i]);
         }) );
   }
 }
 
 </script>
-{% endblock %}

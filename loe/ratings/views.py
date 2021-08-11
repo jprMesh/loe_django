@@ -93,7 +93,7 @@ def about(request):
 
 
 def history(request):
-    return render(request, 'ratings/history_chart.html')
+    return render(request, 'ratings/history_page.html')
 
 
 def user_page(request, prediction_user):
@@ -245,9 +245,17 @@ class AccuracyPlot(APIView):
 
 
 class EloHistoryAll(APIView):
-    def get(self, request):
-        season_start_indices = TeamRatingHistory.objects.filter(team__short_name='NUL').values_list('rating_index', flat=True)
-        max_index = TeamRatingHistory.objects.all().order_by('-rating_index').first().rating_index
+    def get(self, request, rating_span):
+        if rating_span == 'all':
+            history = TeamRatingHistory.objects.all()
+        elif rating_span == 'current':
+            curr_season_start = TeamRatingHistory.objects.filter(team__short_name='NUL').order_by('-rating_index').first().rating_index
+            history = TeamRatingHistory.objects.filter(rating_index__gte=curr_season_start)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        season_start_indices = history.filter(team__short_name='NUL').values_list('rating_index', flat=True)
+        max_index = history.order_by('-rating_index').first().rating_index
         context = {
             'teams': [],
             'season_start_indices': season_start_indices,
@@ -257,7 +265,7 @@ class EloHistoryAll(APIView):
         teams = Team.objects.exclude(short_name='NUL').values('team_continuity_id').annotate(max_rating=Max('teamrating__rating')).order_by('max_rating')
         for _team in teams:
             team_id = _team['team_continuity_id']
-            team_ratings = TeamRatingHistory.objects.filter(team__team_continuity_id=team_id).order_by('rating_index')
+            team_ratings = history.filter(team__team_continuity_id=team_id).order_by('rating_index')
             team_rating_history = []
             last_ssi = 0
             for ssi in list(season_start_indices) + [max_index+1]:
