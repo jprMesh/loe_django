@@ -645,4 +645,9 @@ button.region_filter:focus {
     font-size: 2rem;
 }
 
+.d3_plot .d3_title {
+    fill: var(--primary-color);
+    font-size: 1rem;
+}
+
 /* end D3 plots */

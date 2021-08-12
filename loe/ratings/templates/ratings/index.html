@@ -11,13 +11,11 @@
   {% if user.is_authenticated %}
     <div class="section_div grid_item site_intro">
       <p>Welcome to the League of Elo! Use the region buttons at the top to filter content to regions you care about, and make sure you predict every match to maximize your score!</p>
-      <p>Check out the <a href="{% url 'leaderboard' %}">Leaderboard</a> to compare your score with friends, strangers, and the League Of Elo model. See the <a href="{% url 'about' %}">About page</a> for FAQs, stats formulas, and more info about how the model works. You can also click your username to see personalized lifetime stats.</p>
       {% history_chart 'current' %}
     </div>
   {% else %}
     <div class="section_div grid_item site_intro">
-      <p>Welcome to the League of Elo! We run an Elo model across the 4 major regions of professional League of Legends play. Our model predicts the outcome of each match by assigning a probability to each team winning. These predictions drive and are are driven by the ratings the model maintains for each team.</p>
-      <p>Play along by <a href="{% url 'signup' %}">creating an account!</a> Make your own predictions and you'll get points for each match you predict, with more points being awarded for better predictions!</p>
+      <p>Welcome to the League of Elo! Our model predicts the outcome of each match by assigning a probability to each team winning. These predictions drive and are are driven by the ratings the model maintains for each team. Play along by <a href="{% url 'signup' %}">creating an account</a> and making your own predictions!</p>
       {% history_chart 'current' %}
     </div>
   {% endif %}

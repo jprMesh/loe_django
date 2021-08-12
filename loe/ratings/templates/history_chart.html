@@ -4,6 +4,7 @@
 
 $(document).ready(function() {
   setup_d3();
+  setup_rating_table_hover();
 });
 
 function update_d3_regions() {
@@ -14,6 +15,26 @@ function update_d3_regions() {
       $('[region=' + r + ']').attr('visibility', 'hidden');
     }
   })
+}
+
+function setup_rating_table_hover() {
+  let rating_boxes = $('.team_rating_box');
+  if (!rating_boxes.length) return;
+  rating_boxes.mouseover(function(){
+    let team_class = this.innerText + '_line';
+    highlight_team_line(team_class, true);
+  }).mouseout(function(){
+    let team_class = this.innerText + '_line';
+    highlight_team_line(team_class, false);
+  });
+}
+
+function highlight_team_line(team_class, on_off) {
+  let lines = $('[class~="'+team_class+'"]');
+  lines
+    .attr('stroke-width', (on_off ? 4 : 2))
+    .attr('class', team_class + (on_off ? ' dropshadow' : ''))
+    .appendTo(lines.parent());
 }
 
 function setup_d3() {
@@ -122,6 +143,14 @@ function setup_d3() {
       .attr('y', height/2 - 10)
       .text('Loading Data');
 
+  if ('{{ time_span|safe }}' === 'current') {
+  d3_svg.append('text')
+      .attr('class', 'd3_title')
+      .attr('x', width/2 - 100)
+      .attr('y', 10)
+      .text('Current Season Rating History');
+    }
+
   // Get data and set axes
   var ratings_url = '/history/all_teams/{{ time_span|safe }}';
   d3.json(ratings_url, function(data) {
@@ -166,18 +195,14 @@ function setup_d3() {
         .attr('region', t.region)
         .attr("fill", "none")
         .attr("stroke", t.color)
-        .attr("stroke-width", 1.5)
+        .attr("stroke-width", 2)
         .attr("d", d3.line()
           .x(function(d) { return d3_x(d.rating_index) })
           .y(function(d) { return d3_y(d.rating) })
         )
         .on("mouseover", function(d) {
           let team_class = this.getAttribute('team_name') + '_line';
-          let lines = $('[class~="'+team_class+'"]');
-          lines
-            .attr('stroke-width', 4)
-            .attr('class', team_class + ' dropshadow')
-            .appendTo(lines.parent());
+          highlight_team_line(team_class, true);
           return legend.style("visibility", "visible");
         })
         .on("mousemove", function(d) {
@@ -190,9 +215,7 @@ function setup_d3() {
         })
         .on("mouseout", function() {
           let team_class = this.getAttribute('team_name') + '_line';
-          $('[class~="'+team_class+'"]')
-            .attr('stroke-width', 1.5)
-            .attr('class', team_class);
+          highlight_team_line(team_class, false);
           return legend.style("visibility", "hidden");
         });
     });

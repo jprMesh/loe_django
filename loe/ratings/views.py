@@ -1,6 +1,7 @@
 import datetime
 import logging
 from math import log10
+from collections import OrderedDict
 from django.http import HttpResponse
 from django.template import loader
 from django.db.models import Avg, Max, Q, Exists, OuterRef
@@ -275,6 +276,9 @@ class EloHistoryAll(APIView):
                     continue
                 serialized_ratings = TeamRatingHistorySerializer(ratings, many=True)
                 team_rating_history.append(serialized_ratings.data)
+                if ssi > list(season_start_indices)[-1]:
+                    line_stretch_point = OrderedDict([('rating', team_ratings.last().rating), ('rating_index', max_index)])
+                    team_rating_history[-1].append(line_stretch_point)
             if not team_rating_history:
                 continue
 
