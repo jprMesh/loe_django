@@ -37,7 +37,51 @@ function highlight_team_line(team_class, on_off) {
     .appendTo(lines.parent());
 }
 
+function Step(context) {
+  this._context = context;
+}
+
+Step.prototype = {
+  areaStart: function() {
+    this._line = 0;
+  },
+  areaEnd: function() {
+    this._line = NaN;
+  },
+  lineStart: function() {
+    this._x = this._y = NaN;
+    this._point = 0;
+  },
+  lineEnd: function() {
+    if (this._line || (this._line !== 0 && this._point === 1)) this._context.closePath();
+    if (this._line >= 0) this._line = 1 - this._line;
+  },
+  point: function(x, y) {
+    x = +x, y = +y;
+    switch (this._point) {
+      case 0: {
+        this._point = 1;
+        this._context.moveTo(x, y);
+        break;
+      }
+      case 1: this._point = 2; // proceed
+      default: {
+        angled_step = Math.min(10, x - this._x)
+        this._context.lineTo(x - angled_step, this._y);
+        this._context.lineTo(x, y);
+        break;
+      }
+    }
+    this._x = x, this._y = y;
+  }
+};
+
+angleStep = function(context) {
+  return new Step(context);
+}
+
 function setup_d3() {
+  var dated_plot = '{{ time_span|safe }}' === 'dated';
   // set the dimensions and margins of the graph
   var rating_span = '{{ time_span }}';
   var root_width;
@@ -143,46 +187,65 @@ function setup_d3() {
       .attr('y', height/2 - 10)
       .text('Loading Data');
 
-  if ('{{ time_span|safe }}' === 'current') {
-  d3_svg.append('text')
+  if (dated_plot) {
+    d3_svg.append('text')
       .attr('class', 'd3_title')
       .attr('x', width/2 - 100)
       .attr('y', 10)
       .text('Current Season Rating History');
-    }
+  }
 
   // Get data and set axes
+  var dateParse = d3.utcParse("%Y-%m-%dT%H:%M:%S%Z")
   var ratings_url = '/history/all_teams/{{ time_span|safe }}';
   d3.json(ratings_url, function(data) {
-    x_min = data.season_start_indices[0];
-    x_max = data.max_index;
-    x_season_gaps = data.season_start_indices;
-    for (var i = 0; i < x_season_gaps.length - 1; i++) {
-      x_axis_ticks.push(Math.round(x_season_gaps[i] + (x_season_gaps[i+1] - x_season_gaps[i]) / 2));
+    console.log(data);
+    if (dated_plot) {
+      x_min = dateParse(data.min_date)
+      x_max = dateParse(data.max_date)
+      console.log(x_max);
+    } else {
+      x_min = data.season_start_indices[0];
+      x_max = data.max_index;
+      x_season_gaps = data.season_start_indices;
+      for (var i = 0; i < x_season_gaps.length - 1; i++) {
+        x_axis_ticks.push(Math.round(x_season_gaps[i] + (x_season_gaps[i+1] - x_season_gaps[i]) / 2));
+      }
     }
 
-    // Scale X axis
-    d3_x = d3.scaleLinear()
-      .domain([x_min, x_max])
-      .range([0, width]);
-    x_axis.call(
-      d3.axisBottom(d3_x)
-        .tickValues(x_axis_ticks)
-        .tickSize(0)
-        .tickFormat(function (d, i) {
-          if (small_plot) return (i%4 ? "" : x_axis_labels_mobile[i]);
-          return (i%3 ? "" : x_axis_labels[i]);
-        }));
+    if (dated_plot) {
+      // Scale X axis
+      d3_x = d3.scaleTime()
+        .domain([x_min, x_max])
+        .range([0, width]);
+      x_axis.call(
+        d3.axisBottom(d3_x)
+      );
+    } else {
+      // Scale X axis
+      d3_x = d3.scaleLinear()
+        .domain([x_min, x_max])
+        .range([0, width]);
+      x_axis.call(
+        d3.axisBottom(d3_x)
+          .tickValues(x_axis_ticks)
+          .tickSize(0)
+          .tickFormat(function (d, i) {
+            if (small_plot) return (i%4 ? "" : x_axis_labels_mobile[i]);
+            return (i%3 ? "" : x_axis_labels[i]);
+          })
+      );
 
-    // Show season boundaries
-    plot_area.selectAll('.season_gap_rect')
-      .data(x_season_gaps)
-    .enter().append('rect')
-      .attr('class', 'season_gap_rect')
-      .attr('x', d => d3_x(d - 1) )
-      .attr('y', 0)
-      .attr('width', d3_x(1) - d3_x(0) )
-      .attr('height', height);
+      // Show season boundaries
+      plot_area.selectAll('.season_gap_rect')
+        .data(x_season_gaps)
+      .enter().append('rect')
+        .attr('class', 'season_gap_rect')
+        .attr('x', d => d3_x(d - 1) )
+        .attr('y', 0)
+        .attr('width', d3_x(1) - d3_x(0) )
+        .attr('height', height);
+    }
 
     // Add line for each team
     data.teams.forEach(function (t) {
@@ -197,8 +260,9 @@ function setup_d3() {
         .attr("stroke", t.color)
         .attr("stroke-width", 2)
         .attr("d", d3.line()
-          .x(function(d) { return d3_x(d.rating_index) })
+          .x(function(d) { return d3_x(dated_plot ? dateParse(d.rating_date) : d.rating_index) })
           .y(function(d) { return d3_y(d.rating) })
+          .curve(dated_plot ? angleStep : d3.curveLinear)
         )
         .on("mouseover", function(d) {
           let team_class = this.getAttribute('team_name') + '_line';
@@ -208,7 +272,11 @@ function setup_d3() {
         .on("mousemove", function(d) {
           let goal = d3_x.invert(d3.mouse($('#plot_area')[0])[0]);
           closest_rating = d.reduce(function(prev, curr) {
-            return (Math.abs(curr.rating_index - goal) < Math.abs(prev.rating_index - goal) ? curr : prev);
+            if (dated_plot) {
+              return (Math.abs(dateParse(curr.rating_date) - goal) < Math.abs(dateParse(prev.rating_date) - goal) ? curr : prev);
+            } else {
+              return (Math.abs(curr.rating_index - goal) < Math.abs(prev.rating_index - goal) ? curr : prev);
+            }
           });
           let hover_text = this.getAttribute('team_name') + ' ' + this.getAttribute('region') + '\n' + Math.round(closest_rating.rating);
           legend.text(hover_text);
@@ -242,8 +310,9 @@ function setup_d3() {
     plot_area.selectAll("path")
       .transition().duration(1000)
       .attr("d", d3.line()
-        .x(function(d) { return d3_x(d.rating_index) })
+        .x(function(d) { return d3_x(dated_plot ? dateParse(d.rating_date) : d.rating_index) })
         .y(function(d) { return d3_y(d.rating) })
+        .curve(dated_plot ? angleStep : d3.curveLinear)
       );
     plot_area.selectAll(".season_gap_rect")
       .transition().duration(1000)

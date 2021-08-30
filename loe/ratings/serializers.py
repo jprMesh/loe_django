@@ -14,3 +14,11 @@ class TeamRatingHistorySerializer(serializers.ModelSerializer):
         model = TeamRatingHistory
         fields = ['rating', 'rating_index']
         read_only_fields = ['rating', 'rating_index']
+
+class TeamRatingHistoryDateSerializer(serializers.ModelSerializer):
+    rating_date = serializers.DateTimeField(source='match.start_timestamp', read_only=True)
+
+    class Meta:
+        model = TeamRatingHistory
+        fields = ['rating', 'rating_date']
+        read_only_fields = ['rating', 'rating_date']

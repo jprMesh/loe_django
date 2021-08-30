@@ -12,6 +12,6 @@ urlpatterns = [
     path('user/<str:prediction_user>/accuracy_plot', views.AccuracyPlot.as_view()),
     path('match_table', views.MatchTable.as_view()),
     path('user/<str:prediction_user>/match_table', views.MatchTable.as_view()),
-    path('history/all_teams/<str:rating_span>', views.EloHistoryAll.as_view()),
+    path('history/all_teams/<str:dated>', views.EloHistoryAll.as_view()),
     path('history', views.history, name='history'),
 ]

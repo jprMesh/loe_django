@@ -14,8 +14,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.renderers import TemplateHTMLRenderer
 
+import time
+
 from .models import Prediction, Match, Team, TeamRating, TeamRatingHistory, LEAGUE_REGIONS
-from .serializers import PredictionSerializer, TeamRatingHistorySerializer
+from .serializers import *
 
 
 SPRING_RESET = -1
@@ -246,15 +248,14 @@ class AccuracyPlot(APIView):
 
 
 class EloHistoryAll(APIView):
-    def get(self, request, rating_span):
-        if rating_span == 'all':
-            history = TeamRatingHistory.objects.all()
-        elif rating_span == 'current':
-            curr_season_start = TeamRatingHistory.objects.filter(team__short_name='NUL').order_by('-rating_index').first().rating_index
-            history = TeamRatingHistory.objects.filter(rating_index__gte=curr_season_start)
+    def get(self, request, dated):
+        if dated == 'dated':
+            return self.getDatedHistory()
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return self.getIndexedHistory()
 
+    def getIndexedHistory(self):
+        history = TeamRatingHistory.objects.all()
         season_start_indices = history.filter(team__short_name='NUL').values_list('rating_index', flat=True)
         max_index = history.order_by('-rating_index').first().rating_index
         context = {
@@ -279,9 +280,9 @@ class EloHistoryAll(APIView):
                 if ssi > list(season_start_indices)[-1]:
                     line_stretch_point = OrderedDict([('rating', team_ratings.last().rating), ('rating_index', max_index)])
                     team_rating_history[-1].append(line_stretch_point)
+
             if not team_rating_history:
                 continue
-
             current_team = team_ratings.last().team
 
             context['teams'].append({
@@ -290,7 +291,38 @@ class EloHistoryAll(APIView):
                 'color': current_team.color1 or "#555555",
                 'region': current_team.region,
             })
-            #break
+        return Response(context)
+
+    def getDatedHistory(self):
+        curr_season_start = TeamRatingHistory.objects.filter(team__short_name='NUL').order_by('-rating_index').first().rating_index
+        history = TeamRatingHistory.objects.filter(rating_index__gte=curr_season_start)
+        max_date = history.order_by('-match__start_timestamp').first().match.start_timestamp
+        min_date = Match.objects.filter(team1__short_name='NUL', start_timestamp__lte=timezone.now()).order_by('-start_timestamp').first().start_timestamp
+        context = {
+            'teams': [],
+            'min_date': min_date,
+            'max_date': max_date,
+            'dated': True,
+        }
+
+        teams = Team.objects.exclude(short_name='NUL').values('team_continuity_id').annotate(max_rating=Max('teamrating__rating')).order_by('max_rating')
+        for _team in teams:
+            team_id = _team['team_continuity_id']
+            ratings = history.filter(team__team_continuity_id=team_id).order_by('rating_index')
+            if ratings.count() < 2: # No real ratings in this segment
+                continue
+
+            line_stretch_point = OrderedDict([('rating', ratings.last().rating), ('rating_date', max_date)])
+            team_rating_history = [TeamRatingHistoryDateSerializer(ratings, many=True).data]
+            team_rating_history[-1].append(line_stretch_point)
+            current_team = ratings.last().team
+
+            context['teams'].append({
+                'team_rating_history': team_rating_history,
+                'team_name': current_team.short_name,
+                'color': current_team.color1 or "#555555",
+                'region': current_team.region,
+            })
         return Response(context)
 
 '''

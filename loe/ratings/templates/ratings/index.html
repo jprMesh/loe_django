@@ -11,12 +11,12 @@
   {% if user.is_authenticated %}
     <div class="section_div grid_item site_intro">
       <p>Welcome to the League of Elo! Use the region buttons at the top to filter content to regions you care about, and make sure you predict every match to maximize your score!</p>
-      {% history_chart 'current' %}
+      {% history_chart 'dated' %}
     </div>
   {% else %}
     <div class="section_div grid_item site_intro">
       <p>Welcome to the League of Elo! Our model predicts the outcome of each match by assigning a probability to each team winning. These predictions drive and are are driven by the ratings the model maintains for each team. Play along by <a href="{% url 'signup' %}">creating an account</a> and making your own predictions!</p>
-      {% history_chart 'current' %}
+      {% history_chart 'dated' %}
     </div>
   {% endif %}
 
