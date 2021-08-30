@@ -295,7 +295,7 @@ class EloHistoryAll(APIView):
 
     def getDatedHistory(self):
         curr_season_start = TeamRatingHistory.objects.filter(team__short_name='NUL').order_by('-rating_index').first().rating_index
-        history = TeamRatingHistory.objects.filter(rating_index__gte=curr_season_start)
+        history = TeamRatingHistory.objects.filter(rating_index__gt=curr_season_start)
         max_date = history.order_by('-match__start_timestamp').first().match.start_timestamp
         min_date = Match.objects.filter(team1__short_name='NUL', start_timestamp__lte=timezone.now()).order_by('-start_timestamp').first().start_timestamp
         context = {
