@@ -595,8 +595,8 @@ button.region_filter:focus {
     stroke: var(--primary-color);
 }
 
-.d3_plot .tick {
-    stroke: var(--text-color);
+.d3_plot .tick > text {
+    fill: var(--text-color);
 }
 
 .d3_plot circle {

@@ -220,6 +220,7 @@ function setup_d3() {
         .range([0, width]);
       x_axis.call(
         d3.axisBottom(d3_x)
+          .tickFormat(d3.timeFormat('%b %d'))
       );
     } else {
       // Scale X axis
@@ -319,13 +320,17 @@ function setup_d3() {
       .attr('x', d => d3_x(d - 1) )
       .attr('width', d3_x(1) - d3_x(0) );
     x_axis.transition().duration(1000).call(
-      d3.axisBottom(d3_x)
-        .tickValues(x_axis_ticks)
-        .tickSize(0)
-        .tickFormat(function (d, i) {
-          if (small_plot) return (i%4 ? "" : x_axis_labels_mobile[i]);
-          return (i%3 ? "" : x_axis_labels[i]);
-        }) );
+      dated_plot
+        ? d3.axisBottom(d3_x)
+            .tickFormat(d3.timeFormat('%b %d'))
+        : d3.axisBottom(d3_x)
+            .tickValues(x_axis_ticks)
+            .tickSize(0)
+            .tickFormat(function (d, i) {
+              if (small_plot) return (i%4 ? "" : x_axis_labels_mobile[i]);
+              return (i%3 ? "" : x_axis_labels[i]);
+            })
+    );
   }
 }
 
