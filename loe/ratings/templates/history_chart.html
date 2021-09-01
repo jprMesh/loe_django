@@ -199,11 +199,10 @@ function setup_d3() {
   var dateParse = d3.utcParse("%Y-%m-%dT%H:%M:%S%Z")
   var ratings_url = '/history/all_teams/{{ time_span|safe }}';
   d3.json(ratings_url, function(data) {
-    console.log(data);
+    //console.log(data);
     if (dated_plot) {
       x_min = dateParse(data.min_date)
       x_max = dateParse(data.max_date)
-      console.log(x_max);
     } else {
       x_min = data.season_start_indices[0];
       x_max = data.max_index;
