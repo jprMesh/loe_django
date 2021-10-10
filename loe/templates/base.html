@@ -102,6 +102,7 @@ function updateMatchTables() {
     $('#upcoming_match_table').html(data);
     mobileTooltipPosition();
     setUnsavedAlert(unsavedMatchesExist());
+    $('.prediction_slider').each(function() {updateSliderTitle(this);});
   }).fail(function (error) {
     console.log(error);
   });
@@ -112,6 +113,7 @@ function updateMatchTables() {
   }).done(function (data) {
     $('#recent_match_table').html(data);
     mobileTooltipPosition();
+    $('.prediction_slider').each(function() {updateSliderTitle(this);});
   }).fail(function (error) {
     console.log(error);
   });
@@ -146,9 +148,7 @@ function setUnsavedAlert(enable=true) {
   }
 }
 
-function sliderChange(slider) {
-  clearTimeout(sliderChange.hide_timeout);
-  $(slider).parent().parent().find(".submit_box").prop("indeterminate", true);
+function updateSliderTitle(slider) {
   var pred = slider.value;
   var t1 = $(slider).parent().parent().find(".team1").attr("alt");
   var t2 = $(slider).parent().parent().find(".team2").attr("alt");
@@ -162,6 +162,12 @@ function sliderChange(slider) {
 
   $(slider).attr('title', pred_title);
   $(slider).attr('data-original-title', pred_title);
+}
+
+function sliderChange(slider) {
+  clearTimeout(sliderChange.hide_timeout);
+  $(slider).parent().parent().find(".submit_box").prop("indeterminate", true);
+  updateSliderTitle(slider);
   $(slider).tooltip('show');
   sliderChange.hide_timeout = setTimeout(function() {
     $(slider).tooltip('hide');

@@ -21,15 +21,21 @@
       {% else %}
         <div class="match_prediction_cell">
           <input type="range" class="slider prediction_slider" name="predicted_t1_win_prob" min="0" max="100"
+      {% if user.is_authenticated and user.get_username == prediction_user %}
               value="{% if prediction_exists %}{{ prediction }}{% else %}50{% endif %}"
+      {% else %}
+              value="{{ model_pred }}"
+      {% endif %}
+              data-placement='bottom' data-trigger='manual'
               oninput="sliderChange(this)" onchange="submitPredictionSlider(this)"
-              title='{% if prediction_exists %}{{ prediction }}{% else %}50/50{% endif %}' data-placement='bottom' data-trigger='manual'
               {% if match_started or not user.is_authenticated or user.get_username != prediction_user %} disabled="true" {% endif %}
               style="background: linear-gradient(90deg,
                       #00000000 0%,
+      {% if user.is_authenticated and user.get_username == prediction_user and not match_started %}
                       #00000000 {{ model_pred|add:'-1' }}%,
                       var(--primary-color) {{ model_pred }}%,
                       #00000000 {{ model_pred|add:'1' }}%,
+      {% endif %}
                       #00000000 100%),
                           linear-gradient(0deg,
                       var(--bg-color) 0%,
