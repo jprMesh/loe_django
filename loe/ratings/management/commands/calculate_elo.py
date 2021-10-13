@@ -10,6 +10,7 @@ from ratings.management.LeagueOfElo.league_of_elo.elo.rating_system import Elo
 
 SPRING_RESET = -1
 SUMMER_RESET = -2
+INTL_TOURNAMENT = -3
 
 
 class StaleRatingWarning(Exception):
@@ -92,9 +93,12 @@ class Command(BaseCommand):
             # considered active due to these rating updates.
             if match.team1_score == SPRING_RESET:
                 inactive_cutoff_date = match.start_timestamp - datetime.timedelta(days=180)
+                self._inter_season_reset(match.start_timestamp, inactive_cutoff_date)
             elif match.team1_score == SUMMER_RESET:
                 inactive_cutoff_date = match.start_timestamp - datetime.timedelta(days=120)
-            self._inter_season_reset(match.start_timestamp, inactive_cutoff_date)
+                self._inter_season_reset(match.start_timestamp, inactive_cutoff_date)
+            else: #INTL_TOURNAMENT
+                pass
             Match.objects.filter(pk=match.pk).update(elo_processed=True)
             return True
 

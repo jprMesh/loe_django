@@ -66,7 +66,10 @@ class TeamRatingHistory(models.Model):
     rating = models.FloatField()
 
     def __str__(self):
-        return f'{self.team.short_name} -- {self.rating:.2f}'
+        try:
+            return f'{self.team.short_name}: {self.rating:.2f} -- idx:{self.rating_index} : {self.match.start_timestamp}'
+        except:
+            return f'{self.team.short_name}: {self.rating:.2f} -- idx:{self.rating_index} : null_match'
 
 
 class Prediction(models.Model):

@@ -17,6 +17,7 @@ IGNORE_TOURNAMENTS = [
     'IWCT']
 SPRING_RESET = -1
 SUMMER_RESET = -2
+INTL_TOURNAMENT = -3
 
 
 class Command(BaseCommand):
@@ -126,7 +127,7 @@ class Command(BaseCommand):
                 team2_score=reset_type
             )
         print('\nSeason reset: {reset_type} on {sdate} -- {created}'.format(**{
-            'reset_type': "spring" if reset_type == SPRING_RESET else "summer",
+            'reset_type': "spring" if reset_type == SPRING_RESET else "summer" if reset_type == SPRING_RESET else "international tournament",
             'sdate': sdate,
             'created': "new record" if created else "exists"}))
 
@@ -151,6 +152,8 @@ class Command(BaseCommand):
             elif not summer_reset and 'Summer' in season:
                 self._insert_season_reset(sdate, SUMMER_RESET)
                 summer_reset = True
+            elif 'Worlds' in season or 'MSI' in season:
+                self._insert_season_reset(sdate, INTL_TOURNAMENT)
             print(f'\n{season}')
             matches = lpdb.getSeasonResults(season)
             for match in matches:
