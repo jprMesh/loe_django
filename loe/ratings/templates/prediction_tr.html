@@ -16,7 +16,7 @@
            style="text-align: center;"
            onerror="$(this).replaceWith(function() {return $(this).prop('alt'); });">
       </div>
-      {% if match_started and not prediction_exists %}
+      {% if match_started and not prediction_exists and user.is_authenticated %}
         <div class="match_prediction_cell match_info_td super">No Prediction</div>
       {% else %}
         <div class="match_prediction_cell">
