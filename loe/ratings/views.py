@@ -278,7 +278,7 @@ class EloHistoryAll(APIView):
         curr_season_start = TeamRatingHistory.objects.filter(team__short_name='NUL').order_by('-rating_index').first().rating_index - 1
         history = TeamRatingHistory.objects.filter(rating_index__gt=curr_season_start)
         max_date = history.order_by('-match__start_timestamp').first().match.start_timestamp
-        min_date = history.filter(match__isnull=False).order_by('match__start_timestamp')[1].match.start_timestamp - datetime.timedelta(days=1)
+        min_date = history.filter(match__isnull=False).order_by('match__start_timestamp').first().match.start_timestamp
         context = {
             'teams': [],
             'min_date': min_date,
