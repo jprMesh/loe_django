@@ -11,7 +11,7 @@
       </div>
       <div class="match_prediction_cell team_logo_td">
         <img class="match_logo team2 {% if match_complete and match.team1_score > match.team2_score %} losing_team {% endif %}"
-           src="{% static 'team_logos/'|add:match.team2__logo_img %}"
+           src="{% static 'team_logos/'|add:match.team2__short_name %}_logo.png"
            title="{{ match.team2__team_name }}" alt="{{ match.team2__short_name }}"
            style="text-align: center;"
            onerror="$(this).replaceWith(function() {return $(this).prop('alt'); });">
@@ -48,7 +48,7 @@
       {% endif %}
       <div class="match_prediction_cell team_logo_td">
         <img class="match_logo team1 {% if match_complete and match.team1_score < match.team2_score %} losing_team {% endif %}"
-           src="{% static 'team_logos/'|add:match.team1__logo_img %}"
+           src="{% static 'team_logos/'|add:match.team1__short_name %}_logo.png"
            title="{{ match.team1__team_name }}" alt="{{ match.team1__short_name }}"
            style="text-align: center;"
            onerror="$(this).replaceWith(function() {return $(this).prop('alt'); });">

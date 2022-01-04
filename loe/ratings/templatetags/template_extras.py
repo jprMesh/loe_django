@@ -16,8 +16,8 @@ def prediction_tr(active_user, match_pk, prediction_user):
     context['prediction_user'] = prediction_user
 
     match = Match.objects.filter(pk=match_pk).values('pk',
-        'team1__team_name', 'team1__short_name', 'team1__logo_img', 'team1_score',
-        'team2__team_name', 'team2__short_name', 'team2__logo_img', 'team2_score',
+        'team1__team_name', 'team1__short_name', 'team1_score',
+        'team2__team_name', 'team2__short_name', 'team2_score',
         'best_of', 'region', 'start_timestamp', 'elo_processed').first()
     context['match'] = match
     context['match_started'] = match['start_timestamp'] < (timezone.now() + timedelta(hours=1))
