@@ -92,6 +92,17 @@ class Command(BaseCommand):
             m.update(start_timestamp=tz_match_ts)
             return
 
+        # Update match if t1 and t2 swapped (1 day of timedelta allowed)
+        m = Match.objects.filter(team1=team2, team2=team1,
+            team1_score=t1s, team2_score=t2s,
+            start_timestamp__gte=(tz_match_ts - datetime.timedelta(days=1)),
+            start_timestamp__lte=(tz_match_ts + datetime.timedelta(days=1)),
+            best_of=bestof, match_info=tab, region=region)
+        if m.exists():
+            print('U', end='', flush=True) # U for Update
+            m.update(team1=team2, team2=team1)
+            return
+
         # Set teams to active if they are not
         Team.objects.filter(pk=team1.pk).update(is_active=True)
         Team.objects.filter(pk=team2.pk).update(is_active=True)
