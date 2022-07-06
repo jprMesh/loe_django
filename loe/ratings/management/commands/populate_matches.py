@@ -148,7 +148,7 @@ class Command(BaseCommand):
         regions = [abbr for abbr, _ in LEAGUE_REGIONS]
         season_list = []
         for region in regions:
-            region_seasons = lpdb.getTournaments([region], start_year)
+            region_seasons = lpdb.getTournaments([region], f'{start_year}-01-01')
             season_list.extend([(sdate, season, region) for season, sdate in region_seasons])
         season_list = list(filter(lambda x: all([t not in x[1] for t in IGNORE_TOURNAMENTS]), season_list))
         season_list = sorted(season_list, key=lambda tup: tup[0])
