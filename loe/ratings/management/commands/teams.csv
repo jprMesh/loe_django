@@ -33,6 +33,7 @@ EU, 103,    G2,     G2 Esports,             #2E2E2E
 EU, 104,    MSF,    Misfits Gaming,         #A60E29
 EU, 105,    AST,    Astralis,               #F9001C
 EU, 105,    OG,     Origen,                 #141F72
+EU, 106,    KOI,    KOI (Spanish Team),     #825ACF
 EU, 106,    RGE,    Rogue (European Team),  #2D97D3
 EU, 107,    SK,     SK Gaming,              #101B48
 EU, 108,    MAD,    MAD Lions,              #DFB566
@@ -49,6 +50,7 @@ EU, 117,    GMB,    Gambit Gaming
 EU, 118,    CW,     Copenhagen Wolves
 EU, 119,    MYM,    MeetYourMakers
 EU, 120,    BDS,    Team BDS,               #FF0076
+EU, 121,    TH,     Team Heretics,          #020406
 
 KR, 200,    T1,     T1,                     #DD0035
 KR, 200,    SKT,    SK Telecom T1

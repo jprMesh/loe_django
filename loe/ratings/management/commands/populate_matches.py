@@ -14,6 +14,8 @@ IGNORE_TOURNAMENTS = [
     'EU Face-Off',
     'Mid-Season Showdown 2020',
     'Streamathon',
+    'TCL',
+    'SKE',
     'IWCT']
 SPRING_RESET = -1
 SUMMER_RESET = -2
