@@ -40,7 +40,7 @@ class Match(models.Model):
     team2_score = models.IntegerField()
     start_timestamp = models.DateTimeField()
     best_of = models.IntegerField(default=1)
-    match_info = models.CharField(max_length=20)
+    match_info = models.CharField(max_length=50)
     region = models.CharField(max_length=3,
         choices=LEAGUE_REGIONS)
     elo_processed = models.BooleanField(default=False)
