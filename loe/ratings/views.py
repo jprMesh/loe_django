@@ -276,7 +276,8 @@ class EloHistoryAll(APIView):
 
     def getDatedHistory(self):
         curr_season_start = TeamRatingHistory.objects.filter(team__short_name='NUL').order_by('-rating_index').first().match.start_timestamp
-        history = TeamRatingHistory.objects.filter(match__start_timestamp__gt=curr_season_start)
+
+        history = TeamRatingHistory.objects.filter(match__start_timestamp__gte=curr_season_start)
         max_date = history.filter(match__isnull=False).order_by('-match__start_timestamp').first().match.start_timestamp
         min_date = history.filter(match__isnull=False).order_by('match__start_timestamp').first().match.start_timestamp
         context = {
@@ -286,12 +287,11 @@ class EloHistoryAll(APIView):
             'dated': True,
         }
 
-        teams = Team.objects.exclude(short_name='NUL').values('team_continuity_id').annotate(max_rating=Max('teamrating__rating')).order_by('max_rating')
-        for _team in teams:
+        included_teams = Team.objects.filter(teamrating__rating_date__gt=curr_season_start)
+        included_teams_ordered = included_teams.values('team_continuity_id').annotate(max_rating=Max('teamrating__rating')).order_by('max_rating')
+        for _team in included_teams_ordered:
             team_id = _team['team_continuity_id']
             ratings = history.filter(team__team_continuity_id=team_id).order_by('rating_index')
-            if ratings.count() < 2: # No real ratings in this segment
-                continue
 
             line_stretch_point = OrderedDict([('rating', ratings.last().rating), ('rating_date', max_date)])
             team_rating_history = [TeamRatingHistoryDateSerializer(ratings, many=True).data]
