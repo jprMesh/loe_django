@@ -16,7 +16,9 @@ IGNORE_TOURNAMENTS = [
     'Streamathon',
     'TCL',
     'SKE',
-    'IWCT']
+    'IWCT',
+    'Season Opening']
+
 SPRING_RESET = -1
 SUMMER_RESET = -2
 INTL_TOURNAMENT = -3
